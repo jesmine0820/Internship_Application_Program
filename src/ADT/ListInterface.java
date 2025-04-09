@@ -65,6 +65,12 @@ public interface ListInterface<T> extends Iterable<T> {
     // Swap the element
     public void swap(int i, int j);
     
+    // Search for the element
+    public boolean search(T object1, T object2);
+    
+    // Search with fuzzy matching
+    public int fuzzyMatching(T s1, T s2);
+    
     @Override
     public String toString();
 }

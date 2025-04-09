@@ -5,9 +5,7 @@ import Boundary.ReportUI;
 import Dao.Database;
 import Entity.*;
 import Utility.Input;
-import Utility.MatchingEngine;
 import Utility.MessageUI;
-import Utility.Searching;
 import Utility.Tools;
 
 /**
@@ -29,7 +27,7 @@ import Utility.Tools;
 public class ReportManager {
     
     private static final MatchingEngine match = new MatchingEngine();
-    private static final Searching searching = new Searching();
+    private static final ListInterface<String> searching = new DoublyLinkedList<>();
     
     // Call Report Management function
     public static void reportMenu(){

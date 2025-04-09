@@ -1,12 +1,13 @@
 package Control;
 
 import ADT.ListInterface;
+import Boundary.BrowseUI;
 import Boundary.UserUI;
 import Dao.Database;
-import Control.BrowseManager;
 import Entity.*;
 import Utility.MessageUI;
 import Utility.Tools;
+import static Control.BrowseManager.searchEngine;
 
 /**
  *
@@ -132,41 +133,49 @@ public class UserManager {
     }
     
     private static void userMenu(String user){
-        int moduleChoose;
+        String moduleChoose;
         
         if(user.equals("Employer")){
             do{
                 moduleChoose = UserUI.employerMenu();
-                switch(moduleChoose){
-                    case 1 -> System.out.println("Job Posting");
-                    case 2 -> System.out.println("Job Application");
-                    case 3 -> System.out.println("Interview");
-                    case 4 -> System.out.println("View Schedule");
-                    case 5 -> BrowseManager.browseMenu();
-                    case 6 -> System.out.println("Edit Profile");
-                    case 7 -> ReportManager.reportMenu();
-                    case 8 -> {
+                switch(moduleChoose.toLowerCase()){
+                    case "1" -> System.out.println("Job Posting");
+                    case "2" -> System.out.println("Job Application");
+                    case "3" -> System.out.println("Interview");
+                    case "4" -> System.out.println("View Schedule");
+                    case "5" -> BrowseManager.browseMenu();
+                    case "6" -> System.out.println("Edit Profile");
+                    case "7" -> ReportManager.reportMenu();
+                    case "8" -> {
                         MessageUI.logOutMessage();
                         Tools.exit();
+                    }
+                    case "s" -> {
+                        BrowseUI.displaySearchHeader("Any");
+                        searchEngine();
                     }
                     default -> MessageUI.errorMessage();
                 }  
-            } while (moduleChoose != 8);
+            } while (!moduleChoose.equals("8"));
         } else {
             do{
-                moduleChoose = UserUI.applicantMenu();
-                switch(moduleChoose){
-                    case 1 -> BrowseManager.browseMenu();
-                    case 2 -> System.out.println("View my application");
-                    case 3 -> System.out.println("Edit profile");
-                    case 4 -> ReportManager.reportMenu();
-                    case 5 -> {
+                moduleChoose = UserUI.employerMenu();
+                switch(moduleChoose.toLowerCase()){
+                    case "1" -> BrowseManager.browseMenu();
+                    case "2" -> System.out.println("View my application");
+                    case "3" -> System.out.println("Edit profile");
+                    case "4" -> ReportManager.reportMenu();
+                    case "5" -> {
                         MessageUI.logOutMessage();
                         Tools.exit();
                     }
+                    case "s" -> {
+                        BrowseUI.displaySearchHeader("Any");
+                        searchEngine();
+                    }
                     default -> MessageUI.errorMessage();
                     }  
-            } while (moduleChoose != 5);
+            } while (!moduleChoose.equals("5"));
         }
     }
     

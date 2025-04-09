@@ -41,12 +41,16 @@ public class UserUI {
         
     }
     
-    public static int employerMenu(){
-        int input;
+    public static String employerMenu(){
+        String input;
         
         Tools.clearScreen();
         System.out.println("==================================================");
         System.out.println("      Welcome " + Database.getEmployer().getName());
+        System.out.println("==================================================");
+        System.out.println("                                                  ");
+        BrowseUI.displaySearchBar();
+        System.out.println("                                                  ");
         System.out.println("==================================================");
         System.out.println("=             1. Job Posting                     =");
         System.out.println("=             2. Job Application                 =");
@@ -58,17 +62,21 @@ public class UserUI {
         System.out.println("=             8. Logout                          =");
         System.out.println("==================================================");
         
-        input = Input.getIntegerInput("Enter you choice > ");
+        input = Input.getStringInput("Enter you choice > ");
         
         return input;
     }
     
-    public static int applicantMenu(){
-        int input;
+    public static String applicantMenu(){
+        String input;
         
         Tools.clearScreen();     
         System.out.println("==================================================");
         System.out.println("      Welcome " + Database.getApplicant().getName());
+        System.out.println("==================================================");
+        System.out.println("                                                  ");
+        BrowseUI.displaySearchBar();
+        System.out.println("                                                  ");
         System.out.println("==================================================");
         System.out.println("=             1. Browse Jobs                     =");
         System.out.println("=             2. View My Applications            =");
@@ -77,7 +85,7 @@ public class UserUI {
         System.out.println("=             5. Logout                          =");
         System.out.println("==================================================");
         
-        input = Input.getIntegerInput("Enter your choice > ");
+        input = Input.getStringInput("Enter your choice > ");
         
         return input;
     }

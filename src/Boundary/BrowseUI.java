@@ -47,7 +47,13 @@ public class BrowseUI {
         return input;
     }
     
-    public static void displaySearchBar(String title) {
+    public static void displaySearchBar(){
+        System.out.println("----------------------------------------");
+        System.out.println("| S - Search                       | Q |");
+        System.out.println("----------------------------------------");
+    }
+    
+    public static void displaySearchHeader(String title) {
         System.out.println("--------------------------------------");
         System.out.println("       Browser: " + title     );
         System.out.println("--------------------------------------");

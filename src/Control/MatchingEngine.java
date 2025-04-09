@@ -1,4 +1,4 @@
-package Utility;
+package Control;
 
 import ADT.DoublyLinkedList;
 import ADT.ListInterface;
@@ -35,24 +35,6 @@ public class MatchingEngine{
         
     }
     
-    // Merge Sort
-    public <T extends Comparable<T>> ListInterface<T> mergeSort(ListInterface<T> list, Object obj){
-        
-        if(list == null || list.size() < 2 ){
-            return list;
-        }
-        
-        ListInterface<T> leftList = new DoublyLinkedList<>();
-        ListInterface<T> rightList = new DoublyLinkedList<>();
-        
-        split(list, leftList, rightList);
-        
-        leftList = mergeSort(leftList, obj);
-        rightList = mergeSort(rightList, obj);
-        
-        return merge(leftList, rightList, obj);
-    }
-    
     // Helper function for Heap Sort
     private <T extends Comparable<T>> void heapify(ListInterface<T> list, int size, int i, Object obj){
         int largest = i;
@@ -70,44 +52,6 @@ public class MatchingEngine{
             list.swap(i, largest);
             heapify(list, size, largest, obj);
         }
-    }
-    
-    // Helper Function for Merge Sort
-    private <T extends Comparable<T>> void split(ListInterface<T> list, ListInterface<T> leftList, ListInterface<T> rightList){
-        int mid = list.size() / 2;
-
-        for (int i = 0; i < mid; i++) {
-            leftList.add(list.get(i));
-        }
-        for (int i = mid; i < list.size(); i++) {
-            rightList.add(list.get(i));
-        }
-    }
-    
-    private <T extends Comparable<T>> ListInterface<T> merge(ListInterface<T> leftList, ListInterface<T> rightList, Object obj) {
-        ListInterface<T> sortedList = new DoublyLinkedList<>();
-        
-        while (!leftList.isEmpty() && !rightList.isEmpty()) {
-            if (compareList((Object) leftList.getFirst(), (Object) rightList.getFirst(), obj) >= 0) { 
-                sortedList.add(leftList.get(0));
-                sortedList.remove(leftList.get(0));
-            } else {
-                sortedList.add(rightList.get(0));
-                sortedList.remove(rightList.get(0));
-            }
-        }
-
-        // Add remaining elements
-        while (!leftList.isEmpty()) {
-            sortedList.add(leftList.get(0));
-            sortedList.remove(leftList.get(0));
-        }
-        while (!rightList.isEmpty()) {
-            sortedList.add(rightList.get(0));
-            sortedList.remove(rightList.get(0));
-        }
-
-        return sortedList;
     }
     
     // Compare Two items
@@ -294,7 +238,7 @@ public class MatchingEngine{
             if(string1.equalsIgnoreCase(string2)){
                 score += 10;
             } else {
-                Searching searching = new Searching();
+                ListInterface<String> searching = new DoublyLinkedList<>();
                 int falseStep = 5;
                 if(searching.fuzzyMatching(string1, string2) < falseStep){
                     score += 5;
@@ -376,7 +320,7 @@ public class MatchingEngine{
                 if(matchList.trim().equalsIgnoreCase(compareList.trim())){
                     score += 20;
                 } else {
-                    Searching searching = new Searching();
+                    ListInterface<String> searching = new DoublyLinkedList<>();
                     int falseStep = 5;
                     if(searching.fuzzyMatching(matchList, compareList) < falseStep){
                         score += 5;

@@ -30,7 +30,7 @@ public class BrowseManager {
                 if("Job".equals(title) || "Applicant".equals(title)){
                     displayAll(title);
                 } else {
-                    BrowseUI.displaySearchBar(title);
+                    BrowseUI.displaySearchHeader(title);
                     searchEngine();
                 }
             }
@@ -49,7 +49,7 @@ public class BrowseManager {
                         return "Applicant"; 
                     }
                     case 3 -> {
-                        return "Search";
+                        return "Any";
                     }
                     case 4 -> { 
                         return "";
@@ -92,14 +92,14 @@ public class BrowseManager {
             return;
         }
         
-        list = sortList(list, object, true);
+        list = sortList(list, object);
         
         selectEntity(list, title);
      
     }
 
     // Search for something in the list
-    private static <T extends Comparable<T>> void searchEngine() {
+    public static <T extends Comparable<T>> void searchEngine() {
         
         boolean isContinue;
         
@@ -121,43 +121,55 @@ public class BrowseManager {
                 MessageUI.emptyDatabase();
                 return;
             }
+            
+            // Linked list to perform searching
+            ListInterface<String> searching = new DoublyLinkedList<>();
 
-            Searching searching = new Searching();
+            // Declare local list to store the results
             ListInterface<Job> jobResults = new DoublyLinkedList<>();
             ListInterface<Company> companyResults = new DoublyLinkedList<>();
             ListInterface<Applicant> applicantResults = new DoublyLinkedList<>();
             
             // Declare the false step in fuzzy matching
             int falseStep = 10;
-
+            String lowerInput = input.toLowerCase();
+ 
             // Search in Job List (Exact & Fuzzy)
             for (int i = 0; i < jobList.size(); i++) {
                 Job job = jobList.get(i);
-                if (searching.search(job.getJobTitle().toLowerCase(), input) || searching.fuzzyMatching(job.getJobTitle().toLowerCase(), input) <= falseStep) {
+                String jobTitle = job.getJobTitle().toLowerCase();
+                String description = job.getJobDescription().toLowerCase();
+                String type = job.getJobType().toLowerCase();
+                
+                if(searching.search(jobTitle, lowerInput) || searching.fuzzyMatching(jobTitle, lowerInput) <= falseStep){
                     jobResults.add(job);
-                    jobResults = sortList(jobResults, job, false);
-                    
-                } else if (searching.search(job.getJobDescription().toLowerCase(), input) || searching.fuzzyMatching(job.getJobDescription().toLowerCase(), input) <= falseStep){
+                    for(Job result: jobResults){
+                        System.out.println(result);
+                    }
+                    jobResults = sortList(jobResults, job);
+                } else if (searching.search(description, lowerInput) || searching.fuzzyMatching(description, lowerInput) <= falseStep){
                     jobResults.add(job);
-                    jobResults = sortList(jobResults, job, false);
-                }else if (searching.search(job.getJobType().toLowerCase(), input) || searching.fuzzyMatching(job.getJobType().toLowerCase(), input) <= falseStep){
+                    jobResults = sortList(jobResults, job);
+                } else if (searching.search(type, lowerInput )|| searching.fuzzyMatching(description, lowerInput) <= falseStep){
                     jobResults.add(job);
-                    jobResults = sortList(jobResults, job, false);
+                    jobResults = sortList(jobResults, job);
                 }
             }
 
             // Search in Company List (Exact & Fuzzy)
             for (int i = 0; i < companyList.size(); i++) {
                 Company company = companyList.get(i);
-                if (searching.search(company.getCompanyName().toLowerCase(), input) || searching.fuzzyMatching(company.getCompanyName().toLowerCase(), input) <= falseStep) {
+                String companyName = company.getCompanyName().toLowerCase();
+                if (searching.search(companyName, input) || searching.fuzzyMatching(companyName, input) <= falseStep) {
                     companyResults.add(company);
-                    companyResults = sortList(companyResults, company, false);
+                    companyResults = sortList(companyResults, company);
                 }
             }
             
             for (int i = 0; i < applicantList.size(); i++) {
                 Applicant applicant = applicantList.get(i);
-                if(searching.search(applicant.getName().toLowerCase(), input) || searching.fuzzyMatching(applicant.getName().toLowerCase(), input) <= falseStep){
+                String applicantName = applicant.getName().toLowerCase();
+                if(searching.search(applicantName, input) || searching.fuzzyMatching(applicantName, input) <= falseStep){
                     applicantResults.add(applicant);
                 }
             }
@@ -190,16 +202,11 @@ public class BrowseManager {
     }
     
     // Call Sorting Method
-    private static <T extends Comparable<T>> ListInterface<T> sortList(ListInterface<T> list, Object object, boolean useHeapSort){
+    private static <T extends Comparable<T>> ListInterface<T> sortList(ListInterface<T> list, Object object){
 
         MatchingEngine match = new MatchingEngine();
         
-        if(useHeapSort){
-            list = match.heapSort(list, object);
-        } else {
-            list = match.mergeSort(list, object);
-        }
-        
+        list = match.heapSort(list, object);
         return list;
     }
 
@@ -241,6 +248,8 @@ public class BrowseManager {
         int page = 0;
         int totalPages = (int)Math.ceil((double)list.size() / ENTRIES_PER_PAGE);
         T entity;
+        
+        System.out.println("Select Entity");
         
         while(true){
             Tools.clearScreen();

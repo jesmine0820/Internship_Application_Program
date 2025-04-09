@@ -12,10 +12,11 @@ import java.util.NoSuchElementException;
 
 public class DoublyLinkedList<T extends Comparable<T>> implements ListInterface<T> {
     
+    // Define important variables
     private Node firstNode;
     private Node lastNode;
     private int numberOfEntries;
-    
+
     // Constructor for the DoublyLinkedList
     public DoublyLinkedList() {
         firstNode = null;
@@ -279,7 +280,65 @@ public class DoublyLinkedList<T extends Comparable<T>> implements ListInterface<
         set(i, get(j));
         set(j, temp);
     }
-
+    
+    @Override
+    public boolean search(T data, T input){
+        boolean match = false;
+        
+        if(data == null || input == null){
+            return match;
+        }
+        
+        String text = data.toString();
+        String pattern = input.toString();
+        int[ ] lps = computeLPS(pattern);
+        int i = 0, j = 0;
+        
+        while(i < text.length()){
+           if(text.charAt(i) == pattern.charAt(j)){
+               i++;
+               j++;
+               if(j == pattern.length()){
+                   match = true;
+                   return match;
+                }       
+            } else if (j > 0){
+                j = lps[j-1];
+            } else {
+                 i++;
+            }
+        }
+        return match;
+    }
+    
+    @Override
+    // Fuzzy matching for string
+    public int fuzzyMatching(T s1, T s2){
+        if(s1 == null || s2 == null){
+            return 0;
+        }
+        
+        String string1 = s1.toString();
+        String string2 = s2.toString();
+        
+        int m = string1.length(), n = string2.length();
+        int[][]dp = new int[m+1][n+1];
+        
+        for(int i = 0; i <= m; i++){
+            for(int j = 0; j <= n; j++){
+                if(i==0) dp[i][j] = j;
+                else if (j == 0) dp[i][j] = i;
+                else {
+                    dp[i][j] = Math.min(dp[i - 1][j - 1] + (string1.charAt(i - 1) == string2.charAt(j - 1) ? 0 : 1),
+                            Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1));
+                }
+            }
+        }
+        return dp[m][n];
+    }
+    
+    // Helper function------------------------------------------------------------
+     
     // Check whether the index is out of range
     private boolean checkOutOfRange(int index, boolean allowSize) {
         return index < 0 || index > numberOfEntries - (allowSize ? 0 : 1);
@@ -296,6 +355,23 @@ public class DoublyLinkedList<T extends Comparable<T>> implements ListInterface<
             for (int i = numberOfEntries - 1; i > index; i--) current = current.prev;
             return current;
         }
+    }
+    
+    // Calculate the LPS Distance
+    private int[] computeLPS(String pattern){
+        int m = pattern.length();
+        int[] lps = new int[m];
+        int j = 0;
+        
+        for (int i = 1; i < m; i++) {
+            while (j > 0 && pattern.charAt(i) != pattern.charAt(j)) {
+                j = lps[j - 1];
+            }
+            if (pattern.charAt(i) == pattern.charAt(j)) {
+                lps[i] = ++j;
+            }
+        }
+        return lps;
     }
     
     private class Node {

@@ -17,7 +17,6 @@ public class JobApplication implements Comparable<JobApplication> {
     private Date applicationDate;
     private String status;
     private boolean resumeSubmitted;
-    private boolean coverLetterSubmitted;
     private boolean interviewScheduled;
     private String recruiterNotes;
     private String feedback;
@@ -28,13 +27,12 @@ public class JobApplication implements Comparable<JobApplication> {
         
     }
 
-    public JobApplication(String applicationID, Date applicationDate, String status, boolean resumeSubmitted, boolean coverLetterSubmitted, 
+    public JobApplication(String applicationID, Date applicationDate, String status, boolean resumeSubmitted,  
                           boolean interviewScheduled, String recruiterNotes, String feedback, Applicant applicant, Job job) {
         this.applicationID = applicationID;
         this.applicationDate = applicationDate;
         this.status = status;
         this.resumeSubmitted = resumeSubmitted;
-        this.coverLetterSubmitted = coverLetterSubmitted;
         this.interviewScheduled = interviewScheduled;
         this.recruiterNotes = recruiterNotes;
         this.feedback = feedback;
@@ -82,14 +80,6 @@ public class JobApplication implements Comparable<JobApplication> {
         this.resumeSubmitted = resumeSubmitted;
     }
 
-    public boolean isCoverLetterSubmitted() {
-        return coverLetterSubmitted;
-    }
-
-    public void setCoverLetterSubmitted(boolean coverLetterSubmitted) {
-        this.coverLetterSubmitted = coverLetterSubmitted;
-    }
-
     public boolean isInterviewScheduled() {
         return interviewScheduled;
     }
@@ -117,7 +107,7 @@ public class JobApplication implements Comparable<JobApplication> {
     //need to change
     @Override
     public String toString() {
-        return "JobApplication{" + "applicationID=" + applicationID + ", applicantDate=" + applicationDate + ", status=" + status + ", resumeSubmitted=" + resumeSubmitted + ", coverLetterSubmitted=" + coverLetterSubmitted + ", interviewScheduled=" + interviewScheduled + ", recruiterNotes=" + recruiterNotes + ", feedback=" + feedback + '}';
+        return "JobApplication{" + "applicationID=" + applicationID + ", applicantDate=" + applicationDate + ", status=" + status + ", resumeSubmitted=" + resumeSubmitted +  ", interviewScheduled=" + interviewScheduled + ", recruiterNotes=" + recruiterNotes + ", feedback=" + feedback + '}';
     }
     
     @Override

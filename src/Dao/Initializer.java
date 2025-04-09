@@ -302,34 +302,34 @@ public class Initializer {
                 "@daniel_marketing", "Married", "Malaysian");
 
         JobApplication app1 = new JobApplication("A001", new GregorianCalendar(2025, Calendar.MARCH, 5).getTime(), "Pending",
-                true, true, false, "Reviewed application", "Awaiting interview", applicant1, job1);
+                true, false, "Reviewed application", "Awaiting interview", applicant1, job1);
 
         JobApplication app2 = new JobApplication("A002", new GregorianCalendar(2025, Calendar.MARCH, 7).getTime(), "Shortlisted",
-                true, true, true, "Good experience", "Interview scheduled", applicant2, job2);
+                true, true, "Good experience", "Interview scheduled", applicant2, job2);
 
         JobApplication app3 = new JobApplication("A003", new GregorianCalendar(2025, Calendar.MARCH, 10).getTime(), "Rejected",
-                true, false, false, "Lacks required skills", "Not suitable for role", applicant3, job5);
+                false, false, "Lacks required skills", "Not suitable for role", applicant3, job5);
 
         JobApplication app4 = new JobApplication("A004", new GregorianCalendar(2025, Calendar.MARCH, 12).getTime(), "Pending",
-                true, true, false, "Resume is strong", "Awaiting response", applicant4, job4);
+                true, false, "Resume is strong", "Awaiting response", applicant4, job4);
 
         JobApplication app5 = new JobApplication("A005", new GregorianCalendar(2025, Calendar.MARCH, 15).getTime(), "Shortlisted",
-                true, false, true, "Great portfolio", "Interview in progress", applicant5, job5);
+                false, true, "Great portfolio", "Interview in progress", applicant5, job5);
 
         JobApplication app6 = new JobApplication("A006", new GregorianCalendar(2025, Calendar.MARCH, 18).getTime(), "Pending",
-                true, true, false, "Interesting background", "Awaiting further review", applicant2, job3);
+                true, false, "Interesting background", "Awaiting further review", applicant2, job3);
 
         JobApplication app7 = new JobApplication("A007", new GregorianCalendar(2025, Calendar.MARCH, 20).getTime(), "Rejected",
-                true, true, false, "Lacks experience", "Better suited for junior role", applicant3, job7);
+                true, false, "Lacks experience", "Better suited for junior role", applicant3, job7);
 
         JobApplication app8 = new JobApplication("A008", new GregorianCalendar(2025, Calendar.MARCH, 22).getTime(), "Pending",
-                false, false, false, "Did not submit resume", "Awaiting documents", applicant2, job3);
+                false, false, "Did not submit resume", "Awaiting documents", applicant2, job3);
 
         JobApplication app9 = new JobApplication("A009", new GregorianCalendar(2025, Calendar.MARCH, 25).getTime(), "Shortlisted",
-                true, true, true, "Excellent leadership skills", "Interview passed", applicant1, job9);
+                true, true, "Excellent leadership skills", "Interview passed", applicant1, job9);
 
         JobApplication app10 = new JobApplication("A010", new GregorianCalendar(2025, Calendar.MARCH, 27).getTime(), "Shortlisted",
-                true, true, true, "Strong legal background", "Final interview scheduled", applicant3, job4);
+                true, true, "Strong legal background", "Final interview scheduled", applicant3, job4);
 
         // Add companies to DataStore
         Database.companies.add(techCompany);

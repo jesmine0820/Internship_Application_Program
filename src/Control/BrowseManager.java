@@ -30,7 +30,7 @@ public class BrowseManager {
                 if("Job".equals(title) || "Applicant".equals(title)){
                     displayAll(title);
                 } else {
-                    BrowseUI.displaySearchHeader(title);
+                    BrowseUI.displayBrowserHeader(title);
                     searchEngine();
                 }
             }
@@ -104,8 +104,9 @@ public class BrowseManager {
         boolean isContinue;
         
         do{
-            Tools.clearScreen();
             isContinue = true;
+            
+            BrowseUI.displaySearchHeader();
             
             // Linked list to perform searching
             ListInterface<String> searching = new DoublyLinkedList<>();
@@ -115,9 +116,10 @@ public class BrowseManager {
             ListInterface<Company> companyList = (ListInterface<Company>) selectList("Company");
             ListInterface<Applicant> applicantList = (ListInterface<Applicant>) selectList("Applicant");
 
-            String input = Input.getStringInput("Search (Enter quit to exit) > ").toLowerCase();
             
-            if(input.equals("quit")){
+            String input = Input.getStringInput().toLowerCase();
+            
+            if(input.equalsIgnoreCase("x")){
                 break;
             }
 
@@ -269,16 +271,36 @@ public class BrowseManager {
 
                 switch (obj) {
                     case Job job -> {
-                        System.out.println((i + 1) + ". " + job.getJobTitle() + "s - " + job.getEmployer().getCompany().getCompanyName() + "\n   -> " + job.getJobDescription());
-                        System.out.println("-----------------------------------------------------------------------------------------");
-                    }
-                    case Company company -> {
-                        System.out.println((i + 1) + ". " + company.getCompanyName() + " - " + company.getIndustryType() + "\n   -> " + company.getWebsite());
-                        System.out.println("-----------------------------------------------------------------------------------------");
+                        Employer employer = job.getEmployer();
+                        Company company = employer.getCompany();
+                        String companyName = company.getCompanyName();
+                        String jobTitle = job.getJobTitle();
+                        String jobType = job.getJobType();
+                        String jobDescription = job.getJobDescription();
+                        Double salary = job.getSalary();
+                        
+                        System.out.println("---------------------------------------------------------------");
+                        System.out.printf ("│ %-3s %-70s │\n", (i + 1) + ".", companyName);
+                        System.out.printf ("│     Position:     %-60s │\n", jobTitle);
+                        System.out.printf ("│     Type:         %-60s │\n", jobType);
+                        System.out.printf ("│     Salary:       RM%-57.2f │\n", salary);
+                        System.out.printf ("│     Description:  %-60s │\n", jobDescription);
+                        System.out.println("---------------------------------------------------------------");
+
                     }
                     case Applicant applicant -> {
-                        System.out.println((i + 1) + ". " + applicant.getName() + " - " + applicant.getDesiredJobType() + "\n   ->" + applicant.getPortfolioLink());
+                        String name = applicant.getName();
+                        String preferredWorkMode = applicant.getPreferredWorkMode();
+                        String desiredJobType = applicant.getDesiredJobType();
+                        String portfolioLink = applicant.getPortfolioLink();
+                        
                         System.out.println("-----------------------------------------------------------------------------------------");
+                        System.out.println("| " + String.format("%-75s", (i + 1) + ". " + name) + " |");
+                        System.out.println("| " + String.format("%-75s", "Preferred Work Mode: " + preferredWorkMode) + " |");
+                        System.out.println("| " + String.format("%-75s", "Desired Job Type: " + desiredJobType) + " |");
+                        System.out.println("| " + String.format("%-75s", "Portfolio Link: " + portfolioLink) + " |");
+                        System.out.println("-----------------------------------------------------------------------------------------");
+   
                     }
                     default -> {
                         MessageUI.invalidTitle();

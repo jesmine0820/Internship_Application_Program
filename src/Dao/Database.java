@@ -23,6 +23,7 @@ public class Database {
     public static final ListInterface<Applicant> applicants = new DoublyLinkedList();
     public static final ListInterface<Job> jobList = new DoublyLinkedList();
     public static final ListInterface<Employer> employers = new DoublyLinkedList();
+    public static final ListInterface<Schedule> schedules = new DoublyLinkedList<>();
     
     // Get and setter for current user
     public static Employer getEmployer(){

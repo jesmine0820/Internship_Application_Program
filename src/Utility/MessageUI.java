@@ -24,6 +24,10 @@ public class MessageUI {
         System.out.println(RED + "Input must in Integer." + RESET);
     }
     
+    public static void doubleIntegerMessage(){
+        System.out.println(RED + "Invalid input. Input must be in Double." + RESET);
+    }
+    
     public static void yesNoMessage(){
         System.out.println(RED + "Enter Y or N only." + RESET);
     }
@@ -56,4 +60,46 @@ public class MessageUI {
         System.out.println(RED + "You are blocked from view." + RESET);
     }
     
+    public static void invalidName(){
+        System.out.println(RED + "Invalid name. Please enter a valid name." + RESET);
+    }
+    
+    public static void invalidDate(){
+        System.out.println(RED + "Invalid date format. Please enter a valid name." + RESET);
+    }
+    
+    public static void invalidTime(){
+        System.out.println(RED + "Invalid time format. Please enter a valid time." + RESET);
+    }
+    
+    public static void invalidIC(){
+        System.out.println(RED + "IC must be in the format xxxxxx-xx-xxxx (12 digits with dashes)." + RESET);
+    }
+    
+    public static void invalidDOB(){
+        System.out.println(RED + "Invalid birthdate in IC number. Please ensure YYMMDD is a valid date." + RESET);
+    }
+    
+    public static void invalidPhone(){
+        System.out.println(RED + "Invalid phone number format." + RESET);
+        System.out.println(RED + "Please enter a valid number in the format 01X-XXXXXXX or 01X-XXXXXXXX." + RESET);
+    }
+    
+    public static void invalidEmail(){
+        System.out.println(RED + "Invalid email format." + RESET);
+        System.out.println(RED + "Please enter a valid email address." + RESET);
+    }
+    
+    public static void invalidSocialMedia(){
+        System.out.println(RED + "Invalid social media handle." + RESET);
+        System.out.println(RED + "Please enter the handle in the format: @username." + RESET);
+    }
+    
+    public static void invalidList(){
+        System.out.println(RED + "Invalid choice! Please select a valid number from the list." + RESET);
+    }
+    
+    public static void noScheduled(){
+        System.out.println(PURPLE + "No scheduled interview yet!" + RESET);
+    }
 }

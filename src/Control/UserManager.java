@@ -43,7 +43,7 @@ public class UserManager {
             
             if(Database.getEmployer() != null){
                 userMenu("Employer");
-            } else {
+            } else if(Database.getApplicant() != null){
                 userMenu("Applicant");
             }
             
@@ -82,8 +82,9 @@ public class UserManager {
         
         while(true){
             Tools.clearScreen();
-            System.out.println(string + " List ( Page " + (page + 1) + " of " + totalPages + "):\n");
-            System.out.println("-------------------------------------------");
+            System.out.println("    -------------------------------------------");
+            System.out.println("        " + string + "List ( Page " + (page + 1) + " of " + totalPages + "):");
+            System.out.println("    -------------------------------------------\n");
             
             int start = page * ENTRIES_PER_PAGE;
             int end = Math.min(start + ENTRIES_PER_PAGE, list.size());
@@ -92,13 +93,13 @@ public class UserManager {
                 T entity = list.get(i);
                 
                 if(entity instanceof Employer employer){
-                    System.out.println((i + 1) + ". " + employer.getName());
-                    System.out.println("-------------------------------------------");
+                    System.out.println("    " + (i + 1) + ". " + employer.getName());
+                    System.out.println("    -------------------------------------------");
                 }
                 
                 if (entity instanceof Applicant applicant) {
                     System.out.println((i + 1) + ". " + applicant.getName());
-                    System.out.println("-------------------------------------------");
+                    System.out.println("    -------------------------------------------");
                 }
             }
             
@@ -141,8 +142,8 @@ public class UserManager {
                 switch(moduleChoose.toLowerCase()){
                     case "1" -> System.out.println("Job Posting");
                     case "2" -> System.out.println("Job Application");
-                    case "3" -> System.out.println("Interview");
-                    case "4" -> System.out.println("View Schedule");
+                    case "3" -> ScheduleManager.employerScheduleMenu();
+                    case "4" -> ScheduleManager.displaySchedule();
                     case "5" -> BrowseManager.browseMenu();
                     case "6" -> System.out.println("Edit Profile");
                     case "7" -> ReportManager.reportMenu();
@@ -151,7 +152,7 @@ public class UserManager {
                         Tools.exit();
                     }
                     case "s" -> {
-                        BrowseUI.displaySearchHeader("Any");
+                        BrowseUI.displayBrowserHeader("Any");
                         searchEngine();
                     }
                     default -> MessageUI.errorMessage();
@@ -159,23 +160,24 @@ public class UserManager {
             } while (!moduleChoose.equals("8"));
         } else {
             do{
-                moduleChoose = UserUI.employerMenu();
+                moduleChoose = UserUI.applicantMenu();
                 switch(moduleChoose.toLowerCase()){
                     case "1" -> BrowseManager.browseMenu();
                     case "2" -> System.out.println("View my application");
-                    case "3" -> System.out.println("Edit profile");
-                    case "4" -> ReportManager.reportMenu();
-                    case "5" -> {
+                    case "3" -> ScheduleManager.displaySchedule();
+                    case "4" -> System.out.println("Edit profile");
+                    case "5" -> ReportManager.reportMenu();
+                    case "6" -> {
                         MessageUI.logOutMessage();
                         Tools.exit();
                     }
                     case "s" -> {
-                        BrowseUI.displaySearchHeader("Any");
+                        BrowseUI.displayBrowserHeader("Any");
                         searchEngine();
                     }
                     default -> MessageUI.errorMessage();
                     }  
-            } while (!moduleChoose.equals("5"));
+            } while (!moduleChoose.equals("6"));
         }
     }
     

@@ -1,8 +1,7 @@
 package Utility;
 
-import static Utility.Tools.RED;
-import static Utility.Tools.RESET;
-
+import ADT.DoublyLinkedList;
+import ADT.ListInterface;
 import static java.lang.Character.toUpperCase;
 import java.util.Scanner;
 
@@ -94,4 +93,54 @@ public class Input {
         }
     }
     
+    // Get single choice function
+    public static String getChoiceInput(String question, String[] options) {
+        System.out.println(question);
+        for (int i = 0; i < options.length; i++) {
+            System.out.println((i + 1) + ". " + options[i]);
+        }
+
+        int choice = Validation.getValidatedChoice(options.length);
+        return options[choice - 1];
+    }
+
+    //multiple choice
+    public static ListInterface<String> getMultipleChoiceInput(String question, String[] options) {
+        ListInterface<String> selectedChoices = new DoublyLinkedList<>();
+
+        System.out.println(question);
+        for (int i = 0; i < options.length; i++) {
+            System.out.println((i + 1) + ". " + options[i]);
+        }
+
+        boolean validInput = false;
+        while (!validInput) {
+            String value = getStringInput("Enter numbers of your choices (comma-separated): ");
+            selectedChoices.clear(); 
+            validInput = Validation.validateMultipleChoices(value, options, selectedChoices);
+
+            if (!validInput) {
+                MessageUI.invalidList();
+            }
+        }
+
+        return selectedChoices;
+    }
+    
+    //yes/no
+    public static String getYesNoInput(String question) {
+        String value;
+
+        while (true) {
+            System.out.print(question);
+            value = input.nextLine().trim().toLowerCase();
+
+            if (Validation.validateYesNo(value)) {
+                return (value.equals("y") || value.equals("yes")) ? "yes" : "no";
+            } else {
+                System.out.println("Invalid input. Please enter 'yes'/'y' or 'no'/'n'.");
+            }
+        }
+    }
+
 }

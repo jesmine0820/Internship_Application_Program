@@ -111,5 +111,7 @@ public class ScheduleUI {
                     followUpTime,
                     status);
         }
+        
+        Tools.systemPause();
     }
 }

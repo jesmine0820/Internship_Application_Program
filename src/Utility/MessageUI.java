@@ -65,7 +65,7 @@ public class MessageUI {
     }
     
     public static void invalidDate(){
-        System.out.println(RED + "Invalid date format. Please enter a valid name." + RESET);
+        System.out.println(RED + "Invalid date format. Please enter a valid date." + RESET);
     }
     
     public static void invalidTime(){

@@ -28,12 +28,17 @@ public class Validation {
     }
 
     // Check whether there is digit in the string
-    public static boolean checkString(String text){
-        while(text == null || !text.matches("[a-zA-Z]+")){
-            MessageUI.invalidName();
-            return false;
+    public static boolean checkString(String text) {
+        int countDigit = 0;
+
+        for (int i = 0; i < text.length(); i++) {
+            char check = text.charAt(i);
+            if (Character.isDigit(check)) {
+                countDigit++;
+            }
         }
-        return true;
+
+        return countDigit <= 0;
     }
     
     // Check date format

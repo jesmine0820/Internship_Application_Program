@@ -56,6 +56,12 @@ public class ScheduleManager {
             error = false;
             name = ScheduleUI.getApplicantName();
             if(!Validation.checkString(name) || !Validation.checkApplicant(name)){
+                if(!Validation.checkString(name)){
+                    System.out.println("Check string");
+                }
+                if(!Validation.checkApplicant(name)){
+                    System.out.println("no applicant");
+                }
                 error = true;
             }
             if(!error){
@@ -79,7 +85,7 @@ public class ScheduleManager {
             if(Validation.checkTime(timeString) == null ){
                 error = true;
             } else {
-                interviewTime = Validation.checkDate(timeString);
+                interviewTime = Validation.checkTime(timeString);
             }
         }while(error);
         
@@ -152,7 +158,7 @@ public class ScheduleManager {
             if(Validation.checkTime(timeString) == null ){
                 error = true;
             } else {
-                followUpTime = Validation.checkDate(timeString);
+                followUpTime = Validation.checkTime(timeString);
             }
         }while(error);
         
@@ -208,6 +214,7 @@ public class ScheduleManager {
             ScheduleUI.displaySchedule(results);
         } else {
             MessageUI.noScheduled();
+            Tools.systemPause();
         }
     }
     

@@ -104,7 +104,11 @@ public class BrowseManager {
         boolean isContinue;
         
         do{
+            Tools.clearScreen();
             isContinue = true;
+            
+            // Linked list to perform searching
+            ListInterface<String> searching = new DoublyLinkedList<>();
             
             // Declare the important list
             ListInterface<Job> jobList = (ListInterface<Job>) selectList("Job");
@@ -121,14 +125,12 @@ public class BrowseManager {
                 MessageUI.emptyDatabase();
                 return;
             }
-            
-            // Linked list to perform searching
-            ListInterface<String> searching = new DoublyLinkedList<>();
 
             // Declare local list to store the results
             ListInterface<Job> jobResults = new DoublyLinkedList<>();
             ListInterface<Company> companyResults = new DoublyLinkedList<>();
             ListInterface<Applicant> applicantResults = new DoublyLinkedList<>();
+            ListInterface<Job> mergeResults;
             
             // Declare the false step in fuzzy matching
             int falseStep = 10;
@@ -143,24 +145,19 @@ public class BrowseManager {
                 
                 if(searching.search(jobTitle, lowerInput) || searching.fuzzyMatching(jobTitle, lowerInput) <= falseStep){
                     jobResults.add(job);
-                    for(Job result: jobResults){
-                        System.out.println(result);
-                    }
-                    jobResults = sortList(jobResults, job);
                 } else if (searching.search(description, lowerInput) || searching.fuzzyMatching(description, lowerInput) <= falseStep){
                     jobResults.add(job);
-                    jobResults = sortList(jobResults, job);
                 } else if (searching.search(type, lowerInput )|| searching.fuzzyMatching(description, lowerInput) <= falseStep){
                     jobResults.add(job);
-                    jobResults = sortList(jobResults, job);
                 }
+                jobResults = sortList(jobResults, job);
             }
 
             // Search in Company List (Exact & Fuzzy)
             for (int i = 0; i < companyList.size(); i++) {
                 Company company = companyList.get(i);
                 String companyName = company.getCompanyName().toLowerCase();
-                if (searching.search(companyName, input) || searching.fuzzyMatching(companyName, input) <= falseStep) {
+                if (searching.search(companyName, lowerInput) || searching.fuzzyMatching(companyName, input) <= falseStep) {
                     companyResults.add(company);
                     companyResults = sortList(companyResults, company);
                 }
@@ -169,35 +166,45 @@ public class BrowseManager {
             for (int i = 0; i < applicantList.size(); i++) {
                 Applicant applicant = applicantList.get(i);
                 String applicantName = applicant.getName().toLowerCase();
-                if(searching.search(applicantName, input) || searching.fuzzyMatching(applicantName, input) <= falseStep){
+                if(searching.search(applicantName, lowerInput) || searching.fuzzyMatching(applicantName, input) <= falseStep){
                     applicantResults.add(applicant);
+                    applicantResults = sortList(applicantResults, applicant);
                 }
             }
             
-            if (UserManager.isEmployer()){
-                System.out.println("\nSearch Results for '" + input + "':");
-                if (!jobResults.isEmpty()) {
-                    selectEntity(jobResults, "Job");
-                }
-                if (!companyResults.isEmpty()) {
-                    selectEntity(companyResults, "Company");
-                }
-                if (!applicantResults.isEmpty()){
-                    selectEntity(applicantResults, "Applicant");
+            // Need to match all the result
+            if(UserManager.isEmployer()){
+                System.out.println("\n Search Results for '" + input + "'");
+                if(!jobResults.isEmpty() && !companyResults.isEmpty()){
+                    mergeResults = (ListInterface<Job>)mergeList((ListInterface<T>)jobResults, (ListInterface<T>)companyResults);
+                    selectEntity(mergeResults, "Job");
+                } else {
+                    if(!jobResults.isEmpty()){
+                        selectEntity(jobResults, "Job");
+                    } else if(!companyResults.isEmpty()){
+                        selectEntity(companyResults, "Company");
+                    } else if(!applicantResults.isEmpty()){
+                        selectEntity(applicantResults, "Applicant");
+                    }
                 }
             } else {
-                System.out.println("\nSearch Results for '" + input + "':");
-                if (!jobResults.isEmpty()) {
-                    selectEntity(jobResults, "Job");
-                }
-                if (!companyResults.isEmpty()) {
-                    selectEntity(companyResults, "Company");
+                System.out.println("\n Search Results for '" + input + "'");
+                if(!jobResults.isEmpty() && !companyResults.isEmpty()){
+                    mergeResults = (ListInterface<Job>)mergeList((ListInterface<T>)jobResults, (ListInterface<T>)companyResults);
+                    selectEntity(mergeResults, "Job");
+                } else {
+                    if(!jobResults.isEmpty()){
+                        selectEntity(jobResults, "Job");
+                    } else if(!companyResults.isEmpty()){
+                        selectEntity(companyResults, "Company");
+                    }
                 }
             }
             
-            if (jobResults.isEmpty() && companyResults.isEmpty()) {
+            if(jobResults.isEmpty() && companyResults.isEmpty()){
                 MessageUI.noMatchFound();
             }
+            
         } while(isContinue);
     }
     
@@ -248,8 +255,6 @@ public class BrowseManager {
         int page = 0;
         int totalPages = (int)Math.ceil((double)list.size() / ENTRIES_PER_PAGE);
         T entity;
-        
-        System.out.println("Select Entity");
         
         while(true){
             Tools.clearScreen();
@@ -311,6 +316,73 @@ public class BrowseManager {
                 }
             }   
         }
+    }
+    
+     private static <T extends Comparable<T>> ListInterface<T> mergeList(ListInterface<T> list1, ListInterface<T> list2){
+        if(list1.isEmpty() && list2.isEmpty()){
+            return null;
+        }
+        
+        // Declare new list to store the merge result
+        ListInterface<T> mergeList = new DoublyLinkedList<>();
+        
+        // Check list 1 is instance of what
+        if(!list1.isEmpty()){
+            T elementList1 = list1.get(0);
+            if(elementList1 instanceof Job){
+                mergeList.add(list1);
+            } else if(elementList1 instanceof Company){
+                mergeList.add(extractJob(list1));
+            }
+        }
+        
+        // Check list 2 is instance of what
+        if(!list2.isEmpty()){
+            T elementList2 = list2.get(0);
+            if(elementList2 instanceof Job){
+                mergeList.add(list2);
+            } else if(elementList2 instanceof Company){
+                mergeList.add(extractJob(list2));
+            }
+        }
+        
+        for(T result: mergeList){
+            mergeList = sortList(mergeList, result);
+        }
+        
+        return mergeList;
+    }
+    
+    // Get the job from the company
+    private static <T extends Comparable<T>> ListInterface<T> extractJob(ListInterface<T> list){
+        // Check empty list
+        if(list.isEmpty()){
+            return null;
+        }
+
+        // Get the Database
+        ListInterface<Job> allJobs = Database.jobList;
+        
+        // Declare a new list to store the result that extract from the companies
+        ListInterface<T> matchedJob = new DoublyLinkedList<>();
+        
+        T firstElement = list.get(0);
+        if(firstElement instanceof Company){
+            for(int i = 0; i < list.size(); i++){
+                Company company = (Company)list.get(i);
+                String companyName = company.getCompanyName();
+                
+                for(int j = 0; j < allJobs.size(); j++){
+                    Job job = allJobs.get(j);
+                    Employer employer = job.getEmployer();
+                    Company hisCompany = employer.getCompany();
+                    if(hisCompany.getCompanyName().equals(companyName)){
+                        matchedJob.add((T)job);
+                    }
+                }
+            }
+        }
+        return matchedJob;
     }
     
     // Suppose at the applicant side / job side

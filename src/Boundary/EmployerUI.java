@@ -1,11 +1,7 @@
 package Boundary;
 
-import ADT.DoublyLinkedList;
-import Control.JobManager;
 import Utility.Input;
 import Utility.Tools;
-import Entity.*;
-import Utility.MessageUI;
 
 /**
  *
@@ -13,9 +9,7 @@ import Utility.MessageUI;
  */
 public class EmployerUI {
 
-    public static final DoublyLinkedList<Job> jobList = new DoublyLinkedList<>();
-
-    public static String employerMenu() {
+    public static int employerMenu() {
         Tools.clearScreen();
         UserUI.headLine();
 
@@ -28,27 +22,7 @@ public class EmployerUI {
         System.out.println("6. Searching");
         System.out.println("7. Exit");
 
-        while (true) {
-            int choice = Input.getIntegerInput("Enter your choice > ");
-            switch (choice) {
-                case 1 ->
-                    JobManager.createJob();
-                case 2 ->
-                    JobManager.updateJob();
-                case 3 ->
-                    JobManager.deleteJob();
-                case 4 ->
-                    JobManager.displayJobDetails();
-                case 5 ->
-                    JobManager.filterJob();
-                case 6 -> 
-                    JobManager.searchJobsByEmployerOrCompany();
-                case 7 ->
-                    Tools.back();
-                default ->
-                    MessageUI.errorMessage();
-            }
-        }
-
+        int choice = Input.getIntegerInput("Enter your choice > ");
+        return choice;
     }
 }

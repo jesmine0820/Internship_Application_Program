@@ -1,9 +1,9 @@
 package Dao;
 
-import Dao.Database;
 import ADT.DoublyLinkedList;
 import ADT.ListInterface;
 import Entity.*;
+import Utility.Validation;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Random;
@@ -51,174 +51,174 @@ public class Initializer {
         Employer alice = new Employer("E001", "Alice Tan",
                 new GregorianCalendar(1985, Calendar.MAY, 15).getTime(), "Female", "123 Street, KL",
                 "850515-14-1234", "012-3456789", "alice.tan@example.com", "@alice_tan", "Married",
-                "Malaysian", "Engineering", "Senior Engineer",
+                "Engineering", "Senior Engineer",
                 new GregorianCalendar(2015, Calendar.MARCH, 20).getTime(), 10,
-                new DoublyLinkedList<>(), techCompany);
+                new DoublyLinkedList<>(), new DoublyLinkedList<>(), techCompany);
 
         Employer bob = new Employer("E002", "Bob Lim",
                 new GregorianCalendar(1990, Calendar.AUGUST, 10).getTime(), "Male", "45 Tech Park, KL",
                 "900810-10-5678", "017-9876543", "bob.lim@example.com", "@boblim", "Single",
-                "Malaysian", "Software", "Software Developer",
+                "Software", "Software Developer",
                 new GregorianCalendar(2018, Calendar.JULY, 5).getTime(), 6,
-                new DoublyLinkedList<>(), techCompany);
+                new DoublyLinkedList<>(), new DoublyLinkedList<>(), techCompany);
 
         Employer carol = new Employer("E003", "Carol Wong",
                 new GregorianCalendar(1982, Calendar.DECEMBER, 5).getTime(), "Female", "678 HR Towers, Selangor",
                 "821205-08-2345", "016-1112233", "carol.wong@example.com", "@carol_hr", "Married",
-                "Malaysian", "Human Resources", "HR Manager",
+                "Human Resources", "HR Manager",
                 new GregorianCalendar(2016, Calendar.JUNE, 12).getTime(), 8,
-                new DoublyLinkedList<>(), hrCompany);
+                new DoublyLinkedList<>(), new DoublyLinkedList<>(), hrCompany);
 
         Employer david = new Employer("E004", "David Tan",
                 new GregorianCalendar(1988, Calendar.JANUARY, 20).getTime(), "Male", "789 People Street, Selangor",
                 "880120-05-6789", "018-4445566", "david.tan@example.com", "@davidtan", "Single",
-                "Malaysian", "Talent Acquisition", "Recruitment Specialist",
+                "Talent Acquisition", "Recruitment Specialist",
                 new GregorianCalendar(2019, Calendar.SEPTEMBER, 25).getTime(), 5,
-                new DoublyLinkedList<>(), hrCompany);
+                new DoublyLinkedList<>(), new DoublyLinkedList<>(), hrCompany);
 
         Employer emily = new Employer("E005", "Emily Chan",
                 new GregorianCalendar(1993, Calendar.MARCH, 3).getTime(), "Female", "432 Bank Road, Penang",
                 "930303-07-5678", "014-7654321", "emily.chan@example.com", "@emilychan", "Single",
-                "Malaysian", "Investment", "Financial Analyst",
+                "Investment", "Financial Analyst",
                 new GregorianCalendar(2020, Calendar.NOVEMBER, 1).getTime(), 4,
-                new DoublyLinkedList<>(), financeCompany);
+                new DoublyLinkedList<>(), new DoublyLinkedList<>(), financeCompany);
 
         Employer frank = new Employer("E006", "Frank Lee",
                 new GregorianCalendar(1985, Calendar.JULY, 29).getTime(), "Male", "987 Wealth Avenue, Penang",
                 "850729-02-3456", "013-2223344", "frank.lee@example.com", "@franklee", "Married",
-                "Malaysian", "Banking", "Branch Manager",
+                "Banking", "Branch Manager",
                 new GregorianCalendar(2013, Calendar.MAY, 18).getTime(), 11,
-                new DoublyLinkedList<>(), financeCompany);
+                new DoublyLinkedList<>(), new DoublyLinkedList<>(), financeCompany);
 
         Employer grace = new Employer("E007", "Grace Ng",
                 new GregorianCalendar(1991, Calendar.OCTOBER, 17).getTime(), "Female", "222 Health Street, JB",
                 "911017-06-7890", "019-3334455", "grace.ng@example.com", "@graceng", "Single",
-                "Malaysian", "General Medicine", "Medical Officer",
+                "General Medicine", "Medical Officer",
                 new GregorianCalendar(2017, Calendar.DECEMBER, 9).getTime(), 7,
-                new DoublyLinkedList<>(), healthCompany);
+                new DoublyLinkedList<>(), new DoublyLinkedList<>(), healthCompany);
 
         Employer henry = new Employer("E008", "Henry Goh",
                 new GregorianCalendar(1984, Calendar.APRIL, 21).getTime(), "Male", "567 Hospital Road, JB",
                 "840421-11-2345", "015-5556677", "henry.goh@example.com", "@henrygoh", "Married",
-                "Malaysian", "Specialist", "Cardiologist",
+                "Specialist", "Cardiologist",
                 new GregorianCalendar(2010, Calendar.FEBRUARY, 14).getTime(), 14,
-                new DoublyLinkedList<>(), healthCompany);
+                new DoublyLinkedList<>(), new DoublyLinkedList<>(), healthCompany);
 
         Employer irene = new Employer("E009", "Irene Chua",
                 new GregorianCalendar(1986, Calendar.SEPTEMBER, 9).getTime(), "Female", "888 Academy Road, Melaka",
                 "860909-09-8765", "017-6667788", "irene.chua@example.com", "@irenechua", "Married",
-                "Malaysian", "Education", "Lecturer",
+                "Education", "Lecturer",
                 new GregorianCalendar(2012, Calendar.JANUARY, 7).getTime(), 12,
-                new DoublyLinkedList<>(), educationCompany);
+                new DoublyLinkedList<>(), new DoublyLinkedList<>(), educationCompany);
 
         Employer jack = new Employer("E010", "Jack Yeo",
                 new GregorianCalendar(1994, Calendar.FEBRUARY, 28).getTime(), "Male", "123 Learning Lane, Melaka",
                 "940228-12-5432", "012-8889990", "jack.yeo@example.com", "@jackyeo", "Single",
-                "Malaysian", "Administration", "Academic Coordinator",
+                "Administration", "Academic Coordinator",
                 new GregorianCalendar(2021, Calendar.MARCH, 15).getTime(), 3,
-                new DoublyLinkedList<>(), educationCompany);
+                new DoublyLinkedList<>(), new DoublyLinkedList<>(), educationCompany);
         
         //Creating Job
         Job job1 = new Job("J001", "Software Engineer", "Full-Time", "Develop and maintain software applications", 
-            "Technical test, HR interview", "Permanent", "3 months", true, 
+            "Technical test, HR interview", "Permanent", "On-site","3 months", true, 
             getRandom("skill", 3), 3, 5, 5000.0, 
             getRandom("benefit",2), 
             new GregorianCalendar(2025, Calendar.JUNE, 30).getTime(), 40, "Growth opportunities available", 
             new DoublyLinkedList<>(), new DoublyLinkedList<>(), alice);
 
         Job job2 = new Job("J002", "HR Manager", "Full-Time", "Manage recruitment and employee relations", 
-                "HR interview, case study", "Permanent", "6 months", false, 
+                "HR interview, case study", "Permanent", "On-site","6 months", false, 
                 getRandom("skill", 4), 5, 8, 6000.0, 
                 getRandom("benefit",2), 
                 new GregorianCalendar(2025, Calendar.JULY, 15).getTime(), 45, "Career growth in HR leadership", 
                 new DoublyLinkedList<>(), new DoublyLinkedList<>(), bob);
 
         Job job3 = new Job("J003", "Financial Analyst", "Full-Time", "Analyze financial data and market trends", 
-                "Aptitude test, panel interview", "Permanent", "3 months", false, 
+                "Aptitude test, panel interview", "Permanent", "Hybrid", "3 months", false, 
                 getRandom("skill", 2), 4, 6, 7000.0, 
                 getRandom("benefit",4), 
                 new GregorianCalendar(2025, Calendar.AUGUST, 10).getTime(), 40, "Path to senior finance roles", 
                 new DoublyLinkedList<>(), new DoublyLinkedList<>(), carol);
 
         Job job4 = new Job("J004", "Marketing Director", "Full-Time", "Oversee marketing campaigns and strategy", 
-                "Presentation, strategic discussion", "Permanent", "6 months", false, 
+                "Presentation, strategic discussion", "Permanent", "Remote","6 months", false, 
                 getRandom("skill", 5), 7, 10, 9000.0, 
                 getRandom("benefit",5), 
                 new GregorianCalendar(2025, Calendar.SEPTEMBER, 5).getTime(), 50, "High-level executive role", 
                 new DoublyLinkedList<>(), new DoublyLinkedList<>(), david);
 
         Job job5 = new Job("J005", "Data Scientist", "Full-Time", "Develop machine learning models for business insights", 
-                "Technical test, HR discussion", "Permanent", "3 months", true, 
+                "Technical test, HR discussion", "Permanent", "Remote","3 months", true, 
                 getRandom("skill", 3), 5, 6, 8000.0, 
                 getRandom("benefit",2), 
                 new GregorianCalendar(2025, Calendar.OCTOBER, 1).getTime(), 40, "Opportunities in AI and analytics", 
                 new DoublyLinkedList<>(), new DoublyLinkedList<>(), frank);
 
         Job job6 = new Job("J006", "UI/UX Designer", "Full-Time", "Design user interfaces and experiences", 
-                "Portfolio review, design challenge", "Permanent", "3 months", true, 
+                "Portfolio review, design challenge", "Permanent", "On-site", "3 months", true, 
                 getRandom("skill", 2), 3, 4, 5500.0, 
                 getRandom("benefit",2), 
                 new GregorianCalendar(2025, Calendar.NOVEMBER, 10).getTime(), 40, "Exciting design projects", 
                 new DoublyLinkedList<>(), new DoublyLinkedList<>(), grace);
         
         Job job7 = new Job("J007", "Cybersecurity Analyst", "Full-Time", "Monitor and secure IT infrastructure", 
-                "Technical assessment, security scenario test", "Permanent", "6 months", false, 
+                "Technical assessment, security scenario test", "Permanent", "On-site", "6 months", false, 
                 getRandom("skill", 3), 4, 5, 6500.0, 
                 getRandom("benefit",3), 
                 new GregorianCalendar(2025, Calendar.DECEMBER, 15).getTime(), 42, "Opportunities in cyber defense", 
                 new DoublyLinkedList<>(), new DoublyLinkedList<>(), henry);
 
         Job job8 = new Job("J008", "Content Strategist", "Full-Time", "Develop and manage content marketing strategy", 
-                "Portfolio review, creative writing test", "Permanent", "3 months", false, 
+                "Portfolio review, creative writing test", "Permanent", "On-site", "3 months", false, 
                 getRandom("skill", 2), 3, 4, 5000.0, 
                 getRandom("benefit",2), 
                 new GregorianCalendar(2025, Calendar.OCTOBER, 5).getTime(), 40, "Creative content leadership", 
                 new DoublyLinkedList<>(), new DoublyLinkedList<>(), henry);
 
         Job job9 = new Job("J009", "Mechanical Engineer", "Full-Time", "Design and develop mechanical systems", 
-                "Technical interview, CAD test", "Permanent", "3 months", true, 
+                "Technical interview, CAD test", "Permanent", "Remote","3 months", true, 
                 getRandom("skill", 3), 5, 6, 7200.0, 
                 getRandom("benefit",3), 
                 new GregorianCalendar(2025, Calendar.SEPTEMBER, 20).getTime(), 45, "Growth in engineering projects", 
                 new DoublyLinkedList<>(), new DoublyLinkedList<>(), irene);
 
         Job job10 = new Job("J010", "Legal Consultant", "Full-Time", "Provide legal advice to corporate clients", 
-                "Case study, legal consultation simulation", "Permanent", "6 months", false, 
+                "Case study, legal consultation simulation", "Permanent", "Remote","6 months", false, 
                 getRandom("skill", 3), 6, 3, 8500.0, 
                 getRandom("benefit",4), 
                 new GregorianCalendar(2025, Calendar.DECEMBER, 1).getTime(), 40, "Corporate legal leadership", 
                 new DoublyLinkedList<>(), new DoublyLinkedList<>(), jack);
 
         Job job11 = new Job("J011", "Operations Manager", "Full-Time", "Oversee and optimize business operations", 
-                "Leadership assessment, case study", "Permanent", "3 months", false, 
+                "Leadership assessment, case study", "Permanent", "On-site", "3 months", false, 
                 getRandom("skill", 3), 7, 8, 9000.0, 
                 getRandom("benefit",4), 
                 new GregorianCalendar(2025, Calendar.NOVEMBER, 30).getTime(), 45, "Leadership in operations", 
                 new DoublyLinkedList<>(), new DoublyLinkedList<>(), carol);
         
         Job job12 = new Job("J012", "Pharmaceutical Researcher", "Full-Time", "Conduct research on new drug formulations", 
-                "Technical interview, lab test", "Permanent", "6 months", false, 
+                "Technical interview, lab test", "Permanent", "Remote","6 months", false, 
                 getRandom("skill", 3), 5, 5, 7500.0, 
                 getRandom("benefit",3), 
                 new GregorianCalendar(2025, Calendar.SEPTEMBER, 15).getTime(), 40, "Advanced research opportunities", 
                 new DoublyLinkedList<>(), new DoublyLinkedList<>(), alice);
 
         Job job13 = new Job("J013", "Customer Success Manager", "Full-Time", "Ensure customer satisfaction and retention", 
-                "Behavioral interview, problem-solving test", "Permanent", "3 months", false, 
+                "Behavioral interview, problem-solving test", "Permanent", "On-site", "3 months", false, 
                 getRandom("skill", 2), 4, 6, 6000.0, 
                 getRandom("benefit",3), 
                 new GregorianCalendar(2025, Calendar.NOVEMBER, 20).getTime(), 40, "Opportunities in client management", 
                 new DoublyLinkedList<>(), new DoublyLinkedList<>(), bob);
 
         Job job14 = new Job("J014", "Game Developer", "Full-Time", "Design and develop game applications", 
-                "Portfolio review, coding test", "Permanent", "3 months", true, 
+                "Portfolio review, coding test", "Permanent", "On-site", "3 months", true, 
                 getRandom("skill", 3), 4, 5, 7000.0, 
                 getRandom("benefit",4), 
                 new GregorianCalendar(2025, Calendar.DECEMBER, 10).getTime(), 42, "Growth in gaming industry", 
                 new DoublyLinkedList<>(), new DoublyLinkedList<>(), bob);
 
         Job job15 = new Job("J015", "AI Research Scientist", "Full-Time", "Develop and research artificial intelligence models", 
-                "Machine learning test, research presentation", "Permanent", "6 months", true, 
+                "Machine learning test, research presentation", "Permanent", "Remote", "6 months", true, 
                 getRandom("skill", 4), 6, 7, 9000.0, 
                 getRandom("benefit", 5), 
                 new GregorianCalendar(2025, Calendar.OCTOBER, 5).getTime(), 45, "Leading AI innovations", 
@@ -271,35 +271,35 @@ public class Initializer {
                 "Available Immediately", resume1, new DoublyLinkedList<>(), 
                 "A001", "Ahmad Razak", new GregorianCalendar(1990, Calendar.MAY, 15).getTime(), 
                 "Male", "12 Jalan Ampang, Kuala Lumpur, Malaysia", "900515-14-5678", "+60 12-3456789", "ahmad@example.com", 
-                "@ahmad_dev", "Married", "Malaysian");
+                "@ahmad_dev", "Married");
 
         Applicant applicant2 = new Applicant("Petaling Jaya, Malaysia", "www.liuxinuiux.com", "Remote", "Part-Time", 
                 3, "RM50,000 - RM60,000", false,
                 "Available in 1 Month", resume2, new DoublyLinkedList<>(), 
                 "A002", "Liu Xin", new GregorianCalendar(1995, Calendar.FEBRUARY, 28).getTime(), 
                 "Female", "18 Jalan SS2, Petaling Jaya, Malaysia", "950228-08-7654", "+60 16-7890123", "liuxin@example.com", 
-                "@liuxin_uiux", "Single", "Malaysian");
+                "@liuxin_uiux", "Single");
 
         Applicant applicant3 = new Applicant("George Town, Malaysia", "www.suryafinance.com", "On-Site", "Full-Time", 
                 7, "RM80,000 - RM100,000", false, 
                 "Available in 2 Weeks", resume3, new DoublyLinkedList<>(), 
                 "A003", "Surya Krishnan", new GregorianCalendar(1987, Calendar.AUGUST, 10).getTime(), 
                 "Male", "45 Lebuh Chulia, George Town, Malaysia", "870810-07-4321", "+60 19-8765432", "surya@example.com", 
-                "@surya_finance", "Married", "Malaysian");
+                "@surya_finance", "Married");
 
         Applicant applicant4 = new Applicant("Johor Bahru, Malaysia", "www.ayeshadatascience.com", "Remote", "Contract", 
                 4, "RM60,000 - RM75,000", true, 
                 "Available in 3 Months", resume4, new DoublyLinkedList<>(), 
                 "A004", "Ayesha Tan", new GregorianCalendar(1992, Calendar.DECEMBER, 5).getTime(), 
                 "Female", "78 Jalan Tebrau, Johor Bahru, Malaysia", "921205-01-8765", "+60 17-6543210", "ayesha@example.com", 
-                "@ayesha_data", "Single", "Malaysian");
+                "@ayesha_data", "Single");
 
         Applicant applicant5 = new Applicant("Shah Alam, Malaysia", "www.danielmarketing.com", "Hybrid", "Full-Time", 
                 6, "RM85,000 - RM95,000", false, 
                 "Available Immediately", resume5, new DoublyLinkedList<>(), 
                 "A005", "Daniel Nair", new GregorianCalendar(1988, Calendar.APRIL, 20).getTime(), 
                 "Male", "23 Persiaran Raja Muda, Shah Alam, Malaysia", "880420-10-3456", "+60 13-5678901", "daniel@example.com", 
-                "@daniel_marketing", "Married", "Malaysian");
+                "@daniel_marketing", "Married");
 
         JobApplication app1 = new JobApplication("A001", new GregorianCalendar(2025, Calendar.MARCH, 5).getTime(), "Pending",
                 true, false, "Reviewed application", "Awaiting interview", applicant1, job1);
@@ -333,64 +333,64 @@ public class Initializer {
 
         // Create schedules
         Schedule s1 = new Schedule(Validation.checkDate("2025-04-11"), Validation.checkTime("10:00"), "Online", "Zoom",
-                Validation.checkDate("2025-04-12"), Validation.checkTime("12:00"), "Completed", 85, alice, applicant1);
+                Validation.checkDate("2025-04-12"), Validation.checkTime("12:00"), "Completed", alice, applicant1);
 
         Schedule s2 = new Schedule(Validation.checkDate("2025-04-12"), Validation.checkTime("11:30"), "Offline", "Office",
-                Validation.checkDate("2025-04-15"), Validation.checkTime("14:00"), "Completed", 92, bob, applicant2);
+                Validation.checkDate("2025-04-15"), Validation.checkTime("14:00"), "Completed", bob, applicant2);
         
         Schedule s3 = new Schedule(Validation.checkDate("2025-04-13"), Validation.checkTime("09:15"), "Online", "Zoom",
-                Validation.checkDate("2025-04-14"), Validation.checkTime("10:30"), "Completed", 78, carol, applicant3);
+                Validation.checkDate("2025-04-14"), Validation.checkTime("10:30"), "Completed", carol, applicant3);
         
         Schedule s4 = new Schedule(Validation.checkDate("2025-04-14"), Validation.checkTime("13:45"), "Offline", "HQ",
-                Validation.checkDate("2025-04-16"), Validation.checkTime("09:00"), "Scheduled", 0, david, applicant4);
+                Validation.checkDate("2025-04-16"), Validation.checkTime("09:00"), "Scheduled", david, applicant4);
         
         Schedule s5 = new Schedule(Validation.checkDate("2025-04-15"), Validation.checkTime("16:20"), "Online", "Zoom",
-                Validation.checkDate("2025-04-17"), Validation.checkTime("11:15"), "Completed", 88, emily, applicant5);
+                Validation.checkDate("2025-04-17"), Validation.checkTime("11:15"), "Completed", emily, applicant5);
         
         Schedule s6 = new Schedule(Validation.checkDate("2025-04-16"), Validation.checkTime("08:00"), "Offline", "Lab",
-                Validation.checkDate("2025-04-18"), Validation.checkTime("13:30"), "Completed", 95, frank, applicant1);
+                Validation.checkDate("2025-04-18"), Validation.checkTime("13:30"), "Completed", frank, applicant1);
         
         Schedule s7 = new Schedule(Validation.checkDate("2025-04-17"), Validation.checkTime("14:10"), "Online", "Zoom",
-                Validation.checkDate("2025-04-19"), Validation.checkTime("15:45"), "Completed", 81, grace, applicant2);
+                Validation.checkDate("2025-04-19"), Validation.checkTime("15:45"), "Completed", grace, applicant2);
         
         Schedule s8 = new Schedule(Validation.checkDate("2025-04-18"), Validation.checkTime("10:30"), "Offline", "Room 101",
-                Validation.checkDate("2025-04-20"), Validation.checkTime("10:00"), "Scheduled", 0, henry, applicant3);
+                Validation.checkDate("2025-04-20"), Validation.checkTime("10:00"), "Scheduled", henry, applicant3);
         
         Schedule s9 = new Schedule(Validation.checkDate("2025-04-19"), Validation.checkTime("11:00"), "Online", "Zoom",
-                Validation.checkDate("2025-04-21"), Validation.checkTime("16:20"), "Completed", 84, irene, applicant4);
+                Validation.checkDate("2025-04-21"), Validation.checkTime("16:20"), "Completed", irene, applicant4);
         
         Schedule s10 = new Schedule(Validation.checkDate("2025-04-20"), Validation.checkTime("09:45"), "Offline", "Floor 3",
-                Validation.checkDate("2025-04-22"), Validation.checkTime("14:15"), "Completed", 90, jack, applicant5);
+                Validation.checkDate("2025-04-22"), Validation.checkTime("14:15"), "Completed", jack, applicant5);
 
         Schedule s11 = new Schedule(Validation.checkDate("2025-04-21"), Validation.checkTime("13:00"), "Online", "Zoom",
-                Validation.checkDate("2025-04-23"), Validation.checkTime("09:30"), "Completed", 87, alice, applicant2);
+                Validation.checkDate("2025-04-23"), Validation.checkTime("09:30"), "Completed", alice, applicant2);
         
         Schedule s12 = new Schedule(Validation.checkDate("2025-04-22"), Validation.checkTime("15:30"), "Offline", "Annex",
-                Validation.checkDate("2025-04-24"), Validation.checkTime("11:00"), "Scheduled", 0, bob, applicant3);
+                Validation.checkDate("2025-04-24"), Validation.checkTime("11:00"), "Scheduled", bob, applicant3);
         
         Schedule s13 = new Schedule(Validation.checkDate("2025-04-23"), Validation.checkTime("08:45"), "Online", "Zoom",
-                Validation.checkDate("2025-04-25"), Validation.checkTime("14:45"), "Completed", 79, carol, applicant4);
+                Validation.checkDate("2025-04-25"), Validation.checkTime("14:45"), "Completed", carol, applicant4);
         
         Schedule s14 = new Schedule(Validation.checkDate("2025-04-24"), Validation.checkTime("12:15"), "Offline", "Room 202",
-                Validation.checkDate("2025-04-26"), Validation.checkTime("10:15"), "Completed", 93, david, applicant5);
+                Validation.checkDate("2025-04-26"), Validation.checkTime("10:15"), "Completed", david, applicant5);
         
         Schedule s15 = new Schedule(Validation.checkDate("2025-04-25"), Validation.checkTime("16:00"), "Online", "Zoom",
-                Validation.checkDate("2025-04-27"), Validation.checkTime("13:00"), "Completed", 83, emily, applicant1);
+                Validation.checkDate("2025-04-27"), Validation.checkTime("13:00"), "Completed", emily, applicant1);
         
         Schedule s16 = new Schedule(Validation.checkDate("2025-04-26"), Validation.checkTime("09:30"), "Offline", "Main Office",
-                Validation.checkDate("2025-04-28"), Validation.checkTime("16:30"), "Scheduled", 0, frank, applicant2);
+                Validation.checkDate("2025-04-28"), Validation.checkTime("16:30"), "Scheduled", frank, applicant2);
         
         Schedule s17 = new Schedule(Validation.checkDate("2025-04-27"), Validation.checkTime("14:00"), "Online", "Zoom",
-                Validation.checkDate("2025-04-29"), Validation.checkTime("08:45"), "Completed", 86, grace, applicant3);
+                Validation.checkDate("2025-04-29"), Validation.checkTime("08:45"), "Completed", grace, applicant3);
         
         Schedule s18 = new Schedule(Validation.checkDate("2025-04-28"), Validation.checkTime("10:45"), "Offline", "Lab 2",
-                Validation.checkDate("2025-04-30"), Validation.checkTime("12:45"), "Completed", 94, henry, applicant4);
+                Validation.checkDate("2025-04-30"), Validation.checkTime("12:45"), "Completed", henry, applicant4);
         
         Schedule s19 = new Schedule(Validation.checkDate("2025-04-29"), Validation.checkTime("11:30"), "Online", "Webex",
-                Validation.checkDate("2025-05-01"), Validation.checkTime("15:00"), "Completed", 82, irene, applicant5);
+                Validation.checkDate("2025-05-01"), Validation.checkTime("15:00"), "Completed", irene, applicant5);
         
         Schedule s20 = new Schedule(Validation.checkDate("2025-04-30"), Validation.checkTime("08:15"), "Offline", "Room 303",
-                Validation.checkDate("2025-05-02"), Validation.checkTime("09:30"), "Scheduled", 0, jack, applicant1);
+                Validation.checkDate("2025-05-02"), Validation.checkTime("09:30"), "Scheduled", jack, applicant1);
         
         // Add companies to DataStore
         Database.companies.add(techCompany);

@@ -60,17 +60,11 @@ public class ScheduleManager {
 
         // Get applicant name
         do {
-            error = false;
             name = ScheduleUI.getApplicantName();
-            if (!Validation.checkString(name) || !Validation.checkApplicant(name)) {
-                if (!Validation.checkString(name)) {
-                    System.out.println("Check string");
-                }
-                if (!Validation.checkApplicant(name)) {
+            if (!Validation.checkApplicant(name)) {
                     System.out.println("No applicant");
                 }
                 error = true;
-            }
             if (!error) {
                 applicant = getApplicant(name);
             }
@@ -170,7 +164,7 @@ public class ScheduleManager {
     public static void updateSchedule() {
         boolean error;
         String name;
-        Date interviewDate = null;
+        Date interviewDate;
         String status = null;
         Schedule schedule = null;
 
@@ -178,7 +172,7 @@ public class ScheduleManager {
         do {
             error = false;
             name = ScheduleUI.getApplicantName();
-            if (!Validation.checkString(name) || !Validation.checkApplicant(name)) {
+            if (!Validation.checkApplicant(name)) {
                 System.out.println("Invalid name or applicant not found.");
                 error = true;
                 continue;
@@ -281,9 +275,6 @@ public class ScheduleManager {
         System.out.print("Are you sure you want to update this schedule? (1 = Yes, 2 = No) > ");
         if (Input.getIntegerInput() == 1) {
             schedule.setStatus(status);
-            if (score != -1) {
-                schedule.setScore(score);
-            }
 
             // Date Formatting for display
             SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
@@ -311,7 +302,7 @@ public class ScheduleManager {
         boolean error;
         String name;
         String interviewDateString;
-        Date oldInterviewDate = null;
+        Date oldInterviewDate;
         Schedule schedule = null;
 
         // 1. Identify schedule using name + current interview date
@@ -321,7 +312,7 @@ public class ScheduleManager {
             interviewDateString = ScheduleUI.getInterviewDate();
             oldInterviewDate = Validation.checkDate(interviewDateString);
 
-            if (!Validation.checkString(name) || !Validation.checkApplicant(name) || oldInterviewDate == null) {
+            if (!Validation.checkApplicant(name)) {
                 System.out.println("Invalid name or date, or applicant not found.");
                 error = true;
             } else {
@@ -405,7 +396,7 @@ public class ScheduleManager {
         System.out.println("Found " + results.size() + " matching schedules");
 
         if (!results.isEmpty()) {
-            ScheduleUI.displaySchedule(results);
+            //ScheduleUI.displaySchedule(results);
         } else {
             MessageUI.noScheduled();
         }
@@ -423,7 +414,7 @@ public class ScheduleManager {
         do {
             error = false;
             name = ScheduleUI.getApplicantName();
-            if (!Validation.checkString(name) || !Validation.checkApplicant(name)) {
+            if (!Validation.checkApplicant(name)) {
                 System.out.println("Invalid name or applicant not found.");
                 error = true;
             } else {

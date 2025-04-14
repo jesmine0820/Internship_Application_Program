@@ -891,4 +891,24 @@ public class ApplicantManager {
 
         return portfolioLink;
     }
+    
+    public static void displayAllApplicants() {
+        Tools.clearScreen();
+        UserUI.headLine();
+        System.out.println("\n=== Display All Applicants ===");
+
+        // Check if there are any applicants in DataStore
+        if (Database.applicants.isEmpty()) {
+            System.out.println("No applicants found in the system.");
+            return; // Exit the method if no applicants exist
+        }
+
+        // Iterate over each applicant in DataStore and display their details
+        for (Applicant applicant : Database.applicants) {
+            System.out.println("\n" + applicant.getName() + " -->");
+            System.out.println("Phone: " + applicant.getPhoneNumber());
+            System.out.println("Email: " + applicant.getEmail());
+            System.out.println("=========================================");
+        }
+    }
 }

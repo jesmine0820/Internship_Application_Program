@@ -6,7 +6,12 @@ package Dao;
 
 import ADT.DoublyLinkedList;
 import ADT.ListInterface;
-import Entity.*;
+import Entity.Applicant;
+import Entity.Company;
+import Entity.Employer;
+import Entity.Job;
+import Entity.JobApplication;
+import Entity.Schedule;
 
 /**
  *
@@ -24,6 +29,8 @@ public class Database {
     public static final ListInterface<Job> jobList = new DoublyLinkedList();
     public static final ListInterface<Employer> employers = new DoublyLinkedList();
     public static final ListInterface<Schedule> schedules = new DoublyLinkedList<>();
+    public static final ListInterface<JobApplication> jobApplicationList = new DoublyLinkedList<>(); 
+    public static final ListInterface<String> searchHistory = new DoublyLinkedList<>();
     
     // Get and setter for current user
     public static Employer getEmployer(){

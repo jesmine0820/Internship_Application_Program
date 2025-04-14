@@ -15,7 +15,7 @@ import static Utility.Tools.*;
 public class JobManager {
 
     private static final ListInterface<Job> newJobList = new DoublyLinkedList<>();
-
+    
     public static void createJob() {
         Tools.clearScreen();
         UserUI.headLine();
@@ -879,12 +879,12 @@ public class JobManager {
         }
     }
 
-    public static boolean searchJobsByEmployerOrCompany() {
+    public static void searchJobsByEmployerOrCompany() {
         Tools.clearScreen();
         UserUI.headLine();
 
-        boolean found = false;
-        int count = 0;
+        boolean found;
+        int count;
 
         while (true) {
             // Ask the user for the Employer / Company Name
@@ -928,8 +928,6 @@ public class JobManager {
                 break;
             }
         }
-
-        return found;
     }
 
     public static boolean searchString(String source, String keyword) {

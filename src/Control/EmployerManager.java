@@ -13,11 +13,28 @@ import static Utility.Tools.*;
  *
  * @author USER
  */
-public class RegisterManager {
+public class EmployerManager {
 
     private static final ListInterface<Employer> employerList = new DoublyLinkedList<>();
     private static final ListInterface<Company> companyList = new DoublyLinkedList<>();
 
+    public static void jobPosting(){
+        int choice;
+        do{
+            choice = EmployerUI.employerMenu();
+            switch(choice){
+                case 1 -> JobManager.createJob();
+                case 2 -> JobManager.updateJob();
+                case 3 -> JobManager.deleteJob();
+                case 4 -> JobManager.displayJobDetails();
+                case 5 -> JobManager.filterJob();
+                case 6 -> JobManager.searchJobsByEmployerOrCompany();
+                case 7 -> Tools.back();
+                default -> MessageUI.errorMessage();
+            }
+        } while (choice != 7);
+    }
+    
     public static Employer compareEmployerEmail(String email) {
         for (Employer currentEmployer : Database.employers) {  // Enhanced for loop
             if (currentEmployer.getEmail().equalsIgnoreCase(email)) {
@@ -149,26 +166,26 @@ public class RegisterManager {
                     case 7 ->
                         email = Validation.checkEmailFormat("Enter new Email: ");
                     case 8 ->
-                        socialMedia = Validation.getStringInput("Enter new Social Media: ");
+                        socialMedia = Input.getStringInput("Enter new Social Media: ");
                     case 9 ->
                         maritalStatus = Input.getChoiceInput("Enter new Marital Status: ", ChooseSetting.MARITAL_STATUSES);
                     case 10 ->
-                        nationality = Validation.getStringInput("Enter new Nationality: ");
+                        nationality = Input.getStringInput("Enter new Nationality: ");
                     case 11 ->
-                        department = Validation.getStringInput("Enter new Department: ");
+                        department = Input.getStringInput("Enter new Department: ");
                     case 12 ->
-                        position = Validation.getStringInput("Enter new Position: ");
+                        position = Input.getStringInput("Enter new Position: ");
                     case 13 ->
-                        joinedDate = Input.getDateInput("Enter new Joined Date (YYYY-MM-dd): ");
+                        joinedDate = Validation.checkDate("Enter new Joined Date (YYYY-MM-dd): ");
                     case 14 ->
-                        yearOfExperience = Validation.getIntegerInput("Enter new Years of Experience: ");
+                        yearOfExperience = Input.getIntegerInput("Enter new Years of Experience: ");
                     case 15 -> {
                         // Display existing companies
                         for (int i = 0; i < Database.companies.size(); i++) {
                             System.out.println((i + 1) + ". " + Database.companies.get(i).getCompanyName());
                         }
 
-                        companyChoice = Validation.getIntegerInput("Select a company by number (enter 0 to create a new company): ");
+                        companyChoice = Input.getIntegerInput("Select a company by number (enter 0 to create a new company): ");
 
                         if (companyChoice == 0) {
                             selectedCompany = registerCompany(); // Ensure this method returns a Company object
@@ -193,10 +210,10 @@ public class RegisterManager {
                 continue;
             }
 
-            Employer newEmployer = new Employer(id, name, dateOfBirth, gender, address, ic, phoneNumber, email, socialMedia, maritalStatus, nationality, department, position, joinedDate, yearOfExperience, null, selectedCompany);
+            Employer newEmployer = new Employer(id, name, dateOfBirth, gender, address, ic, phoneNumber, email, socialMedia, maritalStatus, department, position, joinedDate, yearOfExperience, null, null, selectedCompany);
             employerList.add(newEmployer);
             Database.employers.add(newEmployer);
-            System.out.println(GREEN + "Employer registered successfully." + RESET);
+            MessageUI.createSuccessful();
 
             String another = Input.getYesNoInput("\n\nDo you want to register another employer? (yes/no): ");
             if (!another.equalsIgnoreCase("yes")) {
@@ -246,16 +263,16 @@ public class RegisterManager {
 
         while (true) {
             try {
-                String companyName = Validation.getStringInput("Enter Company Name: ");
-                String industryType = Validation.getStringInput("Enter Industry Type: ");
-                int employeeCount = Validation.getIntegerInput("Enter Number of Employees: ");
-                int foundedYear = Validation.getIntegerInput("Enter Founded Year: ");
+                String companyName = Input.getStringInput("Enter Company Name: ");
+                String industryType = Input.getStringInput("Enter Industry Type: ");
+                int employeeCount = Input.getIntegerInput("Enter Number of Employees: ");
+                int foundedYear = Input.getIntegerInput("Enter Founded Year: ");
                 String location = Input.getChoiceInput("Enter Location: ", ChooseSetting.LOCATION_OPTIONS);
-                String address = Validation.getStringInput("Enter Address: ");
-                String coreServices = Validation.getStringInput("Enter Core Services: ");
-                String companyCulture = Validation.getStringInput("Enter Company Culture: ");
-                String website = Validation.getStringInput("Enter Website: ");
-                String verifications = Validation.getStringInput("Enter Verifications (if any): ");
+                String address = Input.getStringInput("Enter Address: ");
+                String coreServices = Input.getStringInput("Enter Core Services: ");
+                String companyCulture = Input.getStringInput("Enter Company Culture: ");
+                String website = Input.getStringInput("Enter Website: ");
+                String verifications = Input.getStringInput("Enter Verifications (if any): ");
 
                 if (isDuplicateCompany(companyName)) {
                     System.out.println("Duplicate company name detected.");
@@ -297,32 +314,32 @@ public class RegisterManager {
                     System.out.println("10. Verifications");
                     System.out.println("11. Done Editing");
 
-                    int choice = Validation.getIntegerInput("Enter your choice: ");
+                    int choice = Input.getIntegerInput("Enter your choice: ");
                     switch (choice) {
                         case 1:
-                            companyName = Validation.getStringInput("Enter Company Name: ");
+                            companyName = Input.getStringInput("Enter Company Name: ");
                         case 2:
-                            industryType = Validation.getStringInput("Enter Industry Type: ");
+                            industryType = Input.getStringInput("Enter Industry Type: ");
                         case 3:
-                            employeeCount = Validation.getIntegerInput("Enter Number of Employees: ");
+                            employeeCount = Input.getIntegerInput("Enter Number of Employees: ");
                         case 4:
-                            foundedYear = Validation.getIntegerInput("Enter Founded Year: ");
+                            foundedYear = Input.getIntegerInput("Enter Founded Year: ");
                         case 5:
                             location = Input.getChoiceInput("Enter Location: ", ChooseSetting.LOCATION_OPTIONS);
                         case 6:
-                            address = Validation.getStringInput("Enter Address: ");
+                            address = Input.getStringInput("Enter Address: ");
                         case 7:
-                            coreServices = Validation.getStringInput("Enter Core Services: ");
+                            coreServices = Input.getStringInput("Enter Core Services: ");
                         case 8:
-                            companyCulture = Validation.getStringInput("Enter Company Culture: ");
+                            companyCulture = Input.getStringInput("Enter Company Culture: ");
                         case 9:
-                            website = Validation.getStringInput("Enter Website: ");
+                            website = Input.getStringInput("Enter Website: ");
                         case 10:
-                            verifications = Validation.getStringInput("Enter Verifications (if any): ");
+                            verifications = Input.getStringInput("Enter Verifications (if any): ");
                         case 11:
                             editing = false;
                         default:
-                            System.out.println(RED + "Invalid choice. Please try again." + RESET);
+                            MessageUI.errorMessage();
                     }
                 }
 

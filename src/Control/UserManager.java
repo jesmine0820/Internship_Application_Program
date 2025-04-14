@@ -2,6 +2,7 @@ package Control;
 
 import ADT.ListInterface;
 import Boundary.BrowseUI;
+import Boundary.EmployerUI;
 import Boundary.UserUI;
 import Dao.Database;
 import Entity.*;
@@ -12,8 +13,6 @@ import static Control.BrowseManager.searchEngine;
 /**
  *
  * @author User
- * 
- * Register belum siap
  * 
  */
 public class UserManager {
@@ -29,7 +28,7 @@ public class UserManager {
             switch(loginChoice){
                 case 1 -> Database.setEmployer(authenticateEmployer());
                 case 2 -> Database.setApplicant(authenticateApplicant());
-                //case 3 -> registerHandler();
+                case 3 -> registerHandler();
                 case 4 -> Tools.exit();
                 default -> {
                     MessageUI.errorMessage();
@@ -140,8 +139,8 @@ public class UserManager {
             do{
                 moduleChoose = UserUI.employerMenu();
                 switch(moduleChoose.toLowerCase()){
-                    case "1" -> System.out.println("Job Posting");
-                    case "2" -> System.out.println("Job Application");
+                    case "1" -> EmployerManager.jobPosting();
+                    case "2" -> JobApplicationManager.arrangeApplication();
                     case "3" -> ScheduleManager.employerScheduleMenu();
                     case "4" -> ScheduleManager.displaySchedule();
                     case "5" -> BrowseManager.browseMenu();
@@ -163,9 +162,9 @@ public class UserManager {
                 moduleChoose = UserUI.applicantMenu();
                 switch(moduleChoose.toLowerCase()){
                     case "1" -> BrowseManager.browseMenu();
-                    case "2" -> System.out.println("View my application");
+                    case "2" -> JobApplicationManager.displayMyJobApplication();
                     case "3" -> ScheduleManager.displaySchedule();
-                    case "4" -> System.out.println("Edit profile");
+                    case "4" -> ApplicantManager.editProfile();
                     case "5" -> ReportManager.reportMenu();
                     case "6" -> {
                         MessageUI.logOutMessage();
@@ -179,6 +178,20 @@ public class UserManager {
                     }  
             } while (!moduleChoose.equals("6"));
         }
+    }
+    
+    private static void registerHandler(){
+        int choice;
+        do{
+            choice = UserUI.registerMenu();
+            switch(choice){
+                case 1 -> EmployerManager.registerCompany();
+                case 2 -> EmployerManager.registerEmployer();
+                case 3 -> ApplicantManager.registerApplicant();
+                case 4 -> Tools.back();
+                default -> MessageUI.errorMessage();
+            }
+        }while(choice != 4);
     }
     
     public static void profileHeadLine(){

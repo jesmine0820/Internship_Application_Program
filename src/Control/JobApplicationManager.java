@@ -41,7 +41,7 @@ public class JobApplicationManager {
         // Let user pick one to view
         int choice;
         while (true) {
-            choice = Validation.getIntegerInput("\nEnter the number of the job to view details (or 0 to cancel): ");
+            choice = Input.getIntegerInput("\nEnter the number of the job to view details (or 0 to cancel): ");
             if (choice == 0) {
                 System.out.println("Cancelled.");
                 return;
@@ -231,7 +231,7 @@ public class JobApplicationManager {
             return;
         }
 
-        int applicationToCancel = Validation.getIntegerInput("Enter the application number you want to cancel: ");
+        int applicationToCancel = Input.getIntegerInput("Enter the application number you want to cancel: ");
         if (applicationToCancel < 1 || applicationToCancel > jobApplications.size()) {
             System.out.println("Invalid application number. Please try again.");
             return;
@@ -254,6 +254,43 @@ public class JobApplicationManager {
         } else {
             System.out.println("Application deletion canceled.");
         }
+    }
+    
+    public static void arrangeApplication(){
+        MatchingEngine match = new MatchingEngine();
+        Applicant applicants = new Applicant();
+        Employer employer = Database.getEmployer();
+        ListInterface<Job> jobMatchList = new DoublyLinkedList<>();
+        
+        if (!employer.getJob().isEmpty()) {
+                for (Job job : employer.getJob()) {
+                    jobMatchList.add(job);
+                    ListInterface<Applicant> applicantMatchList = new DoublyLinkedList<>();
+
+                    // Collect applicants who applied for this job
+                    for (JobApplication jobApplication : job.getJobApplication()) {
+                        applicantMatchList.add(jobApplication.getApplicant());
+                    }
+
+                    // Sort the applicants 
+                    ListInterface<Applicant> sortedList = match.heapSort(applicantMatchList, applicants);
+
+                    // Print job title
+                    System.out.println("Job: " + job.getJobTitle());
+
+                    // Print matched applicants with scores
+                    if (!sortedList.isEmpty()) {
+                        for (int i = 0; i < sortedList.size(); i++) {
+                            Applicant applicant = sortedList.get(i);
+                            System.out.println(i + ") " + applicant.getName());
+                        }
+                    } else {
+                        MessageUI.noMatchFound();
+                    }
+                    System.out.println("-------------------------------------------"); 
+                }
+            }
+        
     }
 
     // ========== INPUT HELPERs ========== 
@@ -296,7 +333,7 @@ public class JobApplicationManager {
     }
 
     //========== DISPLAY HELPERs ==========
-    private static void displayJobApplicationDetails(JobApplication jobApplication) {
+    public static void displayJobApplicationDetails(JobApplication jobApplication) {
         Job job = jobApplication.getJob();
         Employer employer = job.getEmployer();
         Company company = employer != null ? employer.getCompany() : null;
@@ -312,6 +349,35 @@ public class JobApplicationManager {
         System.out.printf("%-20s: %s\n", "Application Date", jobApplication.getApplicationDate().toString());
         System.out.println(BLUE+"******************************************************************\n"+RESET);
 
+    }
+    
+    public static void displayMyJobApplication() {
+        ListInterface<JobApplication> applicationList = new DoublyLinkedList<>();
+        for(int i = 0; i < Database.jobApplicationList.size(); i++){
+            JobApplication currentApplication = Database.jobApplicationList.get(i);
+            if(currentApplication.getApplicant() == Database.getApplicant()){
+                applicationList.add(currentApplication);
+            }
+        }
+        
+        if(!applicationList.isEmpty()){
+            // Display individual job application details
+            for(JobApplication list : applicationList){
+                System.out.println(BLUE+"******************************************************************\n"+RESET);
+            System.out.printf("%-20s: %s\n", "Job Title", list.getJob().getJobTitle());
+            System.out.printf("%-20s: %s\n", "Job Description", list.getJob().getJobDescription());
+            System.out.printf("%-20s: %s\n", "Company", (list.getJob().getEmployer().getCompany() != null ? list.getJob().getEmployer().getCompany().getCompanyName() : "N/A"));
+            System.out.printf("%-20s: %s\n", "Location", (list.getJob().getEmployer().getCompany() != null ? list.getJob().getEmployer().getCompany().getLocation() : "N/A"));
+            System.out.printf("%-20s: %s\n", "Employment Type", list.getJob().getEmploymentType());
+            System.out.printf("%-20s: RM%,.2f\n", "Salary", list.getJob().getSalary());
+            System.out.printf("%-20s: %s\n", "Application Status", list.getStatus());
+            System.out.printf("%-20s: %s\n", "Interview Scheduled", (list.isInterviewScheduled() ? "Yes" : "No"));
+            System.out.printf("%-20s: %s\n", "Application Date", list.getApplicationDate().toString());
+            System.out.println(BLUE+"******************************************************************\n"+RESET);
+            }
+        } else {
+            MessageUI.emptyDatabase();
+        }
     }
 
     /* for display skill & benefit [when browse] */

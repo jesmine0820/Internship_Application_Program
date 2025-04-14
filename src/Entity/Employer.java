@@ -22,6 +22,7 @@ public class Employer extends Person implements Comparable<Employer>{
     private Date joinedDate;
     private int yearOfExperience;
     private ListInterface<Job> job;
+    private ListInterface<Schedule> schedule;
     private Company company;
     
     // Constructor
@@ -31,19 +32,28 @@ public class Employer extends Person implements Comparable<Employer>{
     
     public Employer(String id, String name, Date dateOfBirth, String gender, String address,
                     String ic, String phoneNumber, String email, String socialMedia, String maritalStatus, 
-                    String nationality, String department, String position, Date joinedDate, int yearOfExperience,
-                    ListInterface<Job> job, Company company) {
-        super(id, name, dateOfBirth, gender, address, ic, phoneNumber, email, socialMedia, maritalStatus, nationality);
+                    String department, String position, Date joinedDate, int yearOfExperience,
+                    ListInterface<Job> job, ListInterface<Schedule> schedule, Company company) {
+        super(id, name, dateOfBirth, gender, address, ic, phoneNumber, email, socialMedia, maritalStatus);
         this.department = department;
         this.position = position;
         this.joinedDate = joinedDate;
         this.yearOfExperience = yearOfExperience;
         this.job = job;
+        this.schedule = schedule;
         this.company = company;
     }
     
     public Company getCompany(){
         return company;
+    }
+    
+    public ListInterface<Schedule> getSchedule(){
+        return schedule;
+    }
+    
+    public  void setSchedule(ListInterface<Schedule> schedule){
+        this.schedule = schedule;
     }
 
     public ListInterface<Job> getJob() {

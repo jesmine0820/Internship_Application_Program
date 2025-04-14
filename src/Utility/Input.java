@@ -50,6 +50,22 @@ public class Input {
         return value;
     }
     
+    // Get Double
+    public static double getDoubleInput(String question){
+        double value;
+        
+        try{
+            System.out.println(question);
+            value = input.nextDouble();
+        }catch (Exception e) {
+            input.nextLine();
+            MessageUI.inputIntegerMessage();
+            return -1;
+        }
+        
+        return value;
+    }
+    
     // Get String Input from User Keyboard
     public static String getStringInput(){
         String value;
@@ -79,6 +95,26 @@ public class Input {
         return value;
     }
     
+    public static boolean getBooleanInput(String question){
+        boolean yes = false;
+        int choice;
+        boolean error;
+        do{
+            error = false;
+            System.out.println("[1] for 'yes', [0] for 'no'");
+            choice = getIntegerInput(question);
+            switch (choice){
+                case 1 -> yes = true;
+                case 2 -> yes = false;
+                default -> {
+                    MessageUI.errorMessage();
+                    error = true;
+                }
+            }
+        }while(error);
+        return yes;
+    }
+    
     // Check whether the user want to continue the operation
     public static int getIsContinue(String answer){
         if (toUpperCase(answer.charAt(0)) != 'Y' && toUpperCase(answer.charAt(0)) != 'N'){
@@ -95,13 +131,20 @@ public class Input {
     
     // Get single choice function
     public static String getChoiceInput(String question, String[] options) {
+        int choice;
+        boolean error;
         System.out.println(question);
         for (int i = 0; i < options.length; i++) {
             System.out.println((i + 1) + ". " + options[i]);
         }
-
-        int choice = Validation.getValidatedChoice(options.length);
-        return options[choice - 1];
+        do{
+            error = false;
+            choice = getIntegerInput(question);
+            if(Validation.validateChoice(options, choice)){
+                error = true;
+            }
+        } while(error);
+        return options[choice-1];
     }
 
     //multiple choice
@@ -127,20 +170,41 @@ public class Input {
         return selectedChoices;
     }
     
+    // Get String list
+    public static ListInterface<String> getStringListInput(String question){
+        ListInterface<String> listItem = new DoublyLinkedList<>();
+        try{
+            System.out.println("question");
+            String value = input.nextLine();
+            String[] items = value.split("\\s*,\\s*");
+            for(String item : items){
+                listItem.add(item);
+            }
+        } catch (Exception e){
+            input.nextLine();
+            return null;
+        }
+        return listItem;
+    }
+    
     //yes/no
     public static String getYesNoInput(String question) {
-        String value;
-
-        while (true) {
-            System.out.print(question);
-            value = input.nextLine().trim().toLowerCase();
-
-            if (Validation.validateYesNo(value)) {
-                return (value.equals("y") || value.equals("yes")) ? "yes" : "no";
-            } else {
-                System.out.println("Invalid input. Please enter 'yes'/'y' or 'no'/'n'.");
+        boolean error;
+        String yesNo;
+        do{
+            error = false;
+            yesNo = Input.getStringInput(question);
+            if(!Validation.validateYesNoInput(yesNo)){
+                error = true;
             }
-        }
+        }while(error);
+        return yesNo;
     }
-
+    
+    // Get paginated multi-select input --- for skill
+    public static ListInterface<String> getPaginatedMultiSelectInput(String question, String[] options){
+        ListInterface<String> listItem = new DoublyLinkedList<>();
+        listItem = null;
+        return listItem;
+    }
 }

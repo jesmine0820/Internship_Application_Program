@@ -331,6 +331,67 @@ public class Initializer {
         JobApplication app10 = new JobApplication("A010", new GregorianCalendar(2025, Calendar.MARCH, 27).getTime(), "Shortlisted",
                 true, true, "Strong legal background", "Final interview scheduled", applicant3, job4);
 
+        // Create schedules
+        Schedule s1 = new Schedule(Validation.checkDate("2025-04-11"), Validation.checkTime("10:00"), "Online", "Zoom",
+                Validation.checkDate("2025-04-12"), Validation.checkTime("12:00"), "Completed", 85, alice, applicant1);
+
+        Schedule s2 = new Schedule(Validation.checkDate("2025-04-12"), Validation.checkTime("11:30"), "Offline", "Office",
+                Validation.checkDate("2025-04-15"), Validation.checkTime("14:00"), "Completed", 92, bob, applicant2);
+        
+        Schedule s3 = new Schedule(Validation.checkDate("2025-04-13"), Validation.checkTime("09:15"), "Online", "Zoom",
+                Validation.checkDate("2025-04-14"), Validation.checkTime("10:30"), "Completed", 78, carol, applicant3);
+        
+        Schedule s4 = new Schedule(Validation.checkDate("2025-04-14"), Validation.checkTime("13:45"), "Offline", "HQ",
+                Validation.checkDate("2025-04-16"), Validation.checkTime("09:00"), "Scheduled", 0, david, applicant4);
+        
+        Schedule s5 = new Schedule(Validation.checkDate("2025-04-15"), Validation.checkTime("16:20"), "Online", "Zoom",
+                Validation.checkDate("2025-04-17"), Validation.checkTime("11:15"), "Completed", 88, emily, applicant5);
+        
+        Schedule s6 = new Schedule(Validation.checkDate("2025-04-16"), Validation.checkTime("08:00"), "Offline", "Lab",
+                Validation.checkDate("2025-04-18"), Validation.checkTime("13:30"), "Completed", 95, frank, applicant1);
+        
+        Schedule s7 = new Schedule(Validation.checkDate("2025-04-17"), Validation.checkTime("14:10"), "Online", "Zoom",
+                Validation.checkDate("2025-04-19"), Validation.checkTime("15:45"), "Completed", 81, grace, applicant2);
+        
+        Schedule s8 = new Schedule(Validation.checkDate("2025-04-18"), Validation.checkTime("10:30"), "Offline", "Room 101",
+                Validation.checkDate("2025-04-20"), Validation.checkTime("10:00"), "Scheduled", 0, henry, applicant3);
+        
+        Schedule s9 = new Schedule(Validation.checkDate("2025-04-19"), Validation.checkTime("11:00"), "Online", "Zoom",
+                Validation.checkDate("2025-04-21"), Validation.checkTime("16:20"), "Completed", 84, irene, applicant4);
+        
+        Schedule s10 = new Schedule(Validation.checkDate("2025-04-20"), Validation.checkTime("09:45"), "Offline", "Floor 3",
+                Validation.checkDate("2025-04-22"), Validation.checkTime("14:15"), "Completed", 90, jack, applicant5);
+
+        Schedule s11 = new Schedule(Validation.checkDate("2025-04-21"), Validation.checkTime("13:00"), "Online", "Zoom",
+                Validation.checkDate("2025-04-23"), Validation.checkTime("09:30"), "Completed", 87, alice, applicant2);
+        
+        Schedule s12 = new Schedule(Validation.checkDate("2025-04-22"), Validation.checkTime("15:30"), "Offline", "Annex",
+                Validation.checkDate("2025-04-24"), Validation.checkTime("11:00"), "Scheduled", 0, bob, applicant3);
+        
+        Schedule s13 = new Schedule(Validation.checkDate("2025-04-23"), Validation.checkTime("08:45"), "Online", "Zoom",
+                Validation.checkDate("2025-04-25"), Validation.checkTime("14:45"), "Completed", 79, carol, applicant4);
+        
+        Schedule s14 = new Schedule(Validation.checkDate("2025-04-24"), Validation.checkTime("12:15"), "Offline", "Room 202",
+                Validation.checkDate("2025-04-26"), Validation.checkTime("10:15"), "Completed", 93, david, applicant5);
+        
+        Schedule s15 = new Schedule(Validation.checkDate("2025-04-25"), Validation.checkTime("16:00"), "Online", "Zoom",
+                Validation.checkDate("2025-04-27"), Validation.checkTime("13:00"), "Completed", 83, emily, applicant1);
+        
+        Schedule s16 = new Schedule(Validation.checkDate("2025-04-26"), Validation.checkTime("09:30"), "Offline", "Main Office",
+                Validation.checkDate("2025-04-28"), Validation.checkTime("16:30"), "Scheduled", 0, frank, applicant2);
+        
+        Schedule s17 = new Schedule(Validation.checkDate("2025-04-27"), Validation.checkTime("14:00"), "Online", "Zoom",
+                Validation.checkDate("2025-04-29"), Validation.checkTime("08:45"), "Completed", 86, grace, applicant3);
+        
+        Schedule s18 = new Schedule(Validation.checkDate("2025-04-28"), Validation.checkTime("10:45"), "Offline", "Lab 2",
+                Validation.checkDate("2025-04-30"), Validation.checkTime("12:45"), "Completed", 94, henry, applicant4);
+        
+        Schedule s19 = new Schedule(Validation.checkDate("2025-04-29"), Validation.checkTime("11:30"), "Online", "Webex",
+                Validation.checkDate("2025-05-01"), Validation.checkTime("15:00"), "Completed", 82, irene, applicant5);
+        
+        Schedule s20 = new Schedule(Validation.checkDate("2025-04-30"), Validation.checkTime("08:15"), "Offline", "Room 303",
+                Validation.checkDate("2025-05-02"), Validation.checkTime("09:30"), "Scheduled", 0, jack, applicant1);
+        
         // Add companies to DataStore
         Database.companies.add(techCompany);
         Database.companies.add(hrCompany);
@@ -343,6 +404,28 @@ public class Initializer {
         Database.applicants.add(applicant3);
         Database.applicants.add(applicant4);
         Database.applicants.add(applicant5);
+        
+        // Add schedules to DataStore
+        Database.schedules.add(s1);
+        Database.schedules.add(s2);
+        Database.schedules.add(s3);
+        Database.schedules.add(s4);
+        Database.schedules.add(s5);
+        Database.schedules.add(s6);
+        Database.schedules.add(s7);
+        Database.schedules.add(s8);
+        Database.schedules.add(s9);
+        Database.schedules.add(s10);
+        Database.schedules.add(s11);
+        Database.schedules.add(s12);
+        Database.schedules.add(s13);
+        Database.schedules.add(s14);
+        Database.schedules.add(s15);
+        Database.schedules.add(s16);
+        Database.schedules.add(s17);
+        Database.schedules.add(s18);
+        Database.schedules.add(s19);
+        Database.schedules.add(s20);
 
         // Add employers to DataStore and assign them to their respective companies
         addEmployerToCompany(techCompany, alice);
@@ -388,6 +471,26 @@ public class Initializer {
         addJobApplicationToApplicant(applicant1, job9, app9);
         addJobApplicationToApplicant(applicant3, job4, app10);
         
+        addScheduleToEmployer(s1);
+        addScheduleToEmployer(s2);
+        addScheduleToEmployer(s3);
+        addScheduleToEmployer(s4);
+        addScheduleToEmployer(s5);
+        addScheduleToEmployer(s6);
+        addScheduleToEmployer(s7);
+        addScheduleToEmployer(s8);
+        addScheduleToEmployer(s9);
+        addScheduleToEmployer(s10);
+        addScheduleToEmployer(s11);
+        addScheduleToEmployer(s12);
+        addScheduleToEmployer(s13);
+        addScheduleToEmployer(s14);
+        addScheduleToEmployer(s15);
+        addScheduleToEmployer(s16);
+        addScheduleToEmployer(s17);
+        addScheduleToEmployer(s18);
+        addScheduleToEmployer(s19);
+        addScheduleToEmployer(s20);
     }
 
     private static void addEmployerToCompany(Company company, Employer employer) {
@@ -407,6 +510,10 @@ public class Initializer {
     private static void addJobApplicationToApplicant(Applicant applicant, Job job, JobApplication jobApplication){
         job.getJobApplication().add(jobApplication);
         applicant.getJobApplication().add(jobApplication);
+    }
+    
+    private static void addScheduleToEmployer(Schedule schedule){
+        schedule.getEmployer().getSchedule().add(schedule);
     }
     
     private static ListInterface<String> getRandom(String title, int count) {

@@ -1,21 +1,16 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Entity;
 
 /**
  *
  * Author - KitChinJieYing
- * 
- * Explanations:
- * 1. 
- * 
+ *
+ * Explanations: 1.
+ *
  */
 import ADT.ListInterface;
 import java.util.Date;
 
-public class Job implements Comparable<Job>{
+public class Job implements Comparable<Job> {
 
     private String jobID;
     private String jobTitle;
@@ -23,6 +18,7 @@ public class Job implements Comparable<Job>{
     private String jobDescription;
     private String interviewProcess;
     private String employmentType;
+    private String workMode;
     private String probationPeriod;
     private boolean relocationAssistance;
     private ListInterface<String> requiredSkills;
@@ -40,17 +36,18 @@ public class Job implements Comparable<Job>{
     public Job() {
     }
 
-    public Job(String jobID, String jobTitle, String jobType, String jobDescription, String interviewProcess, 
-               String employmentType, String probationPeriod, boolean relocationAssistance, ListInterface<String> requiredSkills, 
-               int requiredExperience, int teamSize, double salary, ListInterface<String> benefits, 
-               Date applicationDeadline, int workHours, String careerDevelopment, ListInterface<JobApplication> jobApplication, 
-               ListInterface<Schedule> schedule, Employer employer) {
+    public Job(String jobID, String jobTitle, String jobType, String jobDescription, String interviewProcess,
+            String employmentType, String workMode, String probationPeriod, boolean relocationAssistance, ListInterface<String> requiredSkills,
+            int requiredExperience, int teamSize, double salary, ListInterface<String> benefits,
+            Date applicationDeadline, int workHours, String careerDevelopment, ListInterface<JobApplication> jobApplication,
+            ListInterface<Schedule> schedule, Employer employer) {
         this.jobID = jobID;
         this.jobTitle = jobTitle;
         this.jobType = jobType;
         this.jobDescription = jobDescription;
         this.interviewProcess = interviewProcess;
         this.employmentType = employmentType;
+        this.workMode = workMode;
         this.probationPeriod = probationPeriod;
         this.relocationAssistance = relocationAssistance;
         this.requiredSkills = requiredSkills;
@@ -81,8 +78,8 @@ public class Job implements Comparable<Job>{
     public void setSchedule(ListInterface<Schedule> schedule) {
         this.schedule = schedule;
     }
-    
-    public Employer getEmployer(){
+
+    public Employer getEmployer() {
         return employer;
     }
 
@@ -132,6 +129,14 @@ public class Job implements Comparable<Job>{
 
     public void setEmploymentType(String employmentType) {
         this.employmentType = employmentType;
+    }
+
+    public String getWorkMode() {
+        return workMode;
+    }
+
+    public void setWorkMode(String workMode) {
+        this.workMode = workMode;
     }
 
     public String getProbationPeriod() {
@@ -216,12 +221,12 @@ public class Job implements Comparable<Job>{
 
     @Override
     public String toString() {
-        return "Job{" + "jobID=" + jobID + ", jobTitle=" + jobTitle + ", jobType=" + jobType + ", jobDescription=" + jobDescription + ", interviewProcess=" + interviewProcess + ", employmentType=" + employmentType + ", probationPeriod=" + probationPeriod + ", relocationAssistance=" + relocationAssistance + ", requiredSkills=" + requiredSkills + ", requiredExperience=" + requiredExperience + ", teamSize=" + teamSize + ", salary=" + salary + ", benefits=" + benefits + ", applicationDeadline=" + applicationDeadline + ", workHours=" + workHours + ", careerDevelopment=" + careerDevelopment + '}';
+        return "Job{" + "jobID=" + jobID + ", jobTitle=" + jobTitle + ", jobType=" + jobType + ", jobDescription=" + jobDescription + ", interviewProcess=" + interviewProcess + ", employmentType=" + employmentType + ", workMode=" + workMode + ", probationPeriod=" + probationPeriod + ", relocationAssistance=" + relocationAssistance + ", requiredSkills=" + requiredSkills + ", requiredExperience=" + requiredExperience + ", teamSize=" + teamSize + ", salary=" + salary + ", benefits=" + benefits + ", applicationDeadline=" + applicationDeadline + ", workHours=" + workHours + ", careerDevelopment=" + careerDevelopment + '}';
     }
 
     @Override
     public int compareTo(Job other) {
-        return Double.compare(this.salary, other.salary);    
+        return Double.compare(this.salary, other.salary);
     }
-    
+
 }

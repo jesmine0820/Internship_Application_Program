@@ -28,6 +28,36 @@ public class Applicant extends Person implements Comparable<Applicant>{
         
     }
 
+    //ADD-ON ===========================
+    public Applicant(String id, String name, Date dateOfBirth, String gender, String address, String ic, String phoneNumber, String email, String socialMedia, String maritalStatus) {
+        super(id, name, dateOfBirth, gender, address, ic, phoneNumber, email, socialMedia, maritalStatus);
+    }
+
+    public Applicant(String location, String portfolioLink, String preferredWorkMode, String desiredJobType, int yearOfExperience, String desiredSalaryRange, boolean willingToRelocate, String availability, Resume resume, String id, String name, Date dateOfBirth, String gender, String address, String ic, String phoneNumber, String email, String socialMedia, String maritalStatus) {
+        super(id, name, dateOfBirth, gender, address, ic, phoneNumber, email, socialMedia, maritalStatus);
+        this.location = location;
+        this.portfolioLink = portfolioLink;
+        this.preferredWorkMode = preferredWorkMode;
+        this.desiredJobType = desiredJobType;
+        this.yearOfExperience = yearOfExperience;
+        this.desiredSalaryRange = desiredSalaryRange;
+        this.willingToRelocate = willingToRelocate;
+        this.availability = availability;
+        this.resume = resume;
+    }
+
+    public Applicant(String location, String portfolioLink, String preferredWorkMode, String desiredJobType, int yearOfExperience, String desiredSalaryRange, boolean willingToRelocate, String availability) {
+        this.location = location;
+        this.portfolioLink = portfolioLink;
+        this.preferredWorkMode = preferredWorkMode;
+        this.desiredJobType = desiredJobType;
+        this.yearOfExperience = yearOfExperience;
+        this.desiredSalaryRange = desiredSalaryRange;
+        this.willingToRelocate = willingToRelocate;
+        this.availability = availability;
+    }
+    
+    //===============================================================
     public Applicant(String location, String portfolioLink, String preferredWorkMode, String desiredJobType, int yearOfExperience, String desiredSalaryRange, boolean willingToRelocate, String availability, Resume resume, ListInterface<JobApplication> jobApplication) {
         this.location = location;
         this.portfolioLink = portfolioLink;
@@ -41,8 +71,8 @@ public class Applicant extends Person implements Comparable<Applicant>{
         this.jobApplication = jobApplication;
     }
 
-    public Applicant(String location, String portfolioLink, String preferredWorkMode, String desiredJobType, int yearOfExperience, String desiredSalaryRange, boolean willingToRelocate, String availability, Resume resume, ListInterface<JobApplication> jobApplication, String id, String name, Date dateOfBirth, String gender, String address, String ic, String phoneNumber, String email, String socialMedia, String maritalStatus, String nationality) {
-        super(id, name, dateOfBirth, gender, address, ic, phoneNumber, email, socialMedia, maritalStatus, nationality);
+    public Applicant(String location, String portfolioLink, String preferredWorkMode, String desiredJobType, int yearOfExperience, String desiredSalaryRange, boolean willingToRelocate, String availability, Resume resume, ListInterface<JobApplication> jobApplication, String id, String name, Date dateOfBirth, String gender, String address, String ic, String phoneNumber, String email, String socialMedia, String maritalStatus) {
+        super(id, name, dateOfBirth, gender, address, ic, phoneNumber, email, socialMedia, maritalStatus);
         this.location = location;
         this.portfolioLink = portfolioLink;
         this.preferredWorkMode = preferredWorkMode;

@@ -5,12 +5,10 @@ import java.util.Date;
 /**
  *
  * Author - GanKhaiLi
- * 
- * Explanations:
- * 1. 
- * 
+ *
+ * Explanations: 1.
+ *
  */
-
 public class JobApplication implements Comparable<JobApplication> {
 
     private String applicationID;
@@ -24,11 +22,11 @@ public class JobApplication implements Comparable<JobApplication> {
     private Job job;
 
     public JobApplication() {
-        
+
     }
 
-    public JobApplication(String applicationID, Date applicationDate, String status, boolean resumeSubmitted,  
-                          boolean interviewScheduled, String recruiterNotes, String feedback, Applicant applicant, Job job) {
+    public JobApplication(String applicationID, Date applicationDate, String status, boolean resumeSubmitted,
+            boolean interviewScheduled, String recruiterNotes, String feedback, Applicant applicant, Job job) {
         this.applicationID = applicationID;
         this.applicationDate = applicationDate;
         this.status = status;
@@ -39,12 +37,26 @@ public class JobApplication implements Comparable<JobApplication> {
         this.applicant = applicant;
         this.job = job;
     }
-    
-    public Applicant getApplicant(){
+
+    //add-on
+    public void setApplicant(Applicant applicant) {
+        this.applicant = applicant;
+    }
+
+    public void setJob(Job job) {
+        this.job = job;
+    }
+
+    public void setApplicationDate(Date applicationDate) {
+        this.applicationDate = applicationDate;
+    }
+
+    //=================
+    public Applicant getApplicant() {
         return applicant;
     }
-    
-    public Job getJob(){
+
+    public Job getJob() {
         return job;
     }
 
@@ -107,9 +119,9 @@ public class JobApplication implements Comparable<JobApplication> {
     //need to change
     @Override
     public String toString() {
-        return "JobApplication{" + "applicationID=" + applicationID + ", applicantDate=" + applicationDate + ", status=" + status + ", resumeSubmitted=" + resumeSubmitted +  ", interviewScheduled=" + interviewScheduled + ", recruiterNotes=" + recruiterNotes + ", feedback=" + feedback + '}';
+        return "JobApplication{" + "applicationID=" + applicationID + ", applicantDate=" + applicationDate + ", status=" + status + ", resumeSubmitted=" + resumeSubmitted + ", interviewScheduled=" + interviewScheduled + ", recruiterNotes=" + recruiterNotes + ", feedback=" + feedback + '}';
     }
-    
+
     @Override
     public int compareTo(JobApplication other) {
         return this.applicationDate.compareTo(other.applicationDate); // Compare by date

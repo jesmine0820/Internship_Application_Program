@@ -1,11 +1,12 @@
 package Boundary;
 
 import ADT.ListInterface;
+import Control.UserManager;
 import Entity.Applicant;
 import Entity.Schedule;
 import Utility.Input;
 import Utility.Tools;
-import java.util.Date;
+import java.text.SimpleDateFormat;
 
 /**
  *
@@ -19,7 +20,7 @@ public class ScheduleUI {
         Tools.clearScreen();
         System.out.println("   Schedule Menu  ");
         System.out.println("1. Assign interview");
-        System.out.println("2. Update interview status");
+        System.out.println("2. Update interview");
         System.out.println("3. Cancel interview");
         System.out.println("4. Exit");
         choice = Input.getIntegerInput("Enter your choice > ");
@@ -35,17 +36,23 @@ public class ScheduleUI {
     
     public static String getDate(){
         String date;
-        date = Input.getStringInput("Enter Interview Date (yyyy-MM-dd) > ");
+        date = Input.getStringInput("Enter interview date (yyyy-MM-dd) > ");
         return date;
     }
     
     public static String getTime(){
         String time;
-        time = Input.getStringInput("Enter Interview Time (HH:mm) > ");
+        time = Input.getStringInput("Enter interview time (HH:mm) > ");
         return time;
     }
-    
-    public static int getInterviewMode(){
+
+    public static String getInterviewDate() {
+        String date;
+        date = Input.getStringInput("Enter interview date (dd-MM-yyyy) > ");
+        return date;
+    }
+
+    public static int getInterviewMode() {
         int choice;
         System.out.println("Select Interview Mode");
         System.out.println("    1. Online");
@@ -83,35 +90,9 @@ public class ScheduleUI {
         return choice;
     }
     
-    // Display Schedule
-    public static void displaySchedule(ListInterface<Schedule> scheduleList){
-        System.out.printf("%-4s | %-10s | %-10s | %-6s | %-10s | %-16s | %-15s | %-10s%n",
-                "No", "Name", "Date", "Time", "Venue", "Follow Up Date", "Follow Up Time", "Status");
-        System.out.println("---------------------------------------------------------------------------------------------");
-
-        // Print schedule entries
-        int no = 1;
-        for (Schedule item : scheduleList) {
-            Applicant applicant = item.getApplicant();
-            String name = applicant.getName();
-            Date interviewDate = item.getInterviewDate();
-            Date interviewTime = item.getInterviewTime();
-            String venue = item.getVenue();
-            Date followUpDate = item.getFollowUpDate();
-            Date followUpTime = item.getFollowUpTime();
-            String status = item.getStatus();
-
-            System.out.printf("%-4d | %-10s | %-10s | %-6s | %-10s | %-16s | %-15s | %-10s%n",
-                    no++,
-                    name,
-                    interviewDate,
-                    interviewTime,
-                    venue,
-                    followUpDate,
-                    followUpTime,
-                    status);
-        }
-        
-        Tools.systemPause();
+    public static void displayInterviewHeader(){
+        System.out.println("=====================================================================");
+        System.out.println("=                           Interview                               =");
+        System.out.println("=====================================================================");
     }
 }

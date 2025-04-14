@@ -27,119 +27,190 @@ public class Validation {
         return false;
     }
 
-    // Check whether there is digit in the string
-    public static boolean checkString(String text) {
+    // Get and Check whether there is digit in the string
+    public static String checkString(String question) {
+        String input;
+        boolean error;
         int countDigit = 0;
-
-        for (int i = 0; i < text.length(); i++) {
-            char check = text.charAt(i);
-            if (Character.isDigit(check)) {
-                countDigit++;
+        do{
+            error = false;
+            input = Input.getStringInput(question);
+            for (int i = 0; i < input.length(); i++) {
+                char check = input.charAt(i);
+                if (Character.isDigit(check)) {
+                    countDigit++;
+                }
             }
-        }
-
-        return countDigit <= 0;
+            if(countDigit > 0){
+                error = true;
+            }
+        } while(error);
+        return input;
     }
     
     // Check date format
-    public static Date checkDate(String dateInput){
+    public static Date checkDate(String question){
+        boolean error;
+        String dateString;
         Date date;
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         dateFormat.setLenient(false);
         
-        if(dateInput == null){
-            return null;
-        }
-        try{
-            date = dateFormat.parse(dateInput);
-            return date;
-        } catch (ParseException e){
-            MessageUI.invalidDate();
-        }
+        do{
+            dateString = Input.getStringInput(question);
+            try{
+                date = dateFormat.parse(dateString);
+                return date;
+            } catch (ParseException e){
+                MessageUI.invalidDate();
+                error = true;
+            }
+        }while(error);
         return null;
     }
     
     // Check time format
-    public static Date checkTime(String timeInput){
+    public static Date checkTime(String question){
+        boolean error;
+        String timeString;
         Date time;
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
         dateFormat.setLenient(false);
         
-        if(timeInput == null){
-            return null;
-        }
-        try{
-            time = dateFormat.parse(timeInput);
-            return time;
-        } catch (ParseException e){
-            MessageUI.invalidTime();
-        }
+        do{
+            timeString = Input.getStringInput(question);
+            try{
+                time = dateFormat.parse(timeString);
+                return time;
+            } catch (ParseException e){
+                MessageUI.invalidDate();
+                error = true;
+            }
+        }while(error);
         return null;
     }
     
     // Check gender
-    public static boolean checkGender(String input){
-        String gender = input.toLowerCase();
-    
-        if (!(gender.equals("male") || gender.equals("female"))) {
-            MessageUI.errorMessage();
-            return false;
-        } 
-        return true;
+    public static String checkGender(String question){
+        boolean error;
+        String gender;
+        
+        do{
+            error = false;
+            gender = Input.getStringInput(question);
+            if (!(gender.equals("male") || gender.equals("female"))) {
+                MessageUI.errorMessage();
+                error = true;
+            } 
+        } while(error);
+        
+        return gender;
     }
     
     // Check ic format
-    public static boolean checkIcInput(String input){
-        String ic = input;
+    public static String checkIcInput(String question){
+        boolean error;
+        String ic;
         String regex = "^\\d{6}-\\d{2}-\\d{4}$";
-        String dob = ic.substring(0,6);
+        String dob;
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyMMdd");
         dateFormat.setLenient(false);
         
-        if(!ic.matches(regex)){
-            MessageUI.invalidIC();
-            return false;
-        }
-        try{
-            dateFormat.parse(dob);
-            return true;
-        } catch (ParseException e){
-            MessageUI.invalidDOB();
-            return false;
-        }
+        do{
+            error = false;
+            ic = Input.getStringInput(question);
+            if(!ic.matches(regex)){
+                MessageUI.invalidIC();
+                error = true;
+            }
+            try{
+                dob = ic.substring(0,6);
+                dateFormat.parse(dob);
+            } catch (ParseException e){
+                MessageUI.invalidDOB();
+            }
+        } while(error);
+        
+        return ic;
     }
     
     // Check phone format
-    public static boolean checkPhoneInput(String input){
-        String phone = input;
+    public static String checkPhoneNumber(String question){
+        boolean error;
+        String phone;
         String regex = "01\\d-\\d{7,8}";
         
-        if(phone == null || !phone.matches(regex)){
-            MessageUI.invalidPhone();
-            return false;
-        }
-        return true;
+        do{
+            error = false;
+            phone = Input.getStringInput(question);
+            if(phone == null || !phone.matches(regex)){
+                MessageUI.invalidPhone();
+                error = true;
+            }
+        } while(error);
+        
+        return phone;
     }
     
     // Check email input
-    public static boolean checkEmailFormat(String input){
-        String email = input;
+    public static String checkEmailFormat(String question){
+        boolean error;
+        String email;
         String regex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
         
-        if(email == null || !email.matches(regex)){
-            MessageUI.invalidEmail();
-            return false;
-        }
-        return true;
+        do{
+            error = false;
+            email = Input.getStringInput(question);
+            if(email == null || !email.matches(regex)){
+                MessageUI.invalidEmail();
+                error = true;
+            }
+        } while(error);
+        
+        return email;
     }
     
-    public static int getValidatedChoice(int numberOfOptions) {
-        int choice = -1;
-        while (choice < 1 || choice > numberOfOptions) {
-            choice = Input.getIntegerInput("Please enter the number for your choice: ");
-            if (choice < 1 || choice > numberOfOptions) {
-                MessageUI.invalidList();
+    //Validate social media format
+    public static String checkSocialMedia(String question){
+        boolean error;
+        String socialMedia;
+        String regex = "@[A-Za-z0-9]";
+        
+        do{
+            error = false;
+            socialMedia = Input.getStringInput(question);
+            if(socialMedia == null || !socialMedia.matches(regex)){
+                MessageUI.invalidEmail();
+                error = true;
             }
+        } while(error);
+        
+        return socialMedia;
+    }
+    
+    // Validate link format
+    public static String checkLink(String question){
+        boolean error;
+        String link;
+        String regex = "^[A-Za-z0-9+_.-]+[A-Za-z0-9.-]+$";
+        
+        do{
+            error = false;
+            link = Input.getStringInput(question);
+            if(link == null || !link.matches(regex)){
+                MessageUI.invalidEmail();
+                error = true;
+            }
+        } while(error);
+        
+        return link;
+    }
+    
+    // Check for the single choice
+    public static boolean validateChoice(String[] options, int input) {
+        boolean choice = true;
+        if(input <= 0 || input > options.length){
+            choice = false;
         }
         return choice;
     }
@@ -167,8 +238,12 @@ public class Validation {
         return true;
     }
     
-    public static boolean validateYesNo(String input) {
-        return input.equals("yes") || input.equals("y") || input.equals("no") || input.equals("n");
+    // Validate yes no input
+    public static boolean validateYesNoInput(String input){
+        if(input == null){
+            return false;
+        }
+        
+        return input.equalsIgnoreCase("y") || input.equalsIgnoreCase("yes") || input.equalsIgnoreCase("n") || input.equalsIgnoreCase("no");
     }
-
 }

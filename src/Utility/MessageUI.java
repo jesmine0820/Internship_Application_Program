@@ -6,6 +6,7 @@ package Utility;
 
 import static Utility.Tools.RED;
 import static Utility.Tools.BLUE;
+import static Utility.Tools.GREEN;
 import static Utility.Tools.PURPLE;
 import static Utility.Tools.RESET;
 
@@ -102,4 +103,25 @@ public class MessageUI {
     public static void noScheduled(){
         System.out.println(PURPLE + "No scheduled interview yet!" + RESET);
     }
+    
+    public static void cancelSelection(){
+        System.out.println(PURPLE + "No changes were made." + RESET);
+    }
+    
+    public static void createSuccessful(){
+        System.out.println(GREEN + "Successfully registered!" + RESET);
+    }
+    
+    public static void updateSuccessful(){
+        System.out.println(GREEN + "Your personal information has been updated successfully." + RESET);
+    }
+    
+    public static void deleteSuccessful(){
+        System.out.println(GREEN+"Applicant has been removed successfully."+RESET);
+    }
+    
+    public static void removeFailed(){
+        System.out.println(RED + "An error occurred while removing");
+    }
+    
 }

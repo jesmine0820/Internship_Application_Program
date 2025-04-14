@@ -23,7 +23,6 @@ public class Person {
     private String email;
     private String socialMedia;
     private String maritalStatus;
-    private String nationality;
     public static String CURRENTNAME;
     public static String CURRENTID;
 
@@ -33,7 +32,7 @@ public class Person {
     
     public Person(String id, String name, Date dateOfBirth, String gender, String address, 
                   String ic, String phoneNumber, String email, String socialMedia, 
-                  String maritalStatus, String nationality) {
+                  String maritalStatus) {
         this.id = id;
         this.name = name;
         this.dateOfBirth = dateOfBirth;
@@ -44,7 +43,6 @@ public class Person {
         this.email = email;
         this.socialMedia = socialMedia;
         this.maritalStatus = maritalStatus;
-        this.nationality = nationality;
     }
 
     public String getId() {
@@ -127,14 +125,6 @@ public class Person {
         this.maritalStatus = maritalStatus;
     }
 
-    public String getNationality() {
-        return nationality;
-    }
-
-    public void setNationality(String nationality) {
-        this.nationality = nationality;
-    }
-
     public static String getCURRENTNAME() {
         return CURRENTNAME;
     }
@@ -153,7 +143,7 @@ public class Person {
 
     @Override
     public String toString() {
-        return "Person{" + "id=" + id + ", name=" + name + ", dateOfBirth=" + dateOfBirth + ", gender=" + gender + ", address=" + address + ", ic=" + ic + ", phoneNumber=" + phoneNumber + ", email=" + email + ", socialMedia=" + socialMedia + ", maritalStatus=" + maritalStatus + ", nationality=" + nationality + '}';
+        return "Person{" + "id=" + id + ", name=" + name + ", dateOfBirth=" + dateOfBirth + ", gender=" + gender + ", address=" + address + ", ic=" + ic + ", phoneNumber=" + phoneNumber + ", email=" + email + ", socialMedia=" + socialMedia + ", maritalStatus=" + maritalStatus;
     }
 
     //Validation of user input

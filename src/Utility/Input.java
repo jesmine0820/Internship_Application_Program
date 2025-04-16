@@ -2,7 +2,6 @@ package Utility;
 
 import ADT.DoublyLinkedList;
 import ADT.ListInterface;
-import Boundary.BrowseUI;
 import Boundary.UserUI;
 import Control.ApplicantManager;
 import Control.BrowseManager;
@@ -120,7 +119,7 @@ public class Input {
             choice = getIntegerInput(question);
             switch (choice){
                 case 1 -> yes = true;
-                case 2 -> yes = false;
+                case 0 -> yes = false;
                 default -> {
                     MessageUI.errorMessage();
                     error = true;
@@ -251,12 +250,10 @@ public class Input {
                 String selectedOption = chooseOnePageEntity();
                 switch(selectedOption){
                     case "X" -> {
-                        finished = true;
-                        return null;
+                        return selectedItems;
                     }
                     case "x" -> {
-                        finished = true;
-                        return null;
+                        return selectedItems;
                     }
                     default -> {
                         String[] choices = selectedOption.split(",");
@@ -265,9 +262,8 @@ public class Input {
                                 int index = Integer.parseInt(choice.trim()) - 1;
                                 if (index >= 0 && index < options.length) {
                                     String item = options[index];
-                                    if (!selectedItems.contains(item)) {
-                                        selectedItems.add(item);
-                                    }
+                                    System.out.println("item: " + item);
+                                    selectedItems.add(item);
                                 }
                             } catch (NumberFormatException e) {
                                 MessageUI.errorMessage();
@@ -282,12 +278,10 @@ public class Input {
                         if (currentPage < totalPages - 1) currentPage++;
                     }
                     case "X" -> {
-                        finished = true;
-                        return null;
+                        return selectedItems;
                     }
                     case "x" -> {
-                        finished = true;
-                        return null;
+                        return selectedItems;
                     }
                     default -> {
                         String[] choices = selectedOption.split(",");
@@ -296,9 +290,7 @@ public class Input {
                                 int index = Integer.parseInt(choice.trim()) - 1;
                                 if (index >= 0 && index < options.length) {
                                     String item = options[index];
-                                    if (!selectedItems.contains(item)) {
-                                        selectedItems.add(item);
-                                    }
+                                    selectedItems.add(item);
                                 }
                             } catch (NumberFormatException e) {
                                 MessageUI.errorMessage();
@@ -313,12 +305,10 @@ public class Input {
                         if(currentPage > 0) currentPage--;
                     }
                     case "X" -> {
-                        finished = true;
-                        return null;
+                        return selectedItems;
                     }
                     case "x" -> {
-                        finished = true;
-                        return null;
+                        return selectedItems;
                     }
                     default -> {
                         String[] choices = selectedOption.split(",");
@@ -327,9 +317,7 @@ public class Input {
                                 int index = Integer.parseInt(choice.trim()) - 1;
                                 if (index >= 0 && index < options.length) {
                                     String item = options[index];
-                                    if (!selectedItems.contains(item)) {
-                                        selectedItems.add(item);
-                                    }
+                                    selectedItems.add(item);
                                 }
                             } catch (NumberFormatException e) {
                                 MessageUI.errorMessage();
@@ -347,12 +335,10 @@ public class Input {
                         if(currentPage > 0) currentPage--;
                     }
                     case "X" -> {
-                        finished = true;
-                        return null;
+                        return selectedItems;
                     }
                     case "x" -> {
-                        finished = true;
-                        return null;
+                        return selectedItems;
                     }
                     default -> {
                         String[] choices = selectedOption.split(",");
@@ -361,9 +347,7 @@ public class Input {
                                 int index = Integer.parseInt(choice.trim()) - 1;
                                 if (index >= 0 && index < options.length) {
                                     String item = options[index];
-                                    if (!selectedItems.contains(item)) {
-                                        selectedItems.add(item);
-                                    }
+                                    selectedItems.add(item);
                                 }
                             } catch (NumberFormatException e) {
                                 MessageUI.errorMessage();
@@ -386,7 +370,7 @@ public class Input {
         
         while(true){
             Tools.clearScreen();
-            UserManager.profileHeadLine();
+            UserUI.headLine();
             System.out.println("            -------------------------------------------");
             System.out.println("                " + string + "List ( Page " + (page + 1) + " of " + totalPages + " )");
             System.out.println("            -------------------------------------------\n");

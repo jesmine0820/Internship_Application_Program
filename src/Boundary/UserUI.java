@@ -18,14 +18,14 @@ import java.util.Date;
 public class UserUI {
     
     public static void headLine() {
-        System.out.printf(RED + "\t\t%s\n\t\t", "                      _" + RESET);
-        System.out.printf(BLUE + "%s\n\t\t", "      _   _ _ __ ___ | |_" + RESET);
-        System.out.printf(RED + "%s\n\t\t", "     | | | | '_ ` _ \\| __|" + RESET);
-        System.out.printf(BLUE + "%s\n\t\t", "     | |_| | | | | | | |_" + RESET);
-        System.out.printf(RED + "%s\n\n", "      \\__,_|_| |_| |_|\\__|" + RESET);
-        System.out.println("          ---------------------------------------- ");
-        System.out.println("          |      TARUMT INTERNSHIP PROGRAM       |");
-        System.out.println("          ---------------------------------------- ");
+        System.out.printf(RED + "\t\t%s\n\t\t", "                         _" + RESET);
+        System.out.printf(BLUE + "%s\n\t\t", "         _   _ _ __ ___ | |_" + RESET);
+        System.out.printf(RED + "%s\n\t\t", "        | | | | '_ ` _ \\| __|" + RESET);
+        System.out.printf(BLUE + "%s\n\t\t", "        | |_| | | | | | | |_" + RESET);
+        System.out.printf(RED + "%s\n\n", "         \\__,_|_| |_| |_|\\__|" + RESET);
+        System.out.println("             ---------------------------------------- ");
+        System.out.println("             |      TARUMT INTERNSHIP PROGRAM       |");
+        System.out.println("             ---------------------------------------- ");
     }
     
     public static int loginUI(){
@@ -34,14 +34,14 @@ public class UserUI {
         
         Tools.clearScreen();
         headLine();
-        System.out.println("             ==================================");
-        System.out.println("             =           Log in as...         =");
-        System.out.println("             ==================================");
-        System.out.println("             =          1. Employer           =");
-        System.out.println("             =          2. Applicant          =");
-        System.out.println("             =          3. Register           =");
-        System.out.println("             =          4. Exit               =");
-        System.out.println("             ==================================");
+        System.out.println("                ==================================");
+        System.out.println("                =           Log in as...         =");
+        System.out.println("                ==================================");
+        System.out.println("                =          1. Employer           =");
+        System.out.println("                =          2. Applicant          =");
+        System.out.println("                =          3. Register           =");
+        System.out.println("                =          4. Exit               =");
+        System.out.println("                ==================================");
         
         input = Input.getIntegerInput("Enter you choice > ");
         

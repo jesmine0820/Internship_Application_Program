@@ -1,9 +1,6 @@
 package Control;
 
-import ADT.ListInterface;
-import Boundary.BrowseUI;
 import Boundary.UserUI;
-import Control.BrowseManager;
 import Dao.Database;
 import Entity.*;
 import Utility.Input;
@@ -129,22 +126,19 @@ public class UserManager {
                 moduleChoose = UserUI.applicantMenu();
                 switch(moduleChoose.toLowerCase()){
                     case "1" -> BrowseManager.browseMenu();
-                    case "2" -> JobApplicationManager.displayMyJobApplication(Database.jobApplicationList);
+                    case "2" -> JobApplicationManager.CancelApplication();
                     case "3" -> ScheduleManager.displaySchedule();
-                    case "4" -> ApplicantManager.editProfile();
-                    case "5" -> JobApplicationManager.displaySaveList();
+                    case "4" -> JobApplicationManager.displaySaveList();
+                    case "5" -> ApplicantManager.editProfile();
                     case "6" -> ReportManager.reportMenu();
-                    case "7" -> {
-                        MessageUI.logOutMessage();
-                        Tools.exit();
-                    }
+                    case "7" -> Tools.back();
                     case "s" -> {
                         Tools.clearScreen();
                         BrowseManager.searchEngine();
                     }
                     default -> MessageUI.errorMessage();
                     }  
-            } while (!moduleChoose.equals("6"));
+            } while (!moduleChoose.equals("7"));
         }
     }
     

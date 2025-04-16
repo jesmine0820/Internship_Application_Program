@@ -5,7 +5,7 @@ import Utility.*;
 import Dao.*;
 import java.util.Date;
 import ADT.*;
-import Boundary.EmployerUI;
+import Boundary.JobUI;
 import Boundary.UserUI;
 import static Utility.Tools.*;
 
@@ -21,7 +21,7 @@ public class EmployerManager {
     public static void jobPosting(){
         int choice;
         do{
-            choice = EmployerUI.employerMenu();
+            choice = JobUI.employerMenu();
             switch(choice){
                 case 1 -> JobManager.createJob();
                 case 2 -> JobManager.updateJob();
@@ -220,7 +220,7 @@ public class EmployerManager {
             String confirmRegister = Input.getYesNoInput("\nDo you confirm to register this employer? (yes/no): ");
             if (!confirmRegister.equalsIgnoreCase("yes")) {
                 System.out.println(RED + "Employer registration cancelled." + RESET);
-                EmployerUI.employerMenu();
+                JobUI.employerMenu();
                 continue;
             }
 
@@ -235,7 +235,7 @@ public class EmployerManager {
             if (!another.equalsIgnoreCase("yes")) {
                 continueRegistering = false;
                 // need change
-                EmployerUI.employerMenu();
+                JobUI.employerMenu();
             } else {
                 //back to the login
             }
@@ -363,7 +363,7 @@ public class EmployerManager {
                 if (!confirmRegister.equalsIgnoreCase("yes")) {
                     System.out.println(RED + "Company registration cancelled." + RESET);
                     //BAck to menu
-                    EmployerUI.employerMenu();
+                    JobUI.employerMenu();
                     continue;
                 }
 

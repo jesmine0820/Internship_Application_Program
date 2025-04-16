@@ -7,8 +7,6 @@ import Boundary.BrowseUI;
 import Dao.Database;
 import Entity.*;
 import Utility.*;
-import static Utility.Tools.GREY;
-import static Utility.Tools.RESET;
 
 /**
  *
@@ -247,10 +245,7 @@ public class BrowseManager {
     
     // Call Sorting Method
     private static <T extends Comparable<T>> ListInterface<T> sortList(ListInterface<T> list, Object object){
-
-        MatchingEngine match = new MatchingEngine();
-        
-        list = match.heapSort(list, object);
+        list = MatchingEngine.heapSort(list, object);
         return list;
     }
 

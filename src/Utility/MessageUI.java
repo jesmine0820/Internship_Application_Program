@@ -127,4 +127,8 @@ public class MessageUI {
         System.out.println(RED + "Here got nothing!" + RESET);
     }
     
+    public static void noApplicant(String jobID, String jobTitle){
+        System.out.println(PURPLE + "No applicant applied this job > " + jobID + " (" + jobTitle + ")");
+    }
+    
 }

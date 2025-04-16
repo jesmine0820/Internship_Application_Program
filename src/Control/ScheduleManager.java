@@ -46,7 +46,7 @@ public class ScheduleManager {
                 default ->
                     MessageUI.errorMessage();
             }
-        } while (choice != 4);
+        } while (choice != 5);
     }
 
     public static void addSchedule() {

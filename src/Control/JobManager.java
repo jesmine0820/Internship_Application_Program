@@ -21,11 +21,7 @@ public class JobManager {
         boolean error;
         String jobTitle = null;
         
-        Tools.clearScreen();
-        UserManager.profileHeadLine();
-        System.out.println("                ======================");
-        System.out.println("                =   Create New Job   =");
-        System.out.println("                ======================");
+        JobUI.createJobHeader();
 
         String jobID = String.format("J%03d", Database.jobList.size() + 1);
         System.out.println("Generated Job ID: " + jobID);
@@ -49,12 +45,20 @@ public class JobManager {
         boolean relocationAssistance = Input.getBooleanInput("Does this job offer relocation assistance? (true/false): ");
 
         // Collect required skills and store them in a list
-        ListInterface<String> requiredSkills = Input.getPaginatedMultiSelectInput("Enter Required Skills (comma-separated): ", ChooseSetting.SKILL_OPTIONS);
+        ListInterface<String> selectedSkills = Input.getPaginatedMultiSelectInput("Enter Required Skills (comma-separated): ", ChooseSetting.SKILL_OPTIONS);
+        ListInterface<String> requiredSkills = new DoublyLinkedList<>();
+        if(selectedSkills != null){
+            requiredSkills.add(selectedSkills);
+        }
         int requiredExperience = Input.getIntegerInput("Enter Required Experience (in years): ");
         int teamSize = Input.getIntegerInput("Enter Team Size: ");
         double salary = Input.getDoubleInput("Enter Salary: ");
         // Collect job benefits and store them in a list
-        ListInterface<String> benefits = Input.getPaginatedMultiSelectInput("Enter Benefits (comma-separated): ", ChooseSetting.BENEFITS_OPTIONS);
+        ListInterface<String> selectedBenefit = Input.getPaginatedMultiSelectInput("Enter Benefits (comma-separated): ", ChooseSetting.BENEFITS_OPTIONS);
+        ListInterface<String> benefits = new DoublyLinkedList<>();
+        if(selectedBenefit != null){
+            benefits.add(selectedBenefit);
+        }
         Date applicationDeadline = Validation.checkDate("Enter Application Deadline (YYYY-MM-DD): ");
         int workHours = Input.getIntegerInput("Enter Work Hours per week: ");
         String careerDevelopment = Input.getStringInput("Enter Career Development Opportunities: ");
@@ -75,10 +79,9 @@ public class JobManager {
         boolean editing = true;
         while (editing) {
             Tools.clearScreen();
-            UserUI.headLine();
-            System.out.println("====================");
-            System.out.println("\n|   Job Summary    |");
-            System.out.println("====================");
+            System.out.println("        ====================");
+            System.out.println("        |   Job Summary    |");
+            System.out.println("        ====================");
 
             // Temporary job to preview details before confirmation
             Job tempJob = new Job(jobID, jobTitle, jobType, jobDescription, interviewProcess,
@@ -150,7 +153,7 @@ public class JobManager {
         } else {
             // If canceled, notify the user
             System.out.println(RED + "\nJob creation canceled!" + RESET);
-            EmployerUI.employerMenu();
+            JobUI.employerMenu();
         }
 
         String anotherCreate = Input.getYesNoInput("Do you have another job to create? (Yes or No): ");
@@ -160,11 +163,12 @@ public class JobManager {
                 break;
             case "no":
                 System.out.println("Return to Main Menu");
-                EmployerUI.employerMenu();
+                JobUI.employerMenu();
             default:
                 System.out.println("Invalid input!");
                 break;
         }
+
     }
 
     public static void updateJob() {
@@ -364,7 +368,7 @@ public class JobManager {
 
                     // Redirect to Employer UI after exiting the update process
                     System.out.println("\nReturning to Employer UI");
-                    EmployerUI.employerMenu();
+                    JobUI.employerMenu();
                 }
             }
 
@@ -441,7 +445,7 @@ public class JobManager {
             if (anotherDelete == 2) {
                 continueDeleting = false;
                 System.out.println("\nReturning to main menu");
-                EmployerUI.employerMenu();
+                JobUI.employerMenu();
             }
         }
 
@@ -652,7 +656,7 @@ public class JobManager {
                     }
                 } else {
                     // yaohuande zhege
-                    EmployerUI.employerMenu();
+                    JobUI.employerMenu();
                 }
             }
 
@@ -905,7 +909,7 @@ public class JobManager {
             // Ask the user if they want to search again or quit
             String choice = Input.getStringInput("Press [Enter] to search again, or type 'q' to quit: ").trim().toLowerCase();
             if (choice.equals("q")) {
-                EmployerUI.employerMenu();  // Redirect to the employer menu
+                JobUI.employerMenu();  // Redirect to the employer menu
                 break;
             }
         }

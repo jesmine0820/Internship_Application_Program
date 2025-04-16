@@ -23,8 +23,8 @@ public class ScheduleUI {
         System.out.println("1. Assign interview");
         System.out.println("2. Update interview");
         System.out.println("3. Edit interview");
-        System.out.println("3. Cancel interview");
-        System.out.println("4. Exit");
+        System.out.println("4. Cancel interview");
+        System.out.println("5. Exit");
         choice = Input.getIntegerInput("Enter your choice > ");
         return choice;
     }

@@ -14,12 +14,13 @@ import Entity.*;
  */
 public class MatchingEngine{
     
-    public int getScore(Object obj1, Object obj2){
-        return computeMatchingScore(obj1, obj2);
+    public static int getScore(Object obj1, Object obj2){
+        int score = computeMatchingScore(obj1, obj2);
+        return score;
     }
     
     // Heat Sort for Top K ranking
-    public <T extends Comparable<T>> ListInterface<T> heapSort(ListInterface<T> list, Object obj){
+    public static <T extends Comparable<T>> ListInterface<T> heapSort(ListInterface<T> list, Object obj){
         int size = list.size();
 
         for(int i = size / 2 - 1; i >= 0; i--){
@@ -36,7 +37,7 @@ public class MatchingEngine{
     }
     
     // Helper function for Heap Sort
-    private <T extends Comparable<T>> void heapify(ListInterface<T> list, int size, int i, Object obj){
+    private static <T extends Comparable<T>> void heapify(ListInterface<T> list, int size, int i, Object obj){
         int largest = i;
         int left = 2 * i + 1;
         int right = 2 * i + 2;
@@ -55,7 +56,7 @@ public class MatchingEngine{
     }
     
     // Compare Two items
-    private <T> int compareList(Object obj1, Object obj2, Object main) {
+    private static <T> int compareList(Object obj1, Object obj2, Object main) {
         int score1 = 0;
         int score2 = 0;
 
@@ -121,7 +122,7 @@ public class MatchingEngine{
     
     // Compute Company and Job to Applicant and Resume
     // Compute Employer to Applicant
-    private int computeMatchingScore(Object obj1, Object obj2){
+    private static int computeMatchingScore(Object obj1, Object obj2){
         int score = 0;
         
         if(obj1 == null || obj2 == null){
@@ -135,14 +136,13 @@ public class MatchingEngine{
         if(obj2 instanceof Applicant){
             job = getInstance(obj1, Job.class);
         } else if (obj2 instanceof Job){
-            job = getInstance(obj1, Job.class);
+            job = getInstance(obj2, Job.class);
             applicants = getInstance(obj1, Applicant.class);
             employer = Database.getEmployer();
         }
         
         // Compute Compare and Job to Applicant
         if(job != null && applicants == null){ 
-
             Company company = job.getEmployer().getCompany();
             // Match Location
             int locationScore = computeScore(company.getLocation(), company.getLocation());
@@ -155,7 +155,6 @@ public class MatchingEngine{
             score += experienceScore;
             score += salaryScore;
             score += skillScore;
-            System.out.println(locationScore + " " + typeScore + " " + experienceScore + " " + salaryScore + " " + skillScore);
             
         } else if(employer != null && applicants != null){ // Compute Employer and Applicant
             // Match industry type with desired job type
@@ -179,7 +178,6 @@ public class MatchingEngine{
             score += experienceScore;
             score += salaryScore;
             score += skillScore;
-            System.out.println("2. " + score);
             
         } else { // Compute the Job application with applicant
             Applicant applicant = Database.getApplicant();
@@ -205,15 +203,13 @@ public class MatchingEngine{
                 score += projectsScore;
                 score += languageSpoken;
                 score += awards;
-                System.out.println("3. " +score);
             }
         }
-
         return score;
     }
     
     // Computer score based on one string
-    private int computeScore(String string){
+    private static int computeScore(String string){
         int score = 0;
         
         if(string == null || string.isEmpty()){
@@ -236,7 +232,7 @@ public class MatchingEngine{
     }
     
     // Compute score between two string
-    private int computeScore(String string1, String string2){
+    private static int computeScore(String string1, String string2){
         int score = 0;
         
         if(string1.isEmpty() || string2.isEmpty()){
@@ -256,7 +252,7 @@ public class MatchingEngine{
     }
     
     // Compute score between two integer
-    private int computeScore(int num1, int num2){
+    private static int computeScore(int num1, int num2){
         int score = 0;
         
         if(num1 == 0 || num2 == 0){
@@ -275,7 +271,7 @@ public class MatchingEngine{
     }
     
     // Compute score between two double
-    private int computeScore(double num, String string){
+    private static int computeScore(double num, String string){
         int score = 0;
         
         if(string == null || string.isEmpty()){
@@ -302,7 +298,7 @@ public class MatchingEngine{
         return score;
     }
     
-    private int computeScore(ListInterface<String> list){
+    private static int computeScore(ListInterface<String> list){
         int score = 0;
         
         if(list == null || list.isEmpty()){
@@ -315,7 +311,7 @@ public class MatchingEngine{
         return score;
     }
     
-    private int computeScore(ListInterface<String> list1, ListInterface<String> list2){
+    private static int computeScore(ListInterface<String> list1, ListInterface<String> list2){
         int score = 0;
         
         if(list1 == null || list2 == null){
@@ -332,8 +328,7 @@ public class MatchingEngine{
         return score;
     }
     
-    @SuppressWarnings("unchecked")
-    private <T> T getInstance(Object obj, Class<T> clazz) {
+    private static <T> T getInstance(Object obj, Class<T> clazz) {
         return obj != null && obj.getClass() == clazz ? (T) obj : null;
     }
     

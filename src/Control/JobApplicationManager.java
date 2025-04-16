@@ -12,7 +12,7 @@ import java.util.Date;
  * @author Asus
  */
 public class JobApplicationManager {
-    
+
     private static final ListInterface<JobApplication> jobApplicationList = new DoublyLinkedList<>();
     public static final ListInterface<Company> companies = Database.companies;
 
@@ -34,10 +34,10 @@ public class JobApplicationManager {
 
         printMultiLine("Skills", selectedJob.getRequiredSkills());
         printMultiLine("Benefits", selectedJob.getBenefits());
-        // Now offer to apply
-        applyToJob(selectedJob);
+        
+        handleJobAfterBrowsing(selectedJob);
     }
-    
+
     public static void handleJobAfterBrowsing(Job selectedJob) {
         if (selectedJob == null) {
             System.out.println("No job selected.");
@@ -45,7 +45,7 @@ public class JobApplicationManager {
         }
 
         String[] optionAfter = {"Save", "Apply", "Both", "Cancel"};
-        String optionChoice = Input.getChoiceInput("\nWhat would you like to do next?", optionAfter);
+        String optionChoice = Input.getChoiceInput("\nWhat would you like to do next? ", optionAfter);
 
         switch (optionChoice.toLowerCase()) {
             case "save" ->
@@ -76,6 +76,10 @@ public class JobApplicationManager {
             return;
         }
 
+        if (loggedInApplicant.getSavedList() == null) {
+            loggedInApplicant.setSavedList(new DoublyLinkedList<Job>());
+        }
+
         for (int i = 0; i < loggedInApplicant.getSavedList().size(); i++) {
             if (loggedInApplicant.getSavedList().get(i).getJobID().equals(selectedJob.getJobID())) {
                 System.out.println("\nYou have already saved this job.");
@@ -92,13 +96,23 @@ public class JobApplicationManager {
         loggedInApplicant.getSavedList().add(selectedJob);
         System.out.println(GREEN + "\nJob saved successfully!" + RESET);
     }
-    
+
     // ========== DISPLAY SAVE LIST =========
-    public static void displaySaveList(){
+    public static void displaySaveList() {
         Applicant loggedInApplicant = Database.getApplicant();
+        if (loggedInApplicant == null) {
+            System.out.println("No logged-in applicant found.");
+            return;
+        }
+
+        if (loggedInApplicant.getSavedList() == null || loggedInApplicant.getSavedList().size() == 0) {
+            System.out.println("No saved jobs found.");
+            return;
+        }
+
         int count = 0;
-        
-        for (Job job : loggedInApplicant.getSavedList()){
+
+        for (Job job : loggedInApplicant.getSavedList()) {
             Employer employer = job.getEmployer();
             Company company = employer.getCompany();
             String companyName = company.getCompanyName();
@@ -107,13 +121,36 @@ public class JobApplicationManager {
             String jobDescription = job.getJobDescription();
             Double salary = job.getSalary();
             System.out.println("---------------------------------------------------------------");
-            System.out.printf ("│ %-3s %-70s │\n", (count + 1) + ".", companyName);
-            System.out.printf ("│     Position:     %-60s │\n", jobTitle);
-            System.out.printf ("│     Type:         %-60s │\n", jobType);
-            System.out.printf ("│     Salary:       RM%-57.2f │\n", salary);
-            System.out.printf ("│     Description:  %-60s │\n", jobDescription);
+            System.out.printf("| %-3s %-70s |\n", (count + 1) + ".", companyName);
+            System.out.printf("|     Position:     %-60s |\n", jobTitle);
+            System.out.printf("|     Type:         %-60s |\n", jobType);
+            System.out.printf("|     Salary:       RM%-57.2f |\n", salary);
+            System.out.printf("|     Description:  %-60s |\n", jobDescription);
             System.out.println("---------------------------------------------------------------");
             count++;
+        }
+        removeJobFromSavedList(loggedInApplicant);
+    }
+
+    private static void removeJobFromSavedList(Applicant loggedInApplicant) {
+        int jobToRemove = Input.getIntegerInput("Enter the number of the job you want to remove or [0]Cancel: ");
+        if (jobToRemove == 0) {
+            System.out.println("No job removed.");
+            return;
+        }
+
+        if (jobToRemove < 1 || jobToRemove > loggedInApplicant.getSavedList().size()) {
+            System.out.println("Invalid job number. No job removed.");
+            return;
+        }
+
+        Job job = loggedInApplicant.getSavedList().get(jobToRemove - 1);
+        String confirm = Input.getYesNoInput("Do you want to remove this job? (Yes/No): ");
+        if (confirm.equalsIgnoreCase("yes")) {
+            loggedInApplicant.getSavedList().remove(job);
+            System.out.println(GREEN + "Job removed from save list successfully!" + RESET);
+        } else {
+            System.out.println("Job not removed.");
         }
     }
 
@@ -221,7 +258,7 @@ public class JobApplicationManager {
         for (int i = 0; i < jobApplications.size(); i++) {
             JobApplication jobApp = jobApplications.get(i);
             if (matchesSearch(jobApp, searchTerm)) {
-                System.out.printf(BLUE+"     ********** Match %d **********\n" +RESET,++matchCount);
+                System.out.printf(BLUE + "     ********** Match %d **********\n" + RESET, ++matchCount);
                 displayJobApplicationDetails(jobApp);
                 foundAny = true;
             }
@@ -249,7 +286,7 @@ public class JobApplicationManager {
                 || (company != null && company.getCompanyName().toLowerCase().contains(term));
     }
 
-    // ========== Cancel ========== [View Application --> Cancel]
+    // ========== Cancel ==========
     public static void CancelApplication() {
 
         Applicant loggedInApplicant = Database.getApplicant();
@@ -302,47 +339,47 @@ public class JobApplicationManager {
                 relatedJob.getJobApplication().remove(toRemove);
             }
 
-            System.out.println(GREEN+"Application " + applicationToCancel + " has been successfully canceled."+RESET);
+            System.out.println(GREEN + "Application " + applicationToCancel + " has been successfully canceled." + RESET);
         } else {
             System.out.println("Application deletion canceled.");
         }
     }
-    
-    public static void arrangeApplication(){
+
+    public static void arrangeApplication() {
         MatchingEngine match = new MatchingEngine();
         Applicant applicants = new Applicant();
         Employer employer = Database.getEmployer();
         ListInterface<Job> jobMatchList = new DoublyLinkedList<>();
-        
+
         if (!employer.getJob().isEmpty()) {
-                for (Job job : employer.getJob()) {
-                    jobMatchList.add(job);
-                    ListInterface<Applicant> applicantMatchList = new DoublyLinkedList<>();
+            for (Job job : employer.getJob()) {
+                jobMatchList.add(job);
+                ListInterface<Applicant> applicantMatchList = new DoublyLinkedList<>();
 
-                    // Collect applicants who applied for this job
-                    for (JobApplication jobApplication : job.getJobApplication()) {
-                        applicantMatchList.add(jobApplication.getApplicant());
-                    }
-
-                    // Sort the applicants 
-                    ListInterface<Applicant> sortedList = match.heapSort(applicantMatchList, applicants);
-
-                    // Print job title
-                    System.out.println("Job: " + job.getJobTitle());
-
-                    // Print matched applicants with scores
-                    if (!sortedList.isEmpty()) {
-                        for (int i = 0; i < sortedList.size(); i++) {
-                            Applicant applicant = sortedList.get(i);
-                            System.out.println(i + ") " + applicant.getName());
-                        }
-                    } else {
-                        MessageUI.noMatchFound();
-                    }
-                    System.out.println("-------------------------------------------"); 
+                // Collect applicants who applied for this job
+                for (JobApplication jobApplication : job.getJobApplication()) {
+                    applicantMatchList.add(jobApplication.getApplicant());
                 }
+
+                // Sort the applicants 
+                ListInterface<Applicant> sortedList = match.heapSort(applicantMatchList, applicants);
+
+                // Print job title
+                System.out.println("Job: " + job.getJobTitle());
+
+                // Print matched applicants with scores
+                if (!sortedList.isEmpty()) {
+                    for (int i = 0; i < sortedList.size(); i++) {
+                        Applicant applicant = sortedList.get(i);
+                        System.out.println(i + ") " + applicant.getName());
+                    }
+                } else {
+                    MessageUI.noMatchFound();
+                }
+                System.out.println("-------------------------------------------");
             }
-        
+        }
+
     }
 
     // ========== INPUT HELPERs ========== 
@@ -399,33 +436,33 @@ public class JobApplicationManager {
         System.out.printf("%-20s: %s\n", "Application Status", jobApplication.getStatus());
         System.out.printf("%-20s: %s\n", "Interview Scheduled", (jobApplication.isInterviewScheduled() ? "Yes" : "No"));
         System.out.printf("%-20s: %s\n", "Application Date", jobApplication.getApplicationDate().toString());
-        System.out.println(BLUE+"******************************************************************\n"+RESET);
+        System.out.println(BLUE + "******************************************************************\n" + RESET);
 
     }
-    
+
     public static void displayMyJobApplication(ListInterface<JobApplication> jobAppList) {
         ListInterface<JobApplication> applicationList = new DoublyLinkedList<>();
-        for(int i = 0; i < jobAppList.size(); i++){
+        for (int i = 0; i < jobAppList.size(); i++) {
             JobApplication currentApplication = jobAppList.get(i);
-            if(currentApplication.getApplicant() == Database.getApplicant()){
+            if (currentApplication.getApplicant() == Database.getApplicant()) {
                 applicationList.add(currentApplication);
             }
         }
-        
-        if(!applicationList.isEmpty()){
+
+        if (!applicationList.isEmpty()) {
             // Display individual job application details
-            for(JobApplication list : applicationList){
-                System.out.println(BLUE+"******************************************************************\n"+RESET);
-            System.out.printf("%-20s: %s\n", "Job Title", list.getJob().getJobTitle());
-            System.out.printf("%-20s: %s\n", "Job Description", list.getJob().getJobDescription());
-            System.out.printf("%-20s: %s\n", "Company", (list.getJob().getEmployer().getCompany() != null ? list.getJob().getEmployer().getCompany().getCompanyName() : "N/A"));
-            System.out.printf("%-20s: %s\n", "Location", (list.getJob().getEmployer().getCompany() != null ? list.getJob().getEmployer().getCompany().getLocation() : "N/A"));
-            System.out.printf("%-20s: %s\n", "Employment Type", list.getJob().getEmploymentType());
-            System.out.printf("%-20s: RM%,.2f\n", "Salary", list.getJob().getSalary());
-            System.out.printf("%-20s: %s\n", "Application Status", list.getStatus());
-            System.out.printf("%-20s: %s\n", "Interview Scheduled", (list.isInterviewScheduled() ? "Yes" : "No"));
-            System.out.printf("%-20s: %s\n", "Application Date", list.getApplicationDate().toString());
-            System.out.println(BLUE+"******************************************************************\n"+RESET);
+            for (JobApplication list : applicationList) {
+                System.out.println(BLUE + "******************************************************************\n" + RESET);
+                System.out.printf("%-20s: %s\n", "Job Title", list.getJob().getJobTitle());
+                System.out.printf("%-20s: %s\n", "Job Description", list.getJob().getJobDescription());
+                System.out.printf("%-20s: %s\n", "Company", (list.getJob().getEmployer().getCompany() != null ? list.getJob().getEmployer().getCompany().getCompanyName() : "N/A"));
+                System.out.printf("%-20s: %s\n", "Location", (list.getJob().getEmployer().getCompany() != null ? list.getJob().getEmployer().getCompany().getLocation() : "N/A"));
+                System.out.printf("%-20s: %s\n", "Employment Type", list.getJob().getEmploymentType());
+                System.out.printf("%-20s: RM%,.2f\n", "Salary", list.getJob().getSalary());
+                System.out.printf("%-20s: %s\n", "Application Status", list.getStatus());
+                System.out.printf("%-20s: %s\n", "Interview Scheduled", (list.isInterviewScheduled() ? "Yes" : "No"));
+                System.out.printf("%-20s: %s\n", "Application Date", list.getApplicationDate().toString());
+                System.out.println(BLUE + "******************************************************************\n" + RESET);
             }
         } else {
             MessageUI.emptyDatabase();

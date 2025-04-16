@@ -1,5 +1,6 @@
 package Boundary;
 
+import Control.UserManager;
 import Utility.Input;
 import Utility.Tools;
 
@@ -16,16 +17,16 @@ public class ReportUI {
         int input;
         
         UserUI.headLine();
-        System.out.println("===============================");
-        System.out.println("=       Report Management     =");
-        System.out.println("===============================");
-        System.out.println("=     1. Job Report           =");
-        System.out.println("=     2. Application Report   =");
-        System.out.println("=     3. Matching Report      =");
-        System.out.println("=     4. Interview Report     =");
-        System.out.println("=     5. Searching Report     =");
-        System.out.println("=     6. Exit                 =");
-        System.out.println("===============================");
+        System.out.println("                ===============================");
+        System.out.println("                =       Report Management     =");
+        System.out.println("                ===============================");
+        System.out.println("                =     1. Job Report           =");
+        System.out.println("                =     2. Application Report   =");
+        System.out.println("                =     3. Matching Report      =");
+        System.out.println("                =     4. Interview Report     =");
+        System.out.println("                =     5. Searching Report     =");
+        System.out.println("                =     6. Exit                 =");
+        System.out.println("                ===============================");
         
         input = Input.getIntegerInput("Enter your choice > ");
         
@@ -36,9 +37,13 @@ public class ReportUI {
         Tools.clearScreen();
         UserUI.headLine();
         
-        System.out.println("========================================");
-        System.out.println("            " + title + " Report      ");
-        System.out.println("========================================");
+        System.out.println("==================================================================================================");
+        System.out.printf("=\t\t\t%35s=\n", title);
+        System.out.println("==================================================================================================");
+    }
+    
+    public static void descriptionLine(String text){
+        System.out.println("Description: " + text);
     }
     
     public static int matchingReport(){
@@ -46,19 +51,53 @@ public class ReportUI {
 
         int input;
         
-        UserUI.headLine();
-        System.out.println("=================================================");
-        System.out.println("=                  Matching Report              =");
-        System.out.println("=================================================");
-        System.out.println("=       1. Job Application Matching Report      =");
-        System.out.println("=       2. Top Matched Job Report               =");
-        System.out.println("=       3. Matching Engine Efficiency Report    =");
-        System.out.println("=       4. Exit                                 =");
-        System.out.println("=================================================");
+        UserManager.profileHeadLine();
+        System.out.println("                =================================================");
+        System.out.println("                =                  Matching Report              =");
+        System.out.println("                =================================================");
+        System.out.println("                =       1. Job Application Matching Report      =");
+        System.out.println("                =       2. Top Matched Job Report               =");
+        System.out.println("                =       3. Matching Engine Efficiency Report    =");
+        System.out.println("                =       4. Exit                                 =");
+        System.out.println("                =================================================");
         
         input = Input.getIntegerInput("Enter your choice > ");
         
         return input;
+    }
+    
+    public static int searchingReport(){
+        Tools.clearScreen();
+        
+        int input;
+        
+        UserManager.profileHeadLine();
+        System.out.println("                =================================================");
+        System.out.println("                =                 Searching Report              =");
+        System.out.println("                =================================================");
+        System.out.println("                =          1. Search Performance Report         =");
+        System.out.println("                =          2. Search Trend Report               =");
+        System.out.println("                =          3. Exit                              =");
+        System.out.println("                =================================================");
+        
+        input = Input.getIntegerInput("Enter your choice > ");
+        
+        return input;
+    }
+    
+    public static String printingReport(){
+        String input;
+        
+        System.out.println("----------------------------------------------------------------------------");
+        do{
+            input = Input.getStringInput("Do you want to print out this report? (Y/N) > ");
+        }while(!input.equalsIgnoreCase("y") && !input.equalsIgnoreCase("yes") && !input.equalsIgnoreCase("n") && !input.equalsIgnoreCase("no"));
+    
+        return input;
+    }
+    
+    public static void graphTitle(String title){
+        System.out.println("\n                  " + title + "\n");
     }
     
 }

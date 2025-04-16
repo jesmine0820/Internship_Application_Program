@@ -31,8 +31,9 @@ public class Validation {
     public static String checkString(String question) {
         String input;
         boolean error;
-        int countDigit = 0;
+        int countDigit;
         do{
+            countDigit = 0;
             error = false;
             input = Input.getStringInput(question);
             for (int i = 0; i < input.length(); i++) {

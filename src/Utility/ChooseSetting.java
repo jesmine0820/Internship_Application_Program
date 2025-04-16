@@ -51,4 +51,12 @@ public class ChooseSetting {
         "Retirement Plan", "Company Car", "Free Meals", "Wellness Programs",
         "Professional Development", "Childcare Support", "Travel Allowance"
     };
+    
+    public static final String[] INTERVIEW_MODE_OPTIONS = {
+        "Online", "Offline"
+    };
+    
+    public static final String[] INTERVIEW_STATUS_OPTIONS ={
+      "Scheduled", "Completed", "Canceled"
+    };
 }

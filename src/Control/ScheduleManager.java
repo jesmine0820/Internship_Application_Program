@@ -7,16 +7,22 @@ import Dao.Database;
 import Entity.Applicant;
 import Entity.Employer;
 import Entity.Schedule;
+import Utility.ChooseSetting;
 import Utility.Input;
 import Utility.MessageUI;
 import Utility.Tools;
+import static Utility.Tools.BLUE;
+import static Utility.Tools.GREEN;
+import static Utility.Tools.RED;
+import static Utility.Tools.RESET;
 import Utility.Validation;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
  *
- * @author User
+ * @author 
  */
 public class ScheduleManager {
 
@@ -32,8 +38,10 @@ public class ScheduleManager {
                 case 2 ->
                     updateSchedule();
                 case 3 ->
-                    cancelInterview();
+                    editScheduleItem();
                 case 4 ->
+                    cancelInterview();
+                case 5 ->
                     Tools.back();
                 default ->
                     MessageUI.errorMessage();
@@ -44,323 +52,127 @@ public class ScheduleManager {
     public static void addSchedule() {
         boolean error;
         String name;
-        String dateString;
-        Date interviewDate = null;
-        String timeString;
-        Date interviewTime = null;
-        String interviewMode = null;
-        String venue = null;
-        Date followUpDate;
-        Date followUpTime;
+        Date interviewDate;
+        Date interviewTime;
+        String interviewMode;
+        String venue;
+        Date followUpDate = null;
+        Date followUpTime = null;
         String status = "Scheduled";
         Employer employer;
         Applicant applicant = null;
 
         employer = Database.getEmployer();
-
-        // Get applicant name
-        do {
-            name = ScheduleUI.getApplicantName();
-            if (!Validation.checkApplicant(name)) {
-                    System.out.println("No applicant");
-                }
+        
+        displayCalendar(employer);
+        
+        do{
+            error = false;
+            name = Validation.checkString("Enter applicant name: ");
+            if(!Validation.checkApplicant(name)){
                 error = true;
-            if (!error) {
+            } else {
                 applicant = getApplicant(name);
             }
-        } while (error);
-
-        // Get interview date
-        do {
-            error = false;
-            dateString = ScheduleUI.getDate();
-            interviewDate = Validation.checkDate(dateString);
-            if (interviewDate == null) {
-                error = true;
-            }
-        } while (error);
-
-        // Get interview time
-        do {
-            error = false;
-            timeString = ScheduleUI.getTime();
-            interviewTime = Validation.checkTime(timeString);
-            if (interviewTime == null) {
-                error = true;
-            }
-        } while (error);
-
-        // Get interview mode and venue
-        do {
-            error = false;
-            int choice = ScheduleUI.getInterviewMode();
-            switch (choice) {
-                case 1 -> {
-                    interviewMode = "Online";
-                    venue = "Zoom";
-                }
-                case 2 -> {
-                    interviewMode = "Offline";
-                    venue = ScheduleUI.getVenue();
-                }
-                default -> {
-                    error = true;
-                    MessageUI.errorMessage();
-                }
-            }
-        } while (error);
-
-        // Get follow up date
-        do {
-            error = false;
-            String followUpDateStr = ScheduleUI.updateFollowUpDate();
-            followUpDate = Validation.checkDate(followUpDateStr);
-            if (followUpDate == null) {
-                error = true;
-            }
-        } while (error);
-
-        // Get follow up time
-        do {
-            error = false;
-            String followUpTimeStr = ScheduleUI.updateFollowUpTime();
-            followUpTime = Validation.checkTime(followUpTimeStr);
-            if (followUpTime == null) {
-                error = true;
-            }
-        } while (error);
-
-        // Ask user for confirmation, print successful msg
-        System.out.println("\nDo you want to confirm and save the schedule?");
-        System.out.println("1. Yes");
-        System.out.println("2. No");
-        int confirm = Input.getIntegerInput("Enter your choice > ");
-
-        if (confirm == 1) {
-            Schedule schedule = new Schedule(
-                    interviewDate,
-                    interviewTime,
-                    interviewMode,
-                    venue,
-                    followUpDate,
-                    followUpTime,
-                    status,
-                    employer,
-                    applicant
-            );
-
-            // Add to local and global list
-            scheduleList.add(schedule);
-            Database.schedules.add(schedule);
-
-            System.out.println("Schedule added successfully!");
-        } else {
-            System.out.println("Schedule was not added.");
-        }
-
-        Tools.systemPause();
+        } while(error);
+        
+        interviewDate = Validation.checkDate("Enter interview date: ");
+        interviewTime = Validation.checkTime("Enter interview time: ");
+        interviewMode = Input.getChoiceInput("Enter your interview mode > ", ChooseSetting.INTERVIEW_MODE_OPTIONS);
+        venue = Input.getStringInput("Enter interview venue > ");
+        
+        Schedule schedule = new Schedule(interviewDate, interviewTime, interviewMode, venue, followUpDate, followUpTime, status, employer, applicant);
+        scheduleList.add(schedule);
+        Database.schedules.add(schedule);
+        ScheduleUI.successfulMessage();
     }
 
     public static void updateSchedule() {
         boolean error;
         String name;
-        Date interviewDate;
-        String status = null;
+        Date followUpDate = null;
+        Date followUpTime = null;
+        String status;
         Schedule schedule = null;
-
-        // 1. Identify the schedule using applicant name + interview date
-        do {
+        Applicant applicant = null;
+        Employer employer = Database.getEmployer();
+        
+        String[] statusOptions = {"Canceled", "Completed"};
+        
+        displayCalendar(employer);
+        
+        do{
             error = false;
-            name = ScheduleUI.getApplicantName();
-            if (!Validation.checkApplicant(name)) {
-                System.out.println("Invalid name or applicant not found.");
-                error = true;
-                continue;
-            }
-
-            // Prompt for interview date to narrow it down
-            String interviewDateStr = ScheduleUI.getInterviewDate();  // Assumes this method exists
-            interviewDate = Validation.checkDate(interviewDateStr);
-            if (interviewDate == null) {
-                System.out.println("Invalid date format. Please try again.");
-                error = true;
-                continue;
-            }
-
-            // Try to find the schedule
-            schedule = null;
-            for (Schedule s : Database.schedules) {
-                if (s.getApplicant() != null
-                        && s.getApplicant().getName().equalsIgnoreCase(name)
-                        && s.getInterviewDate().equals(interviewDate)) {
-                    schedule = s;
-                    break;
-                }
-            }
-
-            if (schedule == null) {
-                System.out.println("No schedule found for applicant '" + name + "' on that date.");
-                error = true;
-            }
-        } while (error);
-
-        // 2. Update interview date and time if needed
-        System.out.print("Would you like to update the interview date or time? (1 = Yes, 2 = No) > ");
-        if (Input.getIntegerInput() == 1) {
-            Date newInterviewDate = null;
-            Date newInterviewTime = null;
-
-            // Get new interview date
-            do {
-                error = false;
-                String newDateStr = ScheduleUI.getDate(); // prompt for new interview date
-                newInterviewDate = Validation.checkDate(newDateStr);
-                if (newInterviewDate == null) {
-                    System.out.println("Invalid date format.");
-                    error = true;
-                }
-            } while (error);
-
-            // Get new interview time
-            do {
-                error = false;
-                String newTimeStr = ScheduleUI.getTime(); // prompt for new interview time
-                newInterviewTime = Validation.checkTime(newTimeStr);
-                if (newInterviewTime == null) {
-                    System.out.println("Invalid time format.");
-                    error = true;
-                }
-            } while (error);
-
-            // Update the schedule with new date and time
-            schedule.setInterviewDate(newInterviewDate);
-            schedule.setInterviewTime(newInterviewTime);
-
-            System.out.println("Interview date and time updated successfully.");
-        }
-
-        // 3. Get new status
-        do {
-            error = false;
-            int choice = ScheduleUI.updateStatus();
-            switch (choice) {
-                case 1 ->
-                    status = "Scheduled";
-                case 2 ->
-                    status = "Completed";
-                case 3 ->
-                    status = "Canceled";
-                default -> {
-                    error = true;
-                    MessageUI.errorMessage();
-                }
-            }
-        } while (error);
-
-        // 4. Get score if status is "Completed"
-        int score = -1;
-        if ("Completed".equals(status)) {
-            do {
-                error = false;
-                System.out.print("Enter interview score (0-100) > ");
-                score = Input.getIntegerInput();
-                if (score < 0 || score > 100) {
-                    System.out.println("Invalid score. Please enter a value between 0 and 100.");
-                    error = true;
-                }
-            } while (error);
-        }
-
-        // 5. Confirm and apply update
-        System.out.print("Are you sure you want to update this schedule? (1 = Yes, 2 = No) > ");
-        if (Input.getIntegerInput() == 1) {
-            schedule.setStatus(status);
-
-            // Date Formatting for display
-            SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-
-            String formattedInterviewDate = dateFormat.format(schedule.getInterviewDate());
-            String formattedInterviewTime = timeFormat.format(schedule.getInterviewTime());
-
-            System.out.println("\n=== UPDATED SCHEDULE ===");
-            System.out.println("Applicant: " + name);
-            System.out.println("Updated Interview Date: " + formattedInterviewDate);
-            System.out.println("Updated Interview Time: " + formattedInterviewTime);
-            System.out.println("New Status: " + status);
-            System.out.println("New Score: " + (score != -1 ? score : 0));
-
-            System.out.println("Update successful!");
-        } else {
-            System.out.println("Update cancelled.");
-        }
-
-        Tools.systemPause();
-    }
-
-    public static void updateInterviewDateTime() {
-        boolean error;
-        String name;
-        String interviewDateString;
-        Date oldInterviewDate;
-        Schedule schedule = null;
-
-        // 1. Identify schedule using name + current interview date
-        do {
-            error = false;
-            name = ScheduleUI.getApplicantName();
-            interviewDateString = ScheduleUI.getInterviewDate();
-            oldInterviewDate = Validation.checkDate(interviewDateString);
-
-            if (!Validation.checkApplicant(name)) {
-                System.out.println("Invalid name or date, or applicant not found.");
+            name = Validation.checkString("Enter applicant name: ");
+            if(!Validation.checkApplicant(name)){
                 error = true;
             } else {
-                schedule = getSchedule(name, oldInterviewDate);
-                if (schedule == null) {
-                    System.out.println("No schedule found for " + name + " on " + interviewDateString);
-                    error = true;
-                }
+                applicant = getApplicant(name);
             }
-        } while (error);
-
-        // 2. Get new date
-        Date newDate = null;
-        do {
-            error = false;
-            String newDateStr = ScheduleUI.getDate();
-            newDate = Validation.checkDate(newDateStr);
-            if (newDate == null) {
-                System.out.println("Invalid date format.");
-                error = true;
+        } while(error);
+        
+        for(Schedule list : Database.schedules){
+            if(list.getApplicant().equals(applicant)){
+                schedule = list;
             }
-        } while (error);
-
-        // 3. Get new time
-        Date newTime = null;
-        do {
-            error = false;
-            String newTimeStr = ScheduleUI.getTime(); // prompt: "Enter new interview time"
-            newTime = Validation.checkTime(newTimeStr);
-            if (newTime == null) {
-                System.out.println("Invalid time format.");
-                error = true;
-            }
-        } while (error);
-
-        // 4. Confirm update
-        System.out.print("Are you sure you want to update the interview date and time? (1 = Yes, 2 = No) > ");
-        if (Input.getIntegerInput() == 1) {
-            schedule.setInterviewDate(newDate);
-            schedule.setInterviewTime(newTime);
-            System.out.println("Interview date and time updated successfully.");
-        } else {
-            System.out.println("Update canceled.");
         }
-
-        Tools.systemPause();
+        
+        status = Input.getChoiceInput("Choose status to update > ", statusOptions);
+        if(!status.equals("Canceled")){
+            followUpDate = Validation.checkDate("Enter follow up date > ");
+            followUpTime = Validation.checkTime("Enter follow up time > ");
+        }
+        
+        // Update 
+        schedule.setFollowUpDate(followUpDate);
+        schedule.setFollowUpTime(followUpTime);
+        schedule.setStatus(status);
+        
+        ScheduleUI.successfulMessage();
     }
 
+    public static void editScheduleItem(){
+        
+        boolean error;
+        int choice;
+        String name;
+        Schedule schedule = null;
+        Applicant applicant = null;
+        Employer employer = Database.getEmployer();
+        
+        Tools.clearScreen();
+        displayCalendar(employer);
+        
+        do{
+            error = false;
+            name = Validation.checkString("Enter applicant name: ");
+            if(!Validation.checkApplicant(name)){
+                error = true;
+            } else {
+                applicant = getApplicant(name);
+            }
+        } while(error);
+        
+        for(Schedule list : Database.schedules){
+            if(list.getApplicant().equals(applicant)){
+                schedule = list;
+            }
+        }
+        
+        do{
+            choice = ScheduleUI.editScheduleMenu();
+            switch(choice){
+                case 1 -> editInterviewDate(schedule);
+                case 2 -> editFollowUpDate(schedule);
+                case 3 -> editVenue(schedule);
+                case 4 -> editInterviewMode(schedule);
+                case 5 -> Tools.back();
+                default -> MessageUI.errorMessage();
+            }
+        }while(choice != 4);
+        
+    }
+  
     public static void displaySchedule() {
         ListInterface<Schedule> schedules = Database.schedules;
         ListInterface<Schedule> results = new DoublyLinkedList<>();
@@ -396,66 +208,341 @@ public class ScheduleManager {
         System.out.println("Found " + results.size() + " matching schedules");
 
         if (!results.isEmpty()) {
-            //ScheduleUI.displaySchedule(results);
+            displayScheduleList(results);
         } else {
             MessageUI.noScheduled();
         }
         Tools.systemPause();
     }
+    
+    public static void displayScheduleList(ListInterface<Schedule> scheduleList) {
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
+    boolean isEmployer = UserManager.isEmployer();
+
+    if (isEmployer) {
+        System.out.printf("%-4s | %-15s | %-10s | %-6s | %-15s | %-16s | %-15s | %-10s | %-6s%n",
+                "No", "Name", "Date", "Time", "Venue", "Follow Up Date", "Follow Up Time", "Status", "Score");
+        System.out.println("--------------------------------------------------------------------------------------------------------------");
+    } else {
+        System.out.printf("%-4s | %-15s | %-10s | %-6s | %-15s%n",
+                "No", "Name", "Date", "Time", "Venue");
+        System.out.println("---------------------------------------------------------------");
+    }
+
+    int no = 1;
+    for (Schedule item : scheduleList) {
+            Applicant applicant = item.getApplicant();
+            String name = (applicant != null) ? applicant.getName() : "N/A";
+
+            String formattedInterviewDate = (item.getInterviewDate() != null) ? dateFormat.format(item.getInterviewDate()) : "N/A";
+            String formattedInterviewTime = (item.getInterviewTime() != null) ? timeFormat.format(item.getInterviewTime()) : "N/A";
+
+            if (isEmployer) {
+                String formattedFollowUpDate = (item.getFollowUpDate() != null) ? dateFormat.format(item.getFollowUpDate()) : "N/A";
+                String formattedFollowUpTime = (item.getFollowUpTime() != null) ? timeFormat.format(item.getFollowUpTime()) : "N/A";
+
+                System.out.printf("%-4d | %-15s | %-10s | %-6s | %-15s | %-16s | %-15s",
+                        no++, name, formattedInterviewDate, formattedInterviewTime,
+                        item.getVenue(), formattedFollowUpDate, formattedFollowUpTime);
+            } else {
+                System.out.printf("%-4d | %-15s | %-10s | %-6s | %-15s%n",
+                        no++, name, formattedInterviewDate, formattedInterviewTime,
+                        item.getVenue());
+            }
+        }
+    }
+    
     public static void cancelInterview() {
         boolean error;
+        String cancel;
         String name;
+        Schedule schedule;
         Applicant applicant = null;
-        Schedule schedule = null;
-        String dateString;
-        Date interviewDate = null;
+        Employer employer = Database.getEmployer();
 
-        do {
+        do{
             error = false;
-            name = ScheduleUI.getApplicantName();
-            if (!Validation.checkApplicant(name)) {
-                System.out.println("Invalid name or applicant not found.");
+            name = Validation.checkString("Enter applicant name: ");
+            if(!Validation.checkApplicant(name)){
                 error = true;
             } else {
                 applicant = getApplicant(name);
             }
-        } while (error);
-
-        do {
-            error = false;
-            dateString = ScheduleUI.getDate();
-            if (Validation.checkDate(dateString) == null) {
-                System.out.println("Invalid date format. Please try again.");
-                error = true;
+        } while(error);
+        
+        schedule = getSchedule(employer, applicant);
+        if(schedule != null){
+            Date interviewDate = schedule.getInterviewDate();
+            Date interviewTime = schedule.getInterviewTime();
+            Date followUpDate = schedule.getFollowUpDate();
+            Date followUpTime = schedule.getFollowUpTime();
+            String venue = schedule.getVenue();
+                
+            System.out.println("---------------------------------------------------");
+            System.out.println("Interview Date > " + interviewDate);
+            System.out.println("Interview Time > " + interviewTime);
+            System.out.println("Follow Up Date > " + followUpDate);
+            System.out.println("Follow Up Time > " + followUpTime);
+            System.out.println("Venue > " + venue);
+            System.out.println("---------------------------------------------------");
+            
+            cancel = Input.getYesNoInput("Confirm to cancel this interview? (y/n) > ");
+            if(cancel.equalsIgnoreCase("y")){
+                scheduleList.remove(schedule);
+                Database.schedules.remove(schedule);
+                MessageUI.deleteSuccessful();
             } else {
-                interviewDate = Validation.checkDate(dateString);
-            }
-        } while (error);
-
-        Schedule targetSchedule = null;
-        for (Schedule s : Database.schedules) {
-            if (s.getApplicant().equals(applicant) && s.getInterviewDate().equals(interviewDate)) {
-                targetSchedule = s;
-                break;
-            }
-        }
-
-        if (targetSchedule != null) {
-            System.out.print("Are you sure you want to cancel this interview? (1 = Yes, 2 = No) > ");
-            int confirm = Input.getIntegerInput("");
-            if (confirm == 1) {
-                targetSchedule.setStatus("Canceled");
-                System.out.println("Interview for " + name + " on " + dateString + " has been successfully canceled.\n");
-            } else {
-                System.out.println("Cancellation aborted.\n");
+                MessageUI.nothing();
             }
         } else {
-            System.out.println("No matching interview found for the given applicant and date.\n");
+            System.out.println("No interview found!");
         }
+        
         Tools.systemPause();
     }
 
+    private static Schedule getSchedule(Employer employer, Applicant applicant) {
+        
+        Schedule result = null;
+        
+        for (Schedule schedule : Database.schedules) {
+            if (schedule.getEmployer().equals(employer) && schedule.getApplicant().equals(applicant)) {
+                result = schedule;
+            }
+        }
+        return result;
+    }
+    
+    public static <T> void displayCalendar(T object){
+        
+        ListInterface<Schedule> list = new DoublyLinkedList<>();
+        Employer employer = null;
+        Applicant applicant = null;
+        
+        if(object == null){
+            MessageUI.nothing();
+        }
+        
+        if(!(object instanceof Employer)){
+            applicant = (Applicant)object;
+        } else {
+            employer = (Employer)object;
+        }
+        
+        if(employer != null){
+            for(Schedule schedule : Database.schedules){
+                if(schedule.getEmployer().equals(employer)){
+                    list.add(schedule);
+                }
+            }
+            if(!list.isEmpty()){
+                displayCalendarForm();
+            } else {
+                MessageUI.emptyDatabase();
+            }
+        } else {
+            for(Schedule schedule : Database.schedules){
+                if(schedule.getApplicant().equals(applicant)){
+                    list.add(schedule);
+                }
+            }
+            if(!list.isEmpty()){
+                displayCalendarForm();
+            } else {
+                MessageUI.emptyDatabase();
+            }
+        }
+        
+    }
+    
+    private static void editInterviewDate(Schedule schedule){
+        Date interviewDate = Validation.checkDate("Enter new interview date > ");
+        Date interviewTime = Validation.checkDate("Enter new interview time > ");
+        schedule.setInterviewDate(interviewDate);
+        schedule.setInterviewTime(interviewTime);
+        ScheduleUI.successfulMessage();
+    }
+    
+    private static void editFollowUpDate(Schedule schedule){
+        if(schedule.getFollowUpTime() == null){
+            System.out.println(RED + "Haven't assign follow up date" + RESET);
+            Tools.systemPause();
+        } else {
+            Date followUpDate = Validation.checkDate("Enter new follow up date > ");
+            Date followUpTime = Validation.checkTime("Enter new follow up time > ");
+            schedule.setFollowUpDate(followUpDate);
+            schedule.setFollowUpTime(followUpTime);
+            ScheduleUI.successfulMessage();
+        }
+    }
+    
+    private static void editVenue(Schedule schedule){
+        String venue = Input.getStringInput("Enter new venue > ");
+        schedule.setVenue(venue);
+        ScheduleUI.successfulMessage();
+    }
+    
+    private static void editInterviewMode(Schedule schedule){
+        String interviewMode = schedule.getInterviewMode();
+        String yesNo;
+        String venue;
+        
+        if(interviewMode.equals("Online")){
+            yesNo = Input.getYesNoInput("Confirm to switch to offline? (y/n) > ");
+            if(yesNo.equalsIgnoreCase("y")){
+                venue = Input.getStringInput("Enter venue > ");
+                schedule.setInterviewMode("Offline");
+                schedule.setVenue(venue);
+            } else {
+                schedule.setInterviewMode("Online");
+                schedule.setVenue("N/A");
+            }
+        }
+    }
+ 
+    // ------------------------------------------ by Jesmine Tey Khai Jing ----------------------------------------------------
+    private static void displayCalendarForm(){
+        
+        int[][] calendar = new int[5][7];
+        
+        SimpleDateFormat intMonthFormat = new SimpleDateFormat("MM");
+        SimpleDateFormat monthFormat = new SimpleDateFormat("MMMM"); 
+        SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
+        SimpleDateFormat dayOfWeekFormat = new SimpleDateFormat("EEE");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        
+        Date date = Database.getCurrentDate();
+        String monthName = monthFormat.format(date);
+        String monthInt = intMonthFormat.format(date);
+        String yearString = yearFormat.format(date);
+        
+        int count = 1;
+        int totalDays;
+        int startPosition = 0;
+        int year = Integer.parseInt(yearString);
+        int month = Integer.parseInt(monthInt);
+        
+        String firstDayString = String.format("%04d-%02d-01", year, month);
+        Date firstDayDate = null;
+        try{
+            firstDayDate = dateFormat.parse(firstDayString);
+        } catch (ParseException e){
+            MessageUI.errorMessage();
+        }
+        String firstDayOfWeek = dayOfWeekFormat.format(firstDayDate);
+        
+        String[] month_31 = {
+            "January", "March", "May", "July", "August", "October", "December"
+        };
+        String[] month_30 = {
+            "April", "June", "September", "November"
+        };
+        
+        if(compareStringList(month_31, monthName)){
+            totalDays = 31;
+        } else if(compareStringList(month_30, monthName)){
+            totalDays = 30;
+        } else if(year % 4 == 0){
+            totalDays = 29;
+        } else {
+            totalDays = 28;
+        }
+        
+        switch(firstDayOfWeek){
+            case "Mon" -> startPosition = 1;
+            case "Tue" -> startPosition = 2;
+            case "Wed" -> startPosition = 3;
+            case "Thu" -> startPosition = 4;
+            case "Fri" -> startPosition = 5;
+            case "Sat" -> startPosition = 6;
+            case "Sun" -> startPosition = 7;
+        }
+        
+        ScheduleUI.displayCalendarHeader(monthName, year);
+        
+        for (int row = 0; row < 5; row++) {
+            System.out.println("------------------------------------------");
+            for (int column = 0; column < 7; column++) {
+                if (count >= totalDays + 1) {
+                    System.out.print("|    |");
+                } else if ((row == 0) && (column < startPosition)) {
+                    System.out.print("|    |");
+                } else {
+                    if (scheduleDateList(year, month, count)) {
+                        calendar[row][column] = count;
+                        System.out.printf(RED + "| %02d |" + RESET, calendar[row][column]);
+                    } else if (column == 5 || column == 6) {
+                        calendar[row][column] = count;
+                        System.out.printf(BLUE + "| %02d |" + RESET, calendar[row][column]);
+                    } else if (checkToday(year, month, count)){
+                        calendar[row][column] = count;
+                        System.out.printf(GREEN + "| %02d |" + RESET, calendar[row][column]);
+                    } else {
+                        calendar[row][column] = count;
+                        System.out.printf("| %02d |", calendar[row][column]);
+                    }
+                    count++;
+                }
+            }
+            System.out.println("\n------------------------------------------");
+        }
+        
+        ScheduleUI.displayCalendarFooter();
+        
+    }
+    
+    //  Get the scheduled date
+    private static boolean scheduleDateList(int year, int month, int date){
+
+        Date scheduledDate;
+        Employer employer = Database.getEmployer();
+        String currentYearString;
+        String currentMonthString;
+        String currentDateString;
+        int currentYear;
+        int currentMonth;
+        int currentDate;
+        
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd");
+        SimpleDateFormat monthFormat = new SimpleDateFormat("MM");
+        SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
+        
+        for(Schedule schedule : Database.schedules){
+            Employer currentEmployer = schedule.getEmployer();
+            if(currentEmployer.equals(employer)){
+                scheduledDate = schedule.getInterviewDate();
+                currentYearString = yearFormat.format(scheduledDate);
+                currentMonthString = monthFormat.format(scheduledDate);
+                currentDateString = dateFormat.format(scheduledDate);
+                currentYear = Integer.parseInt(currentYearString);
+                currentMonth = Integer.parseInt(currentMonthString);
+                currentDate = Integer.parseInt(currentDateString);
+
+                if((year == currentYear) && (month == currentMonth) && (date == currentDate)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    // Get current date
+    private static boolean checkToday(int year, int month, int date){
+        Date today = Database.getCurrentDate();
+        
+        SimpleDateFormat dayFormat = new SimpleDateFormat("dd");
+        SimpleDateFormat intMonthFormat = new SimpleDateFormat("MM");
+        SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
+        
+        int currentDate = Integer.parseInt(dayFormat.format(today));
+        int currentMonth = Integer.parseInt(intMonthFormat.format(today));
+        int currentYear = Integer.parseInt(yearFormat.format(today));
+        
+        return((currentDate == date) && (currentMonth == month) && (currentYear == year));
+    }
+    
     // Get the specific applicant
     private static Applicant getApplicant(String name) {
         Applicant applicant = null;
@@ -467,16 +554,15 @@ public class ScheduleManager {
         }
         return applicant;
     }
-
-    public static Schedule getSchedule(String name, Date interviewDate) {
-        for (Schedule schedule : Database.schedules) {
-            if (schedule.getApplicant() != null
-                    && schedule.getApplicant().getName().equalsIgnoreCase(name)
-                    && schedule.getInterviewDate().equals(interviewDate)) {
-                return schedule;
+    
+    // Compare a list of string
+    private static boolean compareStringList(String[] stringList, String month){
+        for (String list : stringList) {
+            if(month.equals(list)){
+                return true;
             }
         }
-        return null;
+        return false;
     }
 
 }

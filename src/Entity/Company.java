@@ -136,6 +136,10 @@ public class Company implements Comparable<Company>{
     public void setVerifications(String verifications) {
         this.verifications = verifications;
     }
+    
+    public void incrementEmployeeCount() {
+        this.employeeCount++;
+    }
 
     @Override
     public String toString() {

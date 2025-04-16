@@ -12,6 +12,7 @@ import Entity.Employer;
 import Entity.Job;
 import Entity.JobApplication;
 import Entity.Schedule;
+import java.util.Date;
 
 /**
  *
@@ -22,6 +23,9 @@ public class Database {
     // Define current user
     private static Employer currentEmployer = null;
     private static Applicant currentApplicant = null;
+    
+    private static Date currentDate = null;
+    private static Date currentTime = null;
     
     // Create List
     public static final ListInterface<Company> companies = new DoublyLinkedList<>();
@@ -47,6 +51,22 @@ public class Database {
     
     public static void setApplicant(Applicant applicant){
         currentApplicant = applicant;
+    }
+    
+    public static Date getCurrentDate(){
+        return currentDate;
+    }
+    
+    public static void setCurrentDate(Date date){
+        currentDate = date;
+    }
+    
+    public static Date getCurrentTime(){
+        return currentTime;
+    }
+    
+    public static void setCurrentTime(Date time){
+        currentTime = time;
     }
     
 }

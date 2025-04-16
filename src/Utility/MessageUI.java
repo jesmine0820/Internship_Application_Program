@@ -18,7 +18,6 @@ public class MessageUI {
     
     public static void errorMessage(){
         System.out.println(RED + "Invalid Input!" + RESET);
-        Tools.systemPause();
     }
     
     public static void inputIntegerMessage(){
@@ -121,7 +120,11 @@ public class MessageUI {
     }
     
     public static void removeFailed(){
-        System.out.println(RED + "An error occurred while removing");
+        System.out.println(RED + "An error occurred while removing" + RESET);
+    }
+    
+    public static void nothing(){
+        System.out.println(RED + "Here got nothing!" + RESET);
     }
     
 }

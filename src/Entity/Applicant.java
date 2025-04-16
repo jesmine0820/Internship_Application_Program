@@ -23,6 +23,7 @@ public class Applicant extends Person implements Comparable<Applicant>{
     private String availability;
     private Resume resume;
     private ListInterface<JobApplication> jobApplication;
+    private ListInterface<Job> savedList;
 
     public Applicant(){
         
@@ -91,6 +92,14 @@ public class Applicant extends Person implements Comparable<Applicant>{
 
     public void setResume(Resume resume) {
         this.resume = resume;
+    }
+    
+    public ListInterface<Job> getSavedList(){
+        return savedList;
+    }
+    
+    public void setSavedList(ListInterface<Job> savedList){
+        this.savedList = savedList;
     }
 
     public ListInterface<JobApplication> getJobApplication() {
@@ -164,7 +173,7 @@ public class Applicant extends Person implements Comparable<Applicant>{
     public void setAvailability(String availability) {
         this.availability = availability;
     }
-
+    
     //need to change
     @Override
     public String toString() {

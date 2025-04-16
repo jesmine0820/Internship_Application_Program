@@ -12,51 +12,13 @@ import java.util.Date;
  * @author Asus
  */
 public class JobApplicationManager {
-
+    
     private static final ListInterface<JobApplication> jobApplicationList = new DoublyLinkedList<>();
-    private static final ListInterface<Job> jobList = Database.jobList;
     public static final ListInterface<Company> companies = Database.companies;
 
     //========== BROWSE JOBS ========== 
-    public static void browseJobs() {
-        if (jobList.isEmpty()) {
-            System.out.println("No available jobs at the moment.");
-            return;
-        }
-
-        // Display job summaries
-        for (int i = 0; i < jobList.size(); i++) {
-            Job job = jobList.get(i);
-            String jobTitle = job.getJobTitle();
-            String companyName = "Unknown";
-
-            if (job.getEmployer() != null && job.getEmployer().getCompany() != null) {
-                companyName = job.getEmployer().getCompany().getCompanyName();
-            }
-
-            System.out.println((i + 1) + ". " + jobTitle + " - " + companyName
-                    + "\n   -> " + job.getJobDescription());
-        }
-
-        // Let user pick one to view
-        int choice;
-        while (true) {
-            choice = Input.getIntegerInput("\nEnter the number of the job to view details (or 0 to cancel): ");
-            if (choice == 0) {
-                System.out.println("Cancelled.");
-                return;
-            } else if (choice > 0 && choice <= jobList.size()) {
-                break;
-            } else {
-                System.out.println("Invalid selection. Please try again.");
-            }
-        }
-
-        // Show selected job details
-        Job selectedJob = jobList.get(choice - 1);
-        Employer selectedEmployer = selectedJob.getEmployer();
-        Company company = (selectedEmployer != null) ? selectedEmployer.getCompany() : null;
-
+    public static void displayBrowseJobs(Job selectedJob) {
+        Company company = selectedJob.getEmployer().getCompany();
         System.out.println(BLUE + "\n========== Job Details ==========" + RESET);
         System.out.println("Title: " + selectedJob.getJobTitle());
         System.out.println("Company: " + (company != null ? company.getCompanyName() : "Unknown"));
@@ -75,8 +37,87 @@ public class JobApplicationManager {
         // Now offer to apply
         applyToJob(selectedJob);
     }
+    
+    public static void handleJobAfterBrowsing(Job selectedJob) {
+        if (selectedJob == null) {
+            System.out.println("No job selected.");
+            return;
+        }
 
-    // ========== APPLY JOBS ========== [after browse]
+        String[] optionAfter = {"Save", "Apply", "Both", "Cancel"};
+        String optionChoice = Input.getChoiceInput("\nWhat would you like to do next?", optionAfter);
+
+        switch (optionChoice.toLowerCase()) {
+            case "save" ->
+                saveJob(selectedJob);
+            case "apply" ->
+                applyToJob(selectedJob);
+            case "both" -> {
+                saveJob(selectedJob);
+                applyToJob(selectedJob);
+            }
+            case "cancel" ->
+                System.out.println("No action taken.");
+            default ->
+                System.out.println("Invalid option.");
+        }
+    }
+
+    // ========== SAVE JOBS ==========
+    public static void saveJob(Job selectedJob) {
+        if (selectedJob == null) {
+            System.out.println("No job selected to save.");
+            return;
+        }
+
+        Applicant loggedInApplicant = Database.getApplicant();
+        if (loggedInApplicant == null) {
+            System.out.println("No logged-in applicant found. Please log in first.");
+            return;
+        }
+
+        for (int i = 0; i < loggedInApplicant.getSavedList().size(); i++) {
+            if (loggedInApplicant.getSavedList().get(i).getJobID().equals(selectedJob.getJobID())) {
+                System.out.println("\nYou have already saved this job.");
+                return;
+            }
+        }
+
+        String confirm = Input.getYesNoInput("\nDo you want to save this job? (Yes/No): ");
+        if (!confirm.equalsIgnoreCase("yes")) {
+            System.out.println("Job not saved.");
+            return;
+        }
+
+        loggedInApplicant.getSavedList().add(selectedJob);
+        System.out.println(GREEN + "\nJob saved successfully!" + RESET);
+    }
+    
+    // ========== DISPLAY SAVE LIST =========
+    public static void displaySaveList(){
+        Applicant loggedInApplicant = Database.getApplicant();
+        int count = 0;
+        
+        for (Job job : loggedInApplicant.getSavedList()){
+            Employer employer = job.getEmployer();
+            Company company = employer.getCompany();
+            String companyName = company.getCompanyName();
+            String jobTitle = job.getJobTitle();
+            String jobType = job.getJobType();
+            String jobDescription = job.getJobDescription();
+            Double salary = job.getSalary();
+            System.out.println("---------------------------------------------------------------");
+            System.out.printf ("│ %-3s %-70s │\n", (count + 1) + ".", companyName);
+            System.out.printf ("│     Position:     %-60s │\n", jobTitle);
+            System.out.printf ("│     Type:         %-60s │\n", jobType);
+            System.out.printf ("│     Salary:       RM%-57.2f │\n", salary);
+            System.out.printf ("│     Description:  %-60s │\n", jobDescription);
+            System.out.println("---------------------------------------------------------------");
+            count++;
+        }
+    }
+
+    // ========== APPLY JOBS ==========
     public static void applyToJob(Job selectedJob) {
         if (selectedJob == null) {
             System.out.println("No job selected to apply for.");
@@ -95,9 +136,23 @@ public class JobApplicationManager {
             return;
         }
 
+        boolean alreadyApplied = false;
+        for (int i = 0; i < Database.jobApplicationList.size(); i++) {
+            JobApplication app = Database.jobApplicationList.get(i);
+            if (app.getApplicant().getId().equals(loggedInApplicant.getId())
+                    && app.getJob().getJobID().equals(selectedJob.getJobID())) {
+                alreadyApplied = true;
+                break;
+            }
+        }
+
+        if (alreadyApplied) {
+            System.out.println("\nYou have already applied for this job.");
+            return;
+        }
+
         Resume resume = loggedInApplicant.getResume();
 
-        // Check if all details are filled in
         boolean hasAllDetails = resume != null
                 && resume.getEducationLevel() != null && !resume.getEducationLevel().isEmpty()
                 && resume.getSkills() != null && !resume.getSkills().isEmpty()
@@ -115,28 +170,25 @@ public class JobApplicationManager {
                 return;
             }
 
-            // Ensure the resume has all required details
             ensureResumeHasAllDetails(loggedInApplicant);
         }
 
-        // Generate application ID like APP001
         String applicationID = String.format("APP%03d", Database.jobApplicationList.size() + 1);
 
         JobApplication newApplication = new JobApplication();
         newApplication.setApplicationID(applicationID);
         newApplication.setApplicationDate(new Date());
         newApplication.setStatus("Pending");
-        newApplication.setResumeSubmitted(true); // Since resume is now complete
+        newApplication.setResumeSubmitted(true);
         newApplication.setApplicant(loggedInApplicant);
         newApplication.setJob(selectedJob);
         newApplication.setInterviewScheduled(false);
 
-        // Add the application to the applicant's job application list and to the database
         loggedInApplicant.getJobApplication().add(newApplication);
         jobApplicationList.add(newApplication); //local
         Database.jobApplicationList.add(newApplication);//global
 
-        System.out.println(GREEN+"\nApplication submitted successfully!"+RESET);
+        System.out.println(GREEN + "\nApplication submitted successfully!" + RESET);
         System.out.println("Applicant Name: " + loggedInApplicant.getName());
         System.out.println("Application ID: " + applicationID);
         System.out.println("Job Title: " + selectedJob.getJobTitle());
@@ -351,10 +403,10 @@ public class JobApplicationManager {
 
     }
     
-    public static void displayMyJobApplication() {
+    public static void displayMyJobApplication(ListInterface<JobApplication> jobAppList) {
         ListInterface<JobApplication> applicationList = new DoublyLinkedList<>();
-        for(int i = 0; i < Database.jobApplicationList.size(); i++){
-            JobApplication currentApplication = Database.jobApplicationList.get(i);
+        for(int i = 0; i < jobAppList.size(); i++){
+            JobApplication currentApplication = jobAppList.get(i);
             if(currentApplication.getApplicant() == Database.getApplicant()){
                 applicationList.add(currentApplication);
             }
@@ -387,4 +439,5 @@ public class JobApplicationManager {
             System.out.println("   - " + data);
         }
     }
+
 }

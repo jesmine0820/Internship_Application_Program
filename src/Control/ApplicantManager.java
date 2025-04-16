@@ -364,7 +364,7 @@ public class ApplicantManager {
                     updatedResume.setEducationLevel(Input.getChoiceInput("\nSelect updated Education Level: ", ChooseSetting.EDUCATION_LEVELS));
                 // ==========================================================================================================================================================================
                 case "Skills" ->
-                    updatedResume.setSkills(Input.getMultipleChoiceInput("Select Skills: ", ChooseSetting.SKILL_OPTIONS));
+                    updatedResume.setSkills(Input.getPaginatedMultiSelectInput("Select Skills: ", ChooseSetting.SKILL_OPTIONS));
                 case "Work Experience" ->
                     updatedResume.setExperience(Input.getStringListInput("Enter updated Work Experience (comma-separated): "));
                 case "Certifications" ->
@@ -832,7 +832,7 @@ public class ApplicantManager {
     }
 
     /*4. Filter Details*/
-    private static void displayEssentialInfo(Applicant applicant) {
+    public static void displayEssentialInfo(Applicant applicant) {
         System.out.println("=====================================");
         System.out.println("         Applicant Resume Overview");
         System.out.println("=====================================");
@@ -910,5 +910,19 @@ public class ApplicantManager {
             System.out.println("Email: " + applicant.getEmail());
             System.out.println("=========================================");
         }
+    }
+    
+    public static void displayBrowseApplicant(Applicant applicant, int i){
+        String name = applicant.getName();
+        String preferredWorkMode = applicant.getPreferredWorkMode();
+        String desiredJobType = applicant.getDesiredJobType();
+        String portfolioLink = applicant.getPortfolioLink();
+                        
+        System.out.println("-----------------------------------------------------------------------------------------");
+        System.out.println("     " + String.format("%-75s", (i + 1) + ". " + name) + " |");
+        System.out.println("           " + String.format("%-75s", "Preferred Work Mode: " + preferredWorkMode) + " |");
+        System.out.println("           " + String.format("%-75s", "Desired Job Type: " + desiredJobType) + " |");
+        System.out.println("           " + String.format("%-75s", "Portfolio Link: " + portfolioLink) + " |");
+        System.out.println("-----------------------------------------------------------------------------------------");
     }
 }

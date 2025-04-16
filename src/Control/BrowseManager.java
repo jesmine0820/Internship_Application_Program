@@ -7,6 +7,8 @@ import Boundary.BrowseUI;
 import Dao.Database;
 import Entity.*;
 import Utility.*;
+import static Utility.Tools.GREY;
+import static Utility.Tools.RESET;
 
 /**
  *
@@ -17,7 +19,13 @@ import Utility.*;
  */
 public class BrowseManager {
     
+    private static final ListInterface<String> searchHistory = new DoublyLinkedList<>();
     private static String title = "";
+    private static Boolean cancel;
+    
+    public static void setCancel(Boolean yesNo){
+        cancel = yesNo;
+    }
     
     public static void browseMenu(){
         UserUI.headLine();
@@ -29,12 +37,9 @@ public class BrowseManager {
             if(!title.isEmpty()){
                 if("Job".equals(title) || "Applicant".equals(title)){
                     displayAll(title);
-                } else {
-                    BrowseUI.displayBrowserHeader(title);
-                    searchEngine();
                 }
             }
-        }while (!title.equals(""));
+        }while (!cancel);
     }
     
     private static String getBrowseSelection(){
@@ -58,21 +63,7 @@ public class BrowseManager {
                 } 
             }
         } else {
-            while(true){
-                int choice = BrowseUI.applicantBrowseMenu();
-                switch (choice) {
-                    case 1 -> { 
-                        return "Job"; 
-                    }
-                    case 2 -> {
-                        return "Browse";
-                    }
-                    case 3 -> { 
-                        return "";
-                    }
-                    default -> MessageUI.errorMessage();
-                }
-            }
+            return "Job";
         }
     }
     
@@ -84,6 +75,8 @@ public class BrowseManager {
         
         // Dynamically identify object types
         T object = getObject(title);
+        Job goJob;
+        Applicant goApplicant;
 
         System.out.println("\n       Available " + title );
 
@@ -94,18 +87,37 @@ public class BrowseManager {
         
         list = sortList(list, object);
         
-        selectEntity(list, title);
-     
+        if (object instanceof Job) {
+            goJob = (Job) Input.selectEntity(list, title);
+            if (goJob != null) {
+                cancel = false;
+                JobApplicationManager.displayBrowseJobs(goJob);
+            } else {
+                cancel = true;
+            }
+        } else if (object instanceof Applicant) {
+            goApplicant = (Applicant) Input.selectEntity(list, title);
+            if (goApplicant != null) {
+                cancel = false;
+                ApplicantManager.displayEssentialInfo(goApplicant);
+            } else {
+                cancel = true;
+            }
+        }
     }
 
     // Search for something in the list
     public static <T extends Comparable<T>> void searchEngine() {
         
         boolean isContinue;
+        Job goJob = null;
+        Applicant goApplicant = null;
+        Company goCompany = null;
         
         do{
             isContinue = true;
             
+            Tools.clearScreen();
             BrowseUI.displaySearchHeader();
             
             // Linked list to perform searching
@@ -117,9 +129,13 @@ public class BrowseManager {
             ListInterface<Applicant> applicantList = (ListInterface<Applicant>) selectList("Applicant");
 
             
-            String input = Input.getStringInput().toLowerCase();
+            String input = Input.getStringInput("Search > ").toLowerCase();
+            if(input.equals("S")){
+                searchHistory.add(input);
+                Database.searchHistory.add(input);
+            }
             
-            if(input.equalsIgnoreCase("x")){
+            if(input.equals("x")){
                 break;
             }
 
@@ -135,7 +151,7 @@ public class BrowseManager {
             ListInterface<Job> mergeResults;
             
             // Declare the false step in fuzzy matching
-            int falseStep = 10;
+            int falseStep = 5;
             String lowerInput = input.toLowerCase();
  
             // Search in Job List (Exact & Fuzzy)
@@ -145,11 +161,11 @@ public class BrowseManager {
                 String description = job.getJobDescription().toLowerCase();
                 String type = job.getJobType().toLowerCase();
                 
-                if(searching.search(jobTitle, lowerInput) || searching.fuzzyMatching(jobTitle, lowerInput) <= falseStep){
+                if(searching.search(jobTitle, lowerInput) || searching.fuzzyMatching(jobTitle, lowerInput) <= falseStep || jobList.get(i).getJobTitle().contains(input)){
                     jobResults.add(job);
-                } else if (searching.search(description, lowerInput) || searching.fuzzyMatching(description, lowerInput) <= falseStep){
+                } else if (searching.search(description, lowerInput) || searching.fuzzyMatching(description, lowerInput) <= falseStep|| jobList.get(i).getJobDescription().contains(input)){
                     jobResults.add(job);
-                } else if (searching.search(type, lowerInput )|| searching.fuzzyMatching(description, lowerInput) <= falseStep){
+                } else if (searching.search(type, lowerInput )|| searching.fuzzyMatching(description, lowerInput) <= falseStep|| jobList.get(i).getJobType().contains(input)){
                     jobResults.add(job);
                 }
                 jobResults = sortList(jobResults, job);
@@ -159,7 +175,7 @@ public class BrowseManager {
             for (int i = 0; i < companyList.size(); i++) {
                 Company company = companyList.get(i);
                 String companyName = company.getCompanyName().toLowerCase();
-                if (searching.search(companyName, lowerInput) || searching.fuzzyMatching(companyName, input) <= falseStep) {
+                if (searching.search(companyName, lowerInput) || searching.fuzzyMatching(companyName, input) <= falseStep || companyList.get(i).getCompanyName().contains(input)) {
                     companyResults.add(company);
                     companyResults = sortList(companyResults, company);
                 }
@@ -168,43 +184,62 @@ public class BrowseManager {
             for (int i = 0; i < applicantList.size(); i++) {
                 Applicant applicant = applicantList.get(i);
                 String applicantName = applicant.getName().toLowerCase();
-                if(searching.search(applicantName, lowerInput) || searching.fuzzyMatching(applicantName, input) <= falseStep){
+                if(searching.search(applicantName, lowerInput) || searching.fuzzyMatching(applicantName, input) <= falseStep || applicantList.get(i).getName().contains(input)){
                     applicantResults.add(applicant);
                     applicantResults = sortList(applicantResults, applicant);
                 }
             }
-            
+   
             // Need to match all the result
             if(UserManager.isEmployer()){
-                System.out.println("\n Search Results for '" + input + "'");
                 if(!jobResults.isEmpty() && !companyResults.isEmpty()){
                     mergeResults = (ListInterface<Job>)mergeList((ListInterface<T>)jobResults, (ListInterface<T>)companyResults);
-                    selectEntity(mergeResults, "Job");
-                } else {
+                    goJob = Input.selectEntity(mergeResults, input);
+                } else { 
                     if(!jobResults.isEmpty()){
-                        selectEntity(jobResults, "Job");
+                        goJob = Input.selectEntity(jobResults, input);
                     } else if(!companyResults.isEmpty()){
-                        selectEntity(companyResults, "Company");
+                        goCompany = Input.selectEntity(companyResults, input);
                     } else if(!applicantResults.isEmpty()){
-                        selectEntity(applicantResults, "Applicant");
+                        goApplicant = Input.selectEntity(applicantResults, input);
                     }
                 }
             } else {
-                System.out.println("\n Search Results for '" + input + "'");
                 if(!jobResults.isEmpty() && !companyResults.isEmpty()){
                     mergeResults = (ListInterface<Job>)mergeList((ListInterface<T>)jobResults, (ListInterface<T>)companyResults);
-                    selectEntity(mergeResults, "Job");
+                    goJob = Input.selectEntity(mergeResults, input);
                 } else {
                     if(!jobResults.isEmpty()){
-                        selectEntity(jobResults, "Job");
+                        goJob = Input.selectEntity(jobResults, input);
                     } else if(!companyResults.isEmpty()){
-                        selectEntity(companyResults, "Company");
+                        goCompany = Input.selectEntity(companyResults, input);
                     }
                 }
             }
             
             if(jobResults.isEmpty() && companyResults.isEmpty()){
                 MessageUI.noMatchFound();
+            }
+            
+            if(UserManager.isEmployer()){
+                if(goJob != null){
+                    JobManager.displayJobDetails(goJob);
+                    Tools.clearScreen();
+                } else if (goCompany != null) {
+                    EmployerManager.displayCompany(goCompany);
+                    Tools.clearScreen();
+                } else if (goApplicant != null){
+                    ApplicantManager.displayEssentialInfo(goApplicant);
+                    Tools.clearScreen();
+                } else {isContinue = goJob == null && goCompany == null && goApplicant == null;}
+            } else {
+                if(goJob != null){
+                    JobManager.displayJobDetails(goJob);
+                    Tools.clearScreen();
+                } else if (goCompany != null) {
+                    EmployerManager.displayCompany(goCompany);
+                    Tools.clearScreen();
+                } else {isContinue = goJob == null && goCompany == null && goApplicant == null;}
             }
             
         } while(isContinue);
@@ -251,96 +286,7 @@ public class BrowseManager {
         }
     }
     
-    // Make specific entries per page to increase readability
-    private static <T> void selectEntity(ListInterface<T> list, String string){
-        final int ENTRIES_PER_PAGE = 10;
-        int page = 0;
-        int totalPages = (int)Math.ceil((double)list.size() / ENTRIES_PER_PAGE);
-        T entity;
-        
-        while(true){
-            Tools.clearScreen();
-            UserManager.profileHeadLine();
-            System.out.println(string + " List ( Page " + (page + 1) + " of " + totalPages + "):\n");
-            
-            int start = page * ENTRIES_PER_PAGE;
-            int end = Math.min(start + ENTRIES_PER_PAGE, list.size());
-            
-            for(int i = start; i < end; i++){ 
-                Object obj = list.get(i);
-
-                switch (obj) {
-                    case Job job -> {
-                        Employer employer = job.getEmployer();
-                        Company company = employer.getCompany();
-                        String companyName = company.getCompanyName();
-                        String jobTitle = job.getJobTitle();
-                        String jobType = job.getJobType();
-                        String jobDescription = job.getJobDescription();
-                        Double salary = job.getSalary();
-                        
-                        System.out.println("---------------------------------------------------------------");
-                        System.out.printf ("│ %-3s %-70s │\n", (i + 1) + ".", companyName);
-                        System.out.printf ("│     Position:     %-60s │\n", jobTitle);
-                        System.out.printf ("│     Type:         %-60s │\n", jobType);
-                        System.out.printf ("│     Salary:       RM%-57.2f │\n", salary);
-                        System.out.printf ("│     Description:  %-60s │\n", jobDescription);
-                        System.out.println("---------------------------------------------------------------");
-
-                    }
-                    case Applicant applicant -> {
-                        String name = applicant.getName();
-                        String preferredWorkMode = applicant.getPreferredWorkMode();
-                        String desiredJobType = applicant.getDesiredJobType();
-                        String portfolioLink = applicant.getPortfolioLink();
-                        
-                        System.out.println("-----------------------------------------------------------------------------------------");
-                        System.out.println("| " + String.format("%-75s", (i + 1) + ". " + name) + " |");
-                        System.out.println("| " + String.format("%-75s", "Preferred Work Mode: " + preferredWorkMode) + " |");
-                        System.out.println("| " + String.format("%-75s", "Desired Job Type: " + desiredJobType) + " |");
-                        System.out.println("| " + String.format("%-75s", "Portfolio Link: " + portfolioLink) + " |");
-                        System.out.println("-----------------------------------------------------------------------------------------");
-   
-                    }
-                    default -> {
-                        MessageUI.invalidTitle();
-                    }
-                }
-            }
-            
-            if (page == totalPages - 1) {
-                BrowseUI.lastPage();
-            }
-            
-            String userInput = BrowseUI.chooseEntity();
-            switch (userInput.toUpperCase()){
-                case "P" -> {
-                    if(page > 0) page--;
-                }
-                case "N" -> {
-                    if (page < totalPages - 1) page++;
-                }
-                case "X" -> {
-                    return;
-                }
-                default -> {
-                    try {
-                        int choice = Integer.parseInt(userInput);
-                        if (choice >= 1 && choice <= list.size()){
-                            entity = list.get(choice-1);
-                            displayEntity(entity);
-                        } else {
-                            MessageUI.errorMessage();
-                        }
-                    } catch (NumberFormatException e){
-                        MessageUI.errorMessage();
-                    }
-                }
-            }   
-        }
-    }
-    
-     private static <T extends Comparable<T>> ListInterface<T> mergeList(ListInterface<T> list1, ListInterface<T> list2){
+    private static <T extends Comparable<T>> ListInterface<T> mergeList(ListInterface<T> list1, ListInterface<T> list2){
         if(list1.isEmpty() && list2.isEmpty()){
             return null;
         }
@@ -405,33 +351,6 @@ public class BrowseManager {
             }
         }
         return matchedJob;
-    }
-    
-    // Suppose at the applicant side / job side
-    private static <T> void displayEntity(T entity) {
-        if (entity instanceof Job job) {
-            System.out.println("Job Details:");
-            System.out.println("Title: " + job.getJobTitle());
-            System.out.println("Company: " + job.getEmployer().getCompany().getCompanyName());
-            System.out.println("Description: " + job.getJobDescription());
-            System.out.println("Location: " + job.getEmployer().getCompany().getLocation());
-            System.out.println("Salary: " + job.getSalary());
-        } else if (entity instanceof Company company) {
-            System.out.println("Company Details:");
-            System.out.println("Name: " + company.getCompanyName());
-            System.out.println("Industry: " + company.getIndustryType());
-            System.out.println("Website: " + company.getWebsite());
-            System.out.println("Location: " + company.getAddress());
-        } else if (entity instanceof Applicant applicant) {
-            System.out.println("Applicant Details:");
-            System.out.println("Name: " + applicant.getName());
-            System.out.println("Desired Job Type: " + applicant.getDesiredJobType());
-            System.out.println("Portfolio: " + applicant.getPortfolioLink());
-            System.out.println("Experience: " + applicant.getYearOfExperience() + " years");
-        } else {
-            MessageUI.invalidTitle();
-        }
-        Tools.systemPause(); 
     }
 
 }

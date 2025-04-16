@@ -27,9 +27,10 @@ public class EmployerManager {
                 case 2 -> JobManager.updateJob();
                 case 3 -> JobManager.deleteJob();
                 case 4 -> JobManager.displayJobDetails();
-                case 5 -> JobManager.filterJob();
-                case 6 -> JobManager.searchJobsByEmployerOrCompany();
-                case 7 -> Tools.back();
+                case 5 -> JobManager.displayMyJob(Database.getEmployer());
+                case 6 -> JobManager.filterJob();
+                case 7 -> JobManager.searchJobsByEmployerOrCompany();
+                case 8 -> Tools.back();
                 default -> MessageUI.errorMessage();
             }
         } while (choice != 7);
@@ -57,6 +58,27 @@ public class EmployerManager {
         boolean continueRegistering = true;
 
         while (continueRegistering) {
+            
+            System.out.println("Available Companies:");
+            for (int i = 0; i < Database.companies.size(); i++) {
+                System.out.println((i + 1) + ". " + Database.companies.get(i).getCompanyName());
+            }
+
+            int companyChoice = Input.getIntegerInput("Select a company by number (enter 0 to create a new company): ");
+            Company selectedCompany;
+
+            if (companyChoice == 0) {
+                selectedCompany = registerCompany();
+            } else {
+                selectedCompany = Database.companies.get(companyChoice - 1);
+            }
+
+            Tools.clearScreen();
+            UserUI.headLine();
+            System.out.println(" =======================================");
+            System.out.println("= Employer Register as " + selectedCompany.getCompanyName() + " =");
+            System.out.println(" =======================================");
+            
             String id = String.format("E%03d", Database.employers.size() + 1);
             System.out.println("Generated Employer ID: " + id);
 
@@ -86,15 +108,6 @@ public class EmployerManager {
                 System.out.println((i + 1) + ". " + Database.companies.get(i).getCompanyName());
             }
 
-            int companyChoice = Input.getIntegerInput("Select a company by number (enter 0 to create a new company): ");
-            Company selectedCompany;
-
-            if (companyChoice == 0) {
-                selectedCompany = registerCompany();
-            } else {
-                selectedCompany = Database.companies.get(companyChoice - 1);
-            }
-
             if (id == null || name == null || dateOfBirth == null || gender == null
                     || address == null || ic == null || phoneNumber == null || email == null
                     || socialMedia == null || maritalStatus == null || nationality == null
@@ -122,7 +135,8 @@ public class EmployerManager {
                 System.out.println("Position: " + position);
                 System.out.println("Joined Date: " + joinedDate);
                 System.out.println("Years of Experience: " + yearOfExperience);
-                System.out.println("Company: " + selectedCompany);
+                System.out.println("Company: ");
+                displayCompany(selectedCompany);
                 System.out.println("==============================================");
 
                 String confirmInfo = Input.getYesNoInput(BLUE + "\nDo you confirm the employer information? (yes/no): " + RESET);
@@ -214,6 +228,8 @@ public class EmployerManager {
             employerList.add(newEmployer);
             Database.employers.add(newEmployer);
             MessageUI.createSuccessful();
+            displayEmployer(newEmployer);
+            selectedCompany.incrementEmployeeCount();
 
             String another = Input.getYesNoInput("\n\nDo you want to register another employer? (yes/no): ");
             if (!another.equalsIgnoreCase("yes")) {
@@ -365,5 +381,62 @@ public class EmployerManager {
                 System.out.println("Error during company registration: " + e.getMessage());
             }
         }
+    }
+    
+    public static void displayCompany(Company company) {
+
+        System.out.println();
+        System.out.println("======================================================================================");
+        System.out.printf("| %-20s: %-45s |\n", "Company Name", company.getCompanyName());
+        System.out.printf("| %-20s: %-45s |\n", "Industry Type", company.getIndustryType());
+        System.out.printf("| %-20s: %-45d |\n", "Employee Count", company.getEmployeeCount());
+        System.out.printf("| %-20s: %-45d |\n", "Founded Year", company.getFoundedYear());
+        System.out.printf("| %-20s: %-45s |\n", "Location", company.getLocation());
+        System.out.printf("| %-20s: %-45s |\n", "Company Address", company.getAddress());
+        System.out.printf("| %-20s: %-45s |\n", "Core Services", company.getCoreServices());
+        System.out.printf("| %-20s: %-45s |\n", "Company Culture", company.getCompanyCulture());
+        System.out.printf("| %-20s: %-45s |\n", "Website", company.getWebsite());
+        System.out.printf("| %-20s: %-45s |\n", "Verifications", company.getVerifications());
+        System.out.println("======================================================================================");
+        System.out.println();
+
+    }
+
+    public static void displayCompany() {
+        if (Database.companies == null || Database.companies.isEmpty()) {
+            System.out.println("No companies available to display.");
+            return;
+        }
+
+        System.out.println("Total companies in the list: " + Database.companies.size());
+        System.out.println("\n-----------------------------");
+        for (Company company : Database.companies) {
+            System.out.printf("| %-25s |\n", company.getCompanyName());
+        }
+        System.out.println("-----------------------------");
+
+        for (Company company : Database.companies) {
+            
+            //ui
+            System.out.println();
+            System.out.println("======================================================================================");
+            System.out.printf("| %-20s: %-45s |\n", "Company Name", company.getCompanyName());
+            System.out.printf("| %-20s: %-45s |\n", "Industry Type", company.getIndustryType());
+            System.out.printf("| %-20s: %-45d |\n", "Employee Count", company.getEmployeeCount());
+            System.out.printf("| %-20s: %-45d |\n", "Founded Year", company.getFoundedYear());
+            System.out.printf("| %-20s: %-45s |\n", "Location", company.getLocation());
+            System.out.printf("| %-20s: %-45s |\n", "Company Address", company.getAddress());
+            System.out.printf("| %-20s: %-45s |\n", "Core Services", company.getCoreServices());
+            System.out.printf("| %-20s: %-45s |\n", "Company Culture", company.getCompanyCulture());
+            System.out.printf("| %-20s: %-45s |\n", "Website", company.getWebsite());
+            System.out.printf("| %-20s: %-45s |\n", "Verifications", company.getVerifications());
+            System.out.println("======================================================================================");
+            System.out.println();
+            //ui
+
+        }
+
+        Input.getStringInput("Press Enter to return to the menu...");
+
     }
 }

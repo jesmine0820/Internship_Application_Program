@@ -50,8 +50,8 @@ public class ReportUI {
         System.out.println("=================================================");
         System.out.println("=                  Matching Report              =");
         System.out.println("=================================================");
-        System.out.println("=       1. Applicant Matching Report            =");
-        System.out.println("=       2. Top Matched Application Report       =");
+        System.out.println("=       1. Job Application Matching Report      =");
+        System.out.println("=       2. Top Matched Job Report               =");
         System.out.println("=       3. Matching Engine Efficiency Report    =");
         System.out.println("=       4. Exit                                 =");
         System.out.println("=================================================");

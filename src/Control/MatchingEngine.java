@@ -21,7 +21,7 @@ public class MatchingEngine{
     // Heat Sort for Top K ranking
     public <T extends Comparable<T>> ListInterface<T> heapSort(ListInterface<T> list, Object obj){
         int size = list.size();
-        
+
         for(int i = size / 2 - 1; i >= 0; i--){
             heapify(list, size, i, obj);
         }
@@ -75,23 +75,43 @@ public class MatchingEngine{
 
         // Sorting logic based on the current user
         if (jobs != null) {         
+            
             Job job1 = getInstance(obj1, Job.class);
             Job job2 = getInstance(obj2, Job.class);
+            
+            if(job1.compareTo(job2) == 0){
+                return 0;
+            }
+            
             // Applicant: Sort jobs based on score
-            score1 = computeMatchingScore(job1.getEmployer().getCompany(), Database.getApplicant());
-            score2 = computeMatchingScore(job2.getEmployer().getCompany(), Database.getApplicant());
+            score1 = computeMatchingScore(job1, Database.getApplicant());
+            score2 = computeMatchingScore(job2, Database.getApplicant());
             
             // If scores are equal, sort by salary in descending order (higher salary first)
             if (score1 == score2) {
                 return Integer.compare((int) job2.getSalary(), (int) job1.getSalary());
             }
-
+            
         } else if (applicants != null) {
+            
             Applicant applicant1 = getInstance(obj1, Applicant.class);
             Applicant applicant2 = getInstance(obj2, Applicant.class);
+            
+            if(applicant1.compareTo(applicant2) == 0){
+                return 0;
+            }
+            
             // Employer: Sort applicants based on matching score
-            score1 = computeMatchingScore(applicant1, Database.getEmployer());
-            score2 = computeMatchingScore(applicant2, Database.getEmployer());
+            score1 = computeMatchingScore(applicant1, jobs);
+            score2 = computeMatchingScore(applicant2, jobs);
+            
+            if (score1 == score2) {
+                int expCompare = Integer.compare(applicant2.getYearOfExperience(), applicant1.getYearOfExperience());
+                if (expCompare != 0) return expCompare;
+
+                return applicant1.getName().compareTo(applicant2.getName());
+            }
+            
         }
 
         // Sort in descending order (higher score first)
@@ -108,98 +128,85 @@ public class MatchingEngine{
             return score;
         }
         
-        Company companies = null;
+        Job job = null;
         Applicant applicants = null;
+        Employer employer = null;
         
         if(obj2 instanceof Applicant){
-            companies = getInstance(obj1, Company.class);
-        } else if (obj2 instanceof Employer){
+            job = getInstance(obj1, Job.class);
+        } else if (obj2 instanceof Job){
+            job = getInstance(obj1, Job.class);
             applicants = getInstance(obj1, Applicant.class);
+            employer = Database.getEmployer();
         }
         
         // Compute Compare and Job to Applicant
-        if(companies != null){ 
+        if(job != null && applicants == null){ 
+
+            Company company = job.getEmployer().getCompany();
             // Match Location
-            int locationScore = computeScore(companies.getLocation(), companies.getLocation());
+            int locationScore = computeScore(company.getLocation(), company.getLocation());
+            int typeScore = computeScore(company.getIndustryType(), Database.getApplicant().getDesiredJobType());
+            int experienceScore = computeScore(job.getRequiredExperience(),Database.getApplicant().getYearOfExperience());
+            int salaryScore = computeScore(job.getSalary(), Database.getApplicant().getDesiredSalaryRange());
+            int skillScore = computeScore(job.getRequiredSkills(), Database.getApplicant().getResume().getSkills());
             score += locationScore;
-
-            // Match industry type with desired job type
-            int typeScore = computeScore(companies.getIndustryType(), Database.getApplicant().getDesiredJobType());
             score += typeScore;
+            score += experienceScore;
+            score += salaryScore;
+            score += skillScore;
+            System.out.println(locationScore + " " + typeScore + " " + experienceScore + " " + salaryScore + " " + skillScore);
             
-            // Match experience and salary
-            if (companies.getEmployer() != null) {
-                for (Employer emp : companies.getEmployer()) {
-                    if (emp.getJob() != null) {
-                        for (Job job : emp.getJob()) {
-                            int experienceScore = computeScore(job.getRequiredExperience(),Database.getApplicant().getYearOfExperience());
-                            int salaryScore = computeScore(job.getSalary(), Database.getApplicant().getDesiredSalaryRange());
-                            int skillScore = computeScore(job.getRequiredSkills(), Database.getApplicant().getResume().getSkills());
-                            score += experienceScore;
-                            score += salaryScore;
-                            score += skillScore;
-                        }
-                    }
-                }
-            }
-
-        } else if(Database.getEmployer() != null){ // Compute Employer and Applicant
+        } else if(employer != null && applicants != null){ // Compute Employer and Applicant
             // Match industry type with desired job type
             int typeScore = computeScore(Database.getEmployer().getCompany().getIndustryType(), applicants.getDesiredJobType());
-            score += typeScore;
-            
-            for(Job job: Database.getEmployer().getJob()){
-                int experienceScore = computeScore(job.getRequiredExperience(), applicants.getYearOfExperience());
-                int salaryScore = computeScore(job.getSalary(), applicants.getDesiredSalaryRange());
-                int skillScore = computeScore(job.getRequiredSkills(), applicants.getResume().getSkills());
-                score += experienceScore;
-                score += salaryScore;
-                score += skillScore;
-            }
-            
+            int yearExperienceScore = computeScore(job.getRequiredExperience(), applicants.getYearOfExperience());
+            int salaryScore = computeScore(job.getSalary(), applicants.getDesiredSalaryRange());
+            int skillScore = computeScore(job.getRequiredSkills(), applicants.getResume().getSkills());
             int educationScore = computeScore(applicants.getResume().getEducationLevel());
-            score += educationScore;
-            
             int experienceScore = computeScore(applicants.getResume().getExperience());
             int certificationScore = computeScore(applicants.getResume().getCertifications());
             int projectsScore = computeScore(applicants.getResume().getProjects());
             int languageSpoken = computeScore(applicants.getResume().getLanguagesSpoken());
             int awards = computeScore(applicants.getResume().getAwards());
-            
-            score += experienceScore;
+            score += typeScore;
+            score += educationScore;
+            score += yearExperienceScore;
             score += certificationScore;
             score += projectsScore;
             score += languageSpoken;
             score += awards;
+            score += experienceScore;
+            score += salaryScore;
+            score += skillScore;
+            System.out.println("2. " + score);
+            
         } else { // Compute the Job application with applicant
             Applicant applicant = Database.getApplicant();
-            
-            for(JobApplication jobApplication: Database.getApplicant().getJobApplication()){
-                Job job = jobApplication.getJob();
+            if(applicant != null && job != null){
                 String jobType = job.getEmployer().getCompany().getIndustryType();
                 int typeScore = computeScore(jobType, applicant.getDesiredJobType());
-                int experienceScore = computeScore(job.getRequiredExperience(), applicant.getYearOfExperience());
+                int yearExperienceScore = computeScore(job.getRequiredExperience(), applicant.getYearOfExperience());
                 int salaryScore = computeScore(job.getSalary(), applicant.getDesiredSalaryRange());
                 int skillScore = computeScore(job.getRequiredSkills(), applicant.getResume().getSkills());
+                int educationScore = computeScore(applicant.getResume().getEducationLevel());
+                int experienceScore = computeScore(applicant.getResume().getExperience());
+                int certificationScore = computeScore(applicant.getResume().getCertifications());
+                int projectsScore = computeScore(applicant.getResume().getProjects());
+                int languageSpoken = computeScore(applicant.getResume().getLanguagesSpoken());
+                int awards = computeScore(applicant.getResume().getAwards());
                 score += typeScore;
-                score += experienceScore;
+                score += yearExperienceScore;
                 score += salaryScore;
                 score += skillScore;
+                score += educationScore;
+                score += experienceScore;
+                score += certificationScore;
+                score += projectsScore;
+                score += languageSpoken;
+                score += awards;
+                System.out.println("3. " +score);
             }
-            
-            int educationScore = computeScore(applicant.getResume().getEducationLevel());
-            int experienceScore = computeScore(applicant.getResume().getExperience());
-            int certificationScore = computeScore(applicant.getResume().getCertifications());
-            int projectsScore = computeScore(applicant.getResume().getProjects());
-            int languageSpoken = computeScore(applicant.getResume().getLanguagesSpoken());
-            int awards = computeScore(applicant.getResume().getAwards());
-            
-            score += educationScore;
-            score += experienceScore;
-            score += certificationScore;
-            score += projectsScore;
-            score += languageSpoken;
-            score += awards;
         }
 
         return score;
@@ -239,7 +246,7 @@ public class MatchingEngine{
                 score += 10;
             } else {
                 ListInterface<String> searching = new DoublyLinkedList<>();
-                int falseStep = 5;
+                int falseStep = 2;
                 if(searching.fuzzyMatching(string1, string2) < falseStep){
                     score += 5;
                 }
@@ -259,7 +266,7 @@ public class MatchingEngine{
                 score += 10;
             } else {
                 int diff = num1 - num2;
-                if(diff < 3){
+                if(diff < 2){
                     score += 5;
                 }
             }
@@ -288,7 +295,7 @@ public class MatchingEngine{
             score += 10;
         } else if(num >= minNum){
             score += 5;
-        } else if(minNum - num <= 500){
+        } else if(minNum - num <= 800){
             score += 5;
         }
         
@@ -319,14 +326,7 @@ public class MatchingEngine{
             for (String compareList: list2){    
                 if(matchList.trim().equalsIgnoreCase(compareList.trim())){
                     score += 20;
-                } else {
-                    ListInterface<String> searching = new DoublyLinkedList<>();
-                    int falseStep = 5;
-                    if(searching.fuzzyMatching(matchList, compareList) < falseStep){
-                        score += 5;
-                    }
-            
-                }
+                } 
             }
         }
         return score;

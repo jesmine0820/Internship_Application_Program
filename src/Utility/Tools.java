@@ -27,13 +27,7 @@ public class Tools {
     public static final String BLUE = "\u001B[34m";
     public static final String PURPLE = "\u001B[35m";
     public static final String CYAN = "\u001B[36m";
-
-    public static final String REDBG = "\u001B[41m";
-    public static final String GREENBG = "\u001B[42m";
-    public static final String YELLOWBG = "\u001B[43m";
-    public static final String BLUEBG = "\u001B[44m";
-    public static final String PURPLEBG = "\u001B[45m";
-    public static final String CYANBG = "\u001B[46m";
+    public static final String GREY = "\u001B[90m";
     public static final String RESET = "\u001B[0m";
     
     // Return to the last page

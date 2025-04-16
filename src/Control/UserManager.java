@@ -2,27 +2,28 @@ package Control;
 
 import ADT.ListInterface;
 import Boundary.BrowseUI;
-import Boundary.EmployerUI;
 import Boundary.UserUI;
+import Control.BrowseManager;
 import Dao.Database;
 import Entity.*;
+import Utility.Input;
 import Utility.MessageUI;
 import Utility.Tools;
-import static Control.BrowseManager.searchEngine;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  *
- * @author User
+ * @author Jesmine
  * 
  */
 public class UserManager {
     
     public void login(){
-        boolean error;
         int loginChoice;
         
         do{
-            error = false;
             loginChoice = UserUI.loginUI();    
         
             switch(loginChoice){
@@ -30,13 +31,10 @@ public class UserManager {
                 case 2 -> Database.setApplicant(authenticateApplicant());
                 case 3 -> registerHandler();
                 case 4 -> Tools.exit();
-                default -> {
-                    MessageUI.errorMessage();
-                    error = true;
-                }
+                default -> MessageUI.errorMessage();
             }
             
-            if(Database.getEmployer() == null && Database.getApplicant() == null){
+            if(loginChoice != 4 && Database.getEmployer() == null && Database.getApplicant() == null){
                 MessageUI.emptyDatabase();
             }
             
@@ -46,8 +44,35 @@ public class UserManager {
                 userMenu("Applicant");
             }
             
-        }while (error || loginChoice != 4);
+        }while (loginChoice != 4);
         
+    }
+    
+    public static boolean isEmployer(){
+        return Database.getEmployer() != null;
+    }
+    
+    public static boolean isApplicant(){
+        return Database.getApplicant() != null;
+    }
+    
+    public static void profileHeadLine(){
+        String name, user;
+        String date, time;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE dd MMM yyyy");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        
+        date = dateFormat.format(Database.getCurrentDate());
+        time = timeFormat.format(Database.getCurrentTime());
+        
+        if(isEmployer()){
+            name = Database.getEmployer().getName();
+            user = "Employer";
+        } else {
+            name = Database.getApplicant().getName();
+            user = "Applicant";
+        }
+        UserUI.profile(name, user, date, time);
     }
     
     private Employer authenticateEmployer(){
@@ -57,7 +82,7 @@ public class UserManager {
             MessageUI.emptyEmployerMessage();
             employer = null;
         } else {
-            employer = selectEntity(Database.employers, "Employer");
+            employer = Input.selectUser(Database.employers, "Employer");
         }
         return employer;
     }
@@ -69,67 +94,9 @@ public class UserManager {
             MessageUI.emptyApplicantMessage();
             applicant = null;
         } else {
-            applicant = selectEntity(Database.applicants, "Applicant");
+            applicant = Input.selectUser(Database.applicants, "Applicant");
         }
         return applicant;
-    }
-    
-    private <T extends Comparable<T>> T selectEntity(ListInterface<T> list, String string){
-        final int ENTRIES_PER_PAGE = 10;
-        int page = 0;
-        int totalPages = (int)Math.ceil((double)list.size() / ENTRIES_PER_PAGE);
-        
-        while(true){
-            Tools.clearScreen();
-            System.out.println("    -------------------------------------------");
-            System.out.println("        " + string + "List ( Page " + (page + 1) + " of " + totalPages + "):");
-            System.out.println("    -------------------------------------------\n");
-            
-            int start = page * ENTRIES_PER_PAGE;
-            int end = Math.min(start + ENTRIES_PER_PAGE, list.size());
-            
-            for(int i = start; i < end; i++){
-                T entity = list.get(i);
-                
-                if(entity instanceof Employer employer){
-                    System.out.println("    " + (i + 1) + ". " + employer.getName());
-                    System.out.println("    -------------------------------------------");
-                }
-                
-                if (entity instanceof Applicant applicant) {
-                    System.out.println((i + 1) + ". " + applicant.getName());
-                    System.out.println("    -------------------------------------------");
-                }
-            }
-            
-            String userInput = UserUI.chooseEntity();
-            
-            switch (userInput.toUpperCase()){
-                case "P" -> {
-                    if(page > 0) page--;
-                }
-                case "N" -> {
-                    if (page < totalPages - 1) page++;
-                }
-                case "X" -> {
-                    return null;
-                }
-                default -> {
-                    try {
-                        int choice = Integer.parseInt(userInput);
-                        if (choice >= 1 && choice <= list.size()){
-                            return list.get(choice-1);
-                        } else {
-                            MessageUI.errorMessage();
-                        }
-                    } catch (NumberFormatException e){
-                        MessageUI.errorMessage();
-                    }
-                }
-            }
-            
-        }
-
     }
     
     private static void userMenu(String user){
@@ -151,8 +118,8 @@ public class UserManager {
                         Tools.exit();
                     }
                     case "s" -> {
-                        BrowseUI.displayBrowserHeader("Any");
-                        searchEngine();
+                        Tools.clearScreen();
+                        BrowseManager.searchEngine();
                     }
                     default -> MessageUI.errorMessage();
                 }  
@@ -162,17 +129,18 @@ public class UserManager {
                 moduleChoose = UserUI.applicantMenu();
                 switch(moduleChoose.toLowerCase()){
                     case "1" -> BrowseManager.browseMenu();
-                    case "2" -> JobApplicationManager.displayMyJobApplication();
+                    case "2" -> JobApplicationManager.displayMyJobApplication(Database.jobApplicationList);
                     case "3" -> ScheduleManager.displaySchedule();
                     case "4" -> ApplicantManager.editProfile();
-                    case "5" -> ReportManager.reportMenu();
-                    case "6" -> {
+                    case "5" -> JobApplicationManager.displaySaveList();
+                    case "6" -> ReportManager.reportMenu();
+                    case "7" -> {
                         MessageUI.logOutMessage();
                         Tools.exit();
                     }
                     case "s" -> {
-                        BrowseUI.displayBrowserHeader("Any");
-                        searchEngine();
+                        Tools.clearScreen();
+                        BrowseManager.searchEngine();
                     }
                     default -> MessageUI.errorMessage();
                     }  
@@ -194,25 +162,11 @@ public class UserManager {
         }while(choice != 4);
     }
     
-    public static void profileHeadLine(){
-        String name, user;
-        
-        if(isEmployer()){
-            name = Database.getEmployer().getName();
-            user = "Employer";
-        } else {
-            name = Database.getApplicant().getName();
-            user = "Applicant";
-        }
-        UserUI.profile(name, user);
-    }
-    
-    public static boolean isEmployer(){
-        return Database.getEmployer() != null;
-    }
-    
-    public static boolean isApplicant(){
-        return Database.getApplicant() != null;
-    }
+    public static void setCurrentDateTime(){
+        Date date = UserUI.userCurrentDate();
+        Date time = UserUI.userCurrentTime();
+        Database.setCurrentDate(date);
+        Database.setCurrentTime(time);
+    }    
     
 }

@@ -17,23 +17,30 @@ public class JobManager {
     private static final ListInterface<Job> newJobList = new DoublyLinkedList<>();
     
     public static void createJob() {
+        
+        boolean error;
+        String jobTitle = null;
+        
         Tools.clearScreen();
-        UserUI.headLine();
-        System.out.println("======================");
-        System.out.println("\n|   Create New Job    |");
-        System.out.println("======================");
+        UserManager.profileHeadLine();
+        System.out.println("                ======================");
+        System.out.println("                =   Create New Job   =");
+        System.out.println("                ======================");
 
         String jobID = String.format("J%03d", Database.jobList.size() + 1);
         System.out.println("Generated Job ID: " + jobID);
 
         // Get required job details
-        String jobTitle = Input.getStringInput("Enter Job Title: ");
-        if (isJobTitleExists(jobTitle)) {
-            System.out.println("Please enter a different job title.");
-        }
+        do{
+            error = false;
+            jobTitle = Input.getStringInput("Enter Job Title: ");
+            if (isJobTitleExists(jobTitle)) {
+                System.out.println("Please enter a different job title.");
+                error = true;
+            }
+        }while(error);
 
         String jobType = Input.getChoiceInput("Choose Job Type:", ChooseSetting.JOB_TYPES);
-
         String jobDescription = Input.getStringInput("Enter Job Description: ");
         String interviewProcess = Input.getStringInput("Enter Interview Process: ");
         String employmentType = Input.getChoiceInput("Enter Employment Type: ", ChooseSetting.EMPLOYMENT_TYPES);
@@ -42,12 +49,12 @@ public class JobManager {
         boolean relocationAssistance = Input.getBooleanInput("Does this job offer relocation assistance? (true/false): ");
 
         // Collect required skills and store them in a list
-        ListInterface<String> requiredSkills = Input.getMultipleChoiceInput("Enter Required Skills (comma-separated): ", ChooseSetting.SKILL_OPTIONS);
+        ListInterface<String> requiredSkills = Input.getPaginatedMultiSelectInput("Enter Required Skills (comma-separated): ", ChooseSetting.SKILL_OPTIONS);
         int requiredExperience = Input.getIntegerInput("Enter Required Experience (in years): ");
         int teamSize = Input.getIntegerInput("Enter Team Size: ");
         double salary = Input.getDoubleInput("Enter Salary: ");
         // Collect job benefits and store them in a list
-        ListInterface<String> benefits = Input.getMultipleChoiceInput("Enter Benefits (comma-separated): ", ChooseSetting.BENEFITS_OPTIONS);
+        ListInterface<String> benefits = Input.getPaginatedMultiSelectInput("Enter Benefits (comma-separated): ", ChooseSetting.BENEFITS_OPTIONS);
         Date applicationDeadline = Validation.checkDate("Enter Application Deadline (YYYY-MM-DD): ");
         int workHours = Input.getIntegerInput("Enter Work Hours per week: ");
         String careerDevelopment = Input.getStringInput("Enter Career Development Opportunities: ");
@@ -110,59 +117,24 @@ public class JobManager {
             int choice = Input.getIntegerInput("Enter your choice: ");
 
             switch (choice) {
-                case 1:
-                    jobTitle = Input.getStringInput("Enter Job Title: ");
-                    break;
-                case 2:
-                    jobType = Input.getChoiceInput("Choose Job Type:", ChooseSetting.JOB_TYPES);
-                    break;
-                case 3:
-                    jobDescription = Input.getStringInput("Enter Job Description: ");
-                    break;
-                case 4:
-                    interviewProcess = Input.getStringInput("Enter Interview Process: ");
-                    break;
-                case 5:
-                    employmentType = Input.getChoiceInput("Enter Employment Type: ", ChooseSetting.EMPLOYMENT_TYPES);
-                    break;
-                case 6:
-                    workMode = Input.getChoiceInput("Enter Work Mode: ", ChooseSetting.WORK_MODES);
-                    break;
-                case 7:
-                    probationPeriod = Input.getStringInput("Enter Probation Period: ");
-                    break;
-                case 8:
-                    relocationAssistance = Input.getBooleanInput("Does this job offer relocation assistance? (true/false): ");
-                    break;
-                case 9:
-                    requiredSkills = Input.getMultipleChoiceInput("Enter Required Skills (comma-separated): ", ChooseSetting.SKILL_OPTIONS);
-                    break;
-                case 10:
-                    requiredExperience = Input.getIntegerInput("Enter Required Experience (in years): ");
-                    break;
-                case 11:
-                    teamSize = Input.getIntegerInput("Enter Team Size: ");
-                    break;
-                case 12:
-                    salary = Input.getDoubleInput("Enter Salary: ");
-                    break;
-                case 13:
-                    benefits = Input.getMultipleChoiceInput("Enter Benefits (comma-separated): ", ChooseSetting.BENEFITS_OPTIONS);
-                    break;
-                case 14:
-                    applicationDeadline = Validation.checkDate("Enter Application Deadline (YYYY-MM-DD): ");
-                    break;
-                case 15:
-                    workHours = Input.getIntegerInput("Enter Work Hours per week: ");
-                    break;
-                case 16:
-                    careerDevelopment = Input.getStringInput("Enter Career Development Opportunities: ");
-                    break;
-                case 17:
-                    editing = false;
-                    break;
-                default:
-                    MessageUI.errorMessage();
+                case 1 -> jobTitle = Input.getStringInput("Enter Job Title: ");
+                case 2 -> jobType = Input.getChoiceInput("Choose Job Type:", ChooseSetting.JOB_TYPES);
+                case 3 -> jobDescription = Input.getStringInput("Enter Job Description: ");
+                case 4 -> interviewProcess = Input.getStringInput("Enter Interview Process: ");
+                case 5 -> employmentType = Input.getChoiceInput("Enter Employment Type: ", ChooseSetting.EMPLOYMENT_TYPES);
+                case 6 -> workMode = Input.getChoiceInput("Enter Work Mode: ", ChooseSetting.WORK_MODES);
+                case 7 -> probationPeriod = Input.getStringInput("Enter Probation Period: ");
+                case 8 -> relocationAssistance = Input.getBooleanInput("Does this job offer relocation assistance? (true/false): ");
+                case 9 -> requiredSkills = Input.getPaginatedMultiSelectInput("Enter Required Skills (comma-separated): ", ChooseSetting.SKILL_OPTIONS);
+                case 10 -> requiredExperience = Input.getIntegerInput("Enter Required Experience (in years): ");
+                case 11 -> teamSize = Input.getIntegerInput("Enter Team Size: ");
+                case 12 -> salary = Input.getDoubleInput("Enter Salary: ");
+                case 13 -> benefits = Input.getPaginatedMultiSelectInput("Enter Benefits (comma-separated): ", ChooseSetting.BENEFITS_OPTIONS);
+                case 14 -> applicationDeadline = Validation.checkDate("Enter Application Deadline (YYYY-MM-DD): ");
+                case 15 -> workHours = Input.getIntegerInput("Enter Work Hours per week: ");
+                case 16 -> careerDevelopment = Input.getStringInput("Enter Career Development Opportunities: ");
+                case 17 -> editing = false;
+                default -> MessageUI.errorMessage();
             }
         }
 
@@ -272,61 +244,30 @@ public class JobManager {
 
                 int choice = Input.getIntegerInput("Choose an attribute to update (2-17): ");
                 switch (choice) {
-                    case 2:
-                        jobToUpdate.setJobTitle(Input.getStringInput("Enter new Job Title: "));
-                        break;
-                    case 3:
-                        jobToUpdate.setJobType(Input.getChoiceInput("Enter new Job Type: ", ChooseSetting.JOB_TYPES));
-                        break;
-                    case 4:
-                        jobToUpdate.setJobDescription(Input.getStringInput("Enter new Job Description: "));
-                        break;
-                    case 5:
-                        jobToUpdate.setInterviewProcess(Input.getStringInput("Enter new Interview Process: "));
-                        break;
-                    case 6:
-                        jobToUpdate.setEmploymentType(Input.getChoiceInput("Enter new Employment Type: ", ChooseSetting.EMPLOYMENT_TYPES));
-                        break;
-                    case 7:
-                        jobToUpdate.setWorkMode(Input.getChoiceInput("Enter new Work Mode: ", ChooseSetting.WORK_MODES));
-                        break;
-                    case 8:
-                        jobToUpdate.setProbationPeriod(Input.getStringInput("Enter new Probation Period: "));
-                        break;
-                    case 9:
+                    case 2 -> jobToUpdate.setJobTitle(Input.getStringInput("Enter new Job Title: "));
+                    case 3 -> jobToUpdate.setJobType(Input.getChoiceInput("Enter new Job Type: ", ChooseSetting.JOB_TYPES));
+                    case 4 -> jobToUpdate.setJobDescription(Input.getStringInput("Enter new Job Description: "));
+                    case 5 -> jobToUpdate.setInterviewProcess(Input.getStringInput("Enter new Interview Process: "));
+                    case 6 -> jobToUpdate.setEmploymentType(Input.getChoiceInput("Enter new Employment Type: ", ChooseSetting.EMPLOYMENT_TYPES));
+                    case 7 -> jobToUpdate.setWorkMode(Input.getChoiceInput("Enter new Work Mode: ", ChooseSetting.WORK_MODES));
+                    case 8 -> jobToUpdate.setProbationPeriod(Input.getStringInput("Enter new Probation Period: "));
+                    case 9 -> {
                         String relocation = Input.getStringInput("Does this job offer relocation assistance? (yes/no): ");
                         jobToUpdate.setRelocationAssistance(relocation.equalsIgnoreCase("yes"));
-                        break;
-                    case 10:
-                        jobToUpdate.setRequiredSkills(Input.getMultipleChoiceInput("Enter new Required Skills (comma-separated): ", ChooseSetting.SKILL_OPTIONS));
-                        break;
-                    case 11:
-                        jobToUpdate.setRequiredExperience(Input.getIntegerInput("Enter new Required Experience (years): "));
-                        break;
-                    case 12:
-                        jobToUpdate.setTeamSize(Input.getIntegerInput("Enter new Team Size: "));
-                        break;
-                    case 13:
-                        jobToUpdate.setSalary(Input.getDoubleInput("Enter new Salary: "));
-                        break;
-                    case 14:
-                        jobToUpdate.setBenefits(Input.getMultipleChoiceInput("Enter new Benefits (comma-separated): ", ChooseSetting.BENEFITS_OPTIONS));
-                        break;
-                    case 15:
-                        jobToUpdate.setWorkHours(Input.getIntegerInput("Enter new Work Hours per week: "));
-                        break;
-                    case 16:
-                        jobToUpdate.setCareerDevelopment(Input.getStringInput("Enter new Career Development details: "));
-                        break;
-                    case 17:
-                        jobToUpdate.setApplicationDeadline(Validation.checkDate("Enter new Application Deadline (YYYY-MM-DD): "));
-                        break;
-                    case 18:
+                    }
+                    case 10 -> jobToUpdate.setRequiredSkills(Input.getPaginatedMultiSelectInput("Enter new Required Skills (comma-separated): ", ChooseSetting.SKILL_OPTIONS));
+                    case 11 -> jobToUpdate.setRequiredExperience(Input.getIntegerInput("Enter new Required Experience (years): "));
+                    case 12 -> jobToUpdate.setTeamSize(Input.getIntegerInput("Enter new Team Size: "));
+                    case 13 -> jobToUpdate.setSalary(Input.getDoubleInput("Enter new Salary: "));
+                    case 14 -> jobToUpdate.setBenefits(Input.getPaginatedMultiSelectInput("Enter new Benefits (comma-separated): ", ChooseSetting.BENEFITS_OPTIONS));
+                    case 15 -> jobToUpdate.setWorkHours(Input.getIntegerInput("Enter new Work Hours per week: "));
+                    case 16 -> jobToUpdate.setCareerDevelopment(Input.getStringInput("Enter new Career Development details: "));
+                    case 17 -> jobToUpdate.setApplicationDeadline(Validation.checkDate("Enter new Application Deadline (YYYY-MM-DD): "));
+                    case 18 -> {
                         System.out.println("\nExiting update process for this job.");
                         updatingAttributes = false;
-                        break;
-                    default:
-                        System.out.println("\nInvalid choice! Please select a valid option.");
+                    }
+                    default -> System.out.println("\nInvalid choice! Please select a valid option.");
                 }
 
                 // Ask to update another attribute
@@ -752,16 +693,56 @@ public class JobManager {
         System.out.printf("| %-25s | %-80s |\n", "Application Deadline", job.getApplicationDeadline());
         System.out.println("----------------------------------------------------------------------------------------------------------------\n");
 
+        Tools.systemPause();
     }
-
-    public static void displayJobDetails() {
+    
+    public static void displayMyJob(Employer employer) {
         if (Database.jobList == null || Database.jobList.isEmpty()) {
             System.out.println("No jobs available to display.");
             return;
         }
 
         Tools.clearScreen();
-        UserUI.headLine();
+        UserManager.profileHeadLine();
+
+        for(Job job : Database.jobList){
+            if(job.getEmployer().equals(employer)){
+                System.out.println("\n----------------------------------------------------------------------------------------------------------------");
+                System.out.printf("| %-25s | %-80s |\n", "Field", "Details");
+                System.out.println("----------------------------------------------------------------------------------------------------------------");
+                System.out.printf("| %-25s | %-80s |\n", "Job ID", job.getJobID());
+                System.out.printf("| %-25s | %-80s |\n", "Title", job.getJobTitle());
+                System.out.printf("| %-25s | %-80s |\n", "Type", job.getJobType());
+                System.out.printf("| %-25s | %-80s |\n", "Description", job.getJobDescription());
+                System.out.printf("| %-25s | %-80s |\n", "Interview Process", job.getInterviewProcess());
+                System.out.printf("| %-25s | %-80s |\n", "Employment Type", job.getEmploymentType());
+                System.out.printf("| %-25s | %-80s |\n", "Work Mode", job.getWorkMode());
+                System.out.printf("| %-25s | %-80s |\n", "Probation Period", job.getProbationPeriod());
+                System.out.printf("| %-25s | %-80s |\n", "Relocation Assistance", job.isRelocationAssistance() ? "Yes" : "No");
+                printMultiLine("| %-25s | %-80s |\n", "Required Skills", job.getRequiredSkills());
+                System.out.printf("| %-25s | %-80s |\n", "Required Experience", job.getRequiredExperience() + " years");
+                System.out.printf("| %-25s | %-80s |\n", "Team Size", job.getTeamSize());
+                System.out.printf("| %-25s | %-80s |\n", "Salary", "$" + job.getSalary());
+                printMultiLine("| %-25s | %-80s |\n", "Benefits", job.getBenefits());
+                System.out.printf("| %-25s | %-80s |\n", "Work Hours", job.getWorkHours() + " per week");
+                System.out.printf("| %-25s | %-80s |\n", "Career Development", job.getCareerDevelopment());
+                System.out.printf("| %-25s | %-80s |\n", "Application Deadline", job.getApplicationDeadline());
+                System.out.println("----------------------------------------------------------------------------------------------------------------\n");
+            }
+        }
+
+        Tools.systemPause();
+    }
+
+    public static <T> void displayJobDetails() {
+        
+        if (Database.jobList == null || Database.jobList.isEmpty()) {
+            System.out.println("No jobs available to display.");
+            return;
+        }
+
+        Tools.clearScreen();
+        UserManager.profileHeadLine();
 
         System.out.println("Total jobs in the list: " + Database.jobList.size());
         System.out.println("\n-----------------------------");
@@ -803,7 +784,7 @@ public class JobManager {
         }
 
         for (Job job : Database.jobList) {
-            if (job.getJobID() != null && job.getJobTitle().equalsIgnoreCase(jobTitle)) {
+            if (job.getJobID() != null && job.getJobTitle().equalsIgnoreCase(jobTitle)  && job.getEmployer().equals(Database.getEmployer())) {
                 System.out.println("Job Name already exists.");
                 return true;
             }
@@ -934,7 +915,36 @@ public class JobManager {
         return source != null && source.toLowerCase().contains(keyword.toLowerCase());
     }
 
+    public static void displayBrowseJobDetail(Job job, int i){
+        Employer employer = job.getEmployer();
+        Company company = employer.getCompany();
+        String companyName = company.getCompanyName();
+        String jobTitle = job.getJobTitle();
+        String jobType = job.getJobType();
+        String jobDescription = job.getJobDescription();
+        Double salary = job.getSalary();
+        System.out.println("--------------------------------------------------------------------------------------");
+        System.out.printf ("    %-3s %-70s \n", (i + 1) + ".", companyName);
+        System.out.printf ("        Position:     %-60s \n", jobTitle);
+        System.out.printf ("        Type:         %-60s \n", jobType);
+        System.out.printf ("        Salary:       RM%-57.2f \n", salary);
+        System.out.printf ("        Description:  %-60s \n", jobDescription);
+        System.out.println("--------------------------------------------------------------------------------------");
+    }
+    
+    public static void displayJobUnderCompany(Company company){
+        int i = 0;
+        for(Job job : Database.jobList){
+            if(job.getEmployer().getCompany().equals(company)){
+                System.out.println("--------------------------------------------------------------------------------------");
+                System.out.printf ("    %-3s %-70s \n", (i + 1) + ".", company.getCompanyName());
+                System.out.printf ("        Position:     %-60s \n", job.getJobTitle());
+                System.out.printf ("        Type:         %-60s \n", job.getJobType());
+                System.out.printf ("        Salary:       RM%-57.2f \n", job.getSalary());
+                System.out.printf ("        Description:  %-60s \n", job.getJobDescription());
+                System.out.println("--------------------------------------------------------------------------------------");
+                i++;
+            }
+        }
+    }
 }
-//If employer is not null, assign employer.getCompany() to company
-
-//Else, assign null to company

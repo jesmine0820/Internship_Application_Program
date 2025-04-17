@@ -49,6 +49,46 @@ public class ReportUI {
         System.out.println("Description: " + text);
     }
     
+    //---------------------------Display Job Application Report Menu----------------------------
+    public static int employerReport() {
+        Tools.clearScreen();
+
+        int input;
+
+        UserUI.headLine();
+        System.out.println("=================================================");
+        System.out.println("=                Employer Report                =");
+        System.out.println("=================================================");
+        System.out.println("=  1. Highest Applied Job Report                =");
+        System.out.println("=  2. Job Applied Report                        =");
+        System.out.println("=  3. Exit                                      =");
+        System.out.println("=================================================");
+
+        input = Input.getIntegerInput("Enter your choice > ");
+
+        return input;
+    }
+    
+    //---------------------------Display Job Application Report Menu----------------------------
+    public static int applicationReport() {
+        Tools.clearScreen();
+
+        int input;
+
+        UserUI.headLine();
+        System.out.println("=================================================");
+        System.out.println("=              Application Report               =");
+        System.out.println("=================================================");
+        System.out.println("=  1. Monthly Job Application Statistics        =");
+        System.out.println("=  2. Top 10 Most Applied Jobs                  =");
+        System.out.println("=  3. Exit                                      =");
+        System.out.println("=================================================");
+
+        input = Input.getIntegerInput("Enter your choice > ");
+
+        return input;
+    }
+    
     //---------------------------Display Matching Engine Report Menu---------------------------
     public static int matchingReport(){
         Tools.clearScreen();

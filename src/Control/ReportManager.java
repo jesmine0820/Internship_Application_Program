@@ -14,11 +14,13 @@ import Entity.Schedule;
 import Utility.Input;
 import Utility.MessageUI;
 import Utility.Tools;
+import static Utility.Tools.BLUE;
 import static Utility.Tools.GREEN;
 import static Utility.Tools.RED;
 import static Utility.Tools.RESET;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -38,10 +40,10 @@ public class ReportManager {
             input = ReportUI.reportUI();
             
             switch (input){
-                case 1 -> System.out.println("Job Report");
-                case 2 -> System.out.println("Application Report");
+                case 1 -> employerReportManagement();
+                case 2 -> applicationReportManagement();
                 case 3 -> matchingReportManagement();
-                case 4 -> System.out.println("Interview Report");
+                case 4 -> interviewReportManagement();
                 case 5 -> searchingReportManagement();
                 case 6 -> Tools.back();
                 default -> MessageUI.errorMessage();
@@ -51,6 +53,21 @@ public class ReportManager {
     }
     
     // ==================================Employer Module Report===========================================
+    
+    private static void employerReportManagement(){
+        int input;
+        do{
+            UserManager.profileHeadLine();
+            input = ReportUI.employerReport();
+            
+            switch(input){
+                case 1 -> highestJobAppliedReport();
+                case 2 -> JobApplied();
+                case 3 -> Tools.back();
+                default -> MessageUI.errorMessage();
+            }
+        } while(input != 3);
+    }
     
     public static void highestJobAppliedReport() {
         Tools.clearScreen();
@@ -257,6 +274,302 @@ public class ReportManager {
     }
     
     // ==================================Applicant Module Report===========================================
+    
+    private static void applicationReportManagement() {
+        int input;
+        do {
+            UserManager.profileHeadLine();
+            input = ReportUI.applicationReport();
+
+            switch (input) {
+                case 1 ->
+                    generateMonthlySummaryReport();
+                case 2 ->
+                    generateTop10JobTitleReport();
+                case 3 ->
+                    Tools.back();
+                default ->
+                    MessageUI.errorMessage();
+            }
+        } while (input != 3);
+    }
+
+    //Monthly Job Application Statistics
+    public static void generateMonthlySummaryReport() {
+        int[] monthCounts = new int[12];
+        int totalApplications = 0;
+
+        for (Applicant applicant : Database.applicants) {
+            if (applicant == null) {
+                continue;
+            }
+
+            ListInterface<JobApplication> jobApplications = applicant.getJobApplication();
+            if (jobApplications == null || jobApplications.size() == 0) {
+                continue;
+            }
+
+            for (JobApplication jobApp : jobApplications) {
+                if (jobApp != null && jobApp.getApplicationDate() != null) {
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(jobApp.getApplicationDate());
+                    int month = cal.get(Calendar.MONTH);
+                    monthCounts[month]++;
+                    totalApplications++;
+                }
+            }
+        }
+        //report header
+        System.out.println("===============================================================");
+        System.out.println("                    TARUMT Internship Programme");
+        System.out.println("               Monthly Job Application Statistics");
+        System.out.println("===============================================================");
+        System.out.printf("Generated at: %-40s\n", new Date());
+        System.out.println("---------------------------------------------------------------");
+
+        System.out.println("+-----------------+----------------+");
+        System.out.println("| Month           | Applications   |");
+        System.out.println("+-----------------+----------------+");
+        for (int i = 0; i < monthCounts.length; i++) {
+            System.out.printf("| %-15s | %-14d |\n", getMonthName(i), monthCounts[i]);
+        }
+        System.out.println("+-----------------+----------------+");
+
+        System.out.println();
+        System.out.println("===========================================");
+        System.out.println("         Job Application Statistics         ");
+        System.out.println("===========================================");
+        System.out.printf("Total Applications: %d\n", totalApplications);
+        int maxMonthIndex = getMaxMonth(monthCounts);
+        int minMonthIndex = getMinMonth(monthCounts);
+        System.out.printf("Most Applications: %s (%d)\n", getMonthName(getMaxMonth(monthCounts)), monthCounts[getMaxMonth(monthCounts)]);
+        System.out.printf("Least Applications: %s (%d)\n", getMonthName(getMinMonth(monthCounts)), monthCounts[getMinMonth(monthCounts)]);
+        System.out.println("===========================================");
+
+        printColoredLineGraph(monthCounts, maxMonthIndex, minMonthIndex);
+
+        System.out.println("\n***************************************************************");
+        System.out.println("                         END OF REPORT");
+        System.out.println("***************************************************************");
+        Tools.systemPause();
+    }
+
+    //Top 10 Most Applied Jobs
+    public static void generateTop10JobTitleReport() {
+        String[] jobTitles = new String[100];
+        int[] jobCounts = new int[100];
+        int distinctCount = 0;
+        int totalApplications = 0;
+
+        for (Applicant applicant : Database.applicants) {
+            if (applicant == null) {
+                continue;
+            }
+
+            ListInterface<JobApplication> jobApplications = applicant.getJobApplication();
+            if (jobApplications == null || jobApplications.size() == 0) {
+                continue;
+            }
+
+            for (int i = 0; i < jobApplications.size(); i++) {
+                JobApplication jobApp = jobApplications.get(i);
+                if (jobApp == null || jobApp.getJob() == null) {
+                    continue;
+                }
+
+                String jobTitle = jobApp.getJob().getJobTitle();
+                boolean found = false;
+
+                for (int j = 0; j < distinctCount; j++) {
+                    if (jobTitles[j].equals(jobTitle)) {
+                        jobCounts[j]++;
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found && distinctCount < jobTitles.length) {
+                    jobTitles[distinctCount] = jobTitle;
+                    jobCounts[distinctCount] = 1;
+                    distinctCount++;
+                }
+                totalApplications++;
+            }
+        }
+        
+        for (int i = 0; i < distinctCount - 1; i++) {
+            int maxIdx = i;
+            for (int j = i + 1; j < distinctCount; j++) {
+                if (jobCounts[j] > jobCounts[maxIdx]) {
+                    maxIdx = j;
+                }
+            }
+
+            int tempCount = jobCounts[i];
+            jobCounts[i] = jobCounts[maxIdx];
+            jobCounts[maxIdx] = tempCount;
+
+            String tempTitle = jobTitles[i];
+            jobTitles[i] = jobTitles[maxIdx];
+            jobTitles[maxIdx] = tempTitle;
+        }
+
+        // Report header
+        System.out.println("===============================================================");
+        System.out.println("                    TARUMT Internship Programme");
+        System.out.println("                 Top 10 Most Applied Jobs");
+        System.out.println("===============================================================");
+        System.out.printf("Generated at: %-40s\n", new Date());
+        System.out.println("---------------------------------------------------------------");
+
+        System.out.println("+------------------------------------------+---------------------+");
+        System.out.println("|               Job Title                  | Applications Count  |");
+        System.out.println("+------------------------------------------+---------------------+");
+
+        ListInterface<String> x_axis = new DoublyLinkedList<>();
+        ListInterface<Integer> y_axis = new DoublyLinkedList<>();
+
+        for (int i = 0; i < 10 && i < distinctCount; i++) {
+            System.out.printf("| %-40s | %-19d |\n", jobTitles[i], jobCounts[i]);
+            x_axis.add(jobTitles[i]);
+            y_axis.add(jobCounts[i]);
+        }
+
+        System.out.println("+------------------------------------------+---------------------+");
+
+        System.out.println();
+        System.out.println("==============================================");
+        System.out.println("           Job Application Statistics          ");
+        System.out.println("==============================================");
+        System.out.printf("Total Applications     : %d\n", totalApplications);
+        System.out.printf("Unique Job Titles      : %d\n", distinctCount);
+
+        int maxCount = jobCounts[0];
+        ListInterface<String> mostPopularTitles = new DoublyLinkedList<>();
+        for (int i = 0; i < distinctCount && jobCounts[i] == maxCount; i++) {
+            mostPopularTitles.add(jobTitles[i]);
+        }
+        System.out.println(BLUE + "Most Popular(Top 10):" + RESET);
+        for (String title : mostPopularTitles) {
+            System.out.println("- " + title);
+        }
+        System.out.printf("  (%d applications)\n", maxCount);
+
+        int minCount = jobCounts[Math.min(9, distinctCount - 1)];
+        ListInterface<String> leastPopularTitles = new DoublyLinkedList<>();
+        for (int i = 0; i < 10 && i < distinctCount; i++) {
+            if (jobCounts[i] == minCount) {
+                leastPopularTitles.add(jobTitles[i]);
+            }
+        }
+        System.out.println(BLUE + "Least Popular (Top 10):" + RESET);
+        for (String title : leastPopularTitles) {
+            System.out.println("- " + title);
+        }
+        System.out.printf("  (%d applications)\n", minCount);
+        System.out.println("==============================================");
+
+        verticalBarChart(x_axis, y_axis, "\t\tBar Chart of Top 10 Applied Job Titles");
+
+        System.out.println("\n***************************************************************");
+        System.out.println("                         END OF REPORT");
+        System.out.println("***************************************************************");
+
+        Tools.systemPause();
+    }
+
+    public static void printColoredLineGraph(int[] monthCounts, int maxMonthIndex, int minMonthIndex) {
+        System.out.println("\n\tLine Graph of Monthly Job Application Statistics");
+
+        int max = 0;
+
+        for (int count : monthCounts) {
+            if (count > max) {
+                max = count;
+            }
+        }
+
+        int scaledMax = max / 5;
+
+        for (int level = scaledMax; level >= 1; level--) {
+            System.out.printf("%3d |", level * 5);
+            for (int i = 0; i < 12; i++) {
+                if ((monthCounts[i] / 5) >= level) {
+                    if (i == maxMonthIndex) {
+                        System.out.print("  " + BLUE + "*" + RESET + "  ");
+                    } else if (i == minMonthIndex) {
+                        System.out.print("  " + RED + "*" + RESET + "  ");
+                    } else {
+                        System.out.print("  *  ");
+                    }
+                } else {
+                    System.out.print("     ");
+                }
+            }
+            System.out.println();
+        }
+
+        System.out.println("     ------------------------------------------------------------");
+
+        System.out.print("     ");
+        for (String m : new String[]{"Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"}) {
+            System.out.printf("%-5s", m);
+        }
+        System.out.println("\n* = 5 applications");
+        System.out.println();
+    }
+
+    public static String getMonthName(int month) {
+        return switch (month) {
+            case 0 ->
+                "January";
+            case 1 ->
+                "February";
+            case 2 ->
+                "March";
+            case 3 ->
+                "April";
+            case 4 ->
+                "May";
+            case 5 ->
+                "June";
+            case 6 ->
+                "July";
+            case 7 ->
+                "August";
+            case 8 ->
+                "September";
+            case 9 ->
+                "October";
+            case 10 ->
+                "November";
+            case 11 ->
+                "December";
+            default ->
+                "Unknown";
+        };
+    }
+
+    public static int getMaxMonth(int[] counts) {
+        int maxIndex = 0;
+        for (int i = 1; i < counts.length; i++) {
+            if (counts[i] > counts[maxIndex]) {
+                maxIndex = i;
+            }
+        }
+        return maxIndex;
+    }
+
+    public static int getMinMonth(int[] counts) {
+        int minIndex = 0;
+        for (int i = 1; i < counts.length; i++) {
+            if (counts[i] < counts[minIndex]) {
+                minIndex = i;
+            }
+        }
+        return minIndex;
+    }
     
     // ==================================Matching Engine Module Report===========================================
     

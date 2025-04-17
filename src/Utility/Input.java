@@ -189,7 +189,7 @@ public class Input {
     public static ListInterface<String> getStringListInput(String question){
         ListInterface<String> listItem = new DoublyLinkedList<>();
         try{
-            System.out.println("question");
+            System.out.println(question);
             String value = input.nextLine();
             String[] items = value.split("\\s*,\\s*");
             for(String item : items){

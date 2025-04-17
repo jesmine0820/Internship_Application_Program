@@ -1,14 +1,14 @@
 package Boundary;
 
 import Control.ApplicantManager;
-import Dao.Database;
 import Utility.Input;
 import Utility.Tools;
 import Utility.MessageUI;
 
 /**
  *
- * @author Asus
+ * @author Gan Khai Li
+ * 
  */
 public class ApplicantUI {
     public static String applicantMenu() {

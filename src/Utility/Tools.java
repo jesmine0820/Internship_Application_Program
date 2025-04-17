@@ -36,6 +36,9 @@ public class Tools {
     public static final String BLUEBG = "\u001B[44m";
     public static final String PURPLEBG = "\u001B[45m";
     public static final String CYANBG = "\u001B[46m";
+            
+    public static final String PHONEICON = "\\u260F";
+    public static final String MAIL = "\u2709";
     
     // Return to the last page
     public static int back(){
@@ -85,6 +88,15 @@ public class Tools {
             robot.keyRelease(KeyEvent.VK_L);
         } catch (AWTException ex){
             
+        }
+    }
+    
+    // Get the number
+    public static void notificationIcon(int count){
+        if(count > 0){
+            System.out.println(RED + " " + MAIL + " Notification " + count + "     [N] -> Open Notification" + RESET); 
+        } else {
+            System.out.println(BLUE + " " + MAIL + " Notification " + RESET); 
         }
     }
 }

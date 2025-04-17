@@ -10,21 +10,22 @@ import Utility.*;
 
 /**
  *
- * @author User
- * s
- * display to the applicant and employer
+ * @author Jesmine Tey Khai Jing
  * 
  */
 public class BrowseManager {
     
+    // Declare local variable
     private static final ListInterface<String> searchHistory = new DoublyLinkedList<>();
     private static String title = "";
     private static Boolean cancel;
     
+    // This cancel is used to control the exit when choosing entity
     public static void setCancel(Boolean yesNo){
         cancel = yesNo;
     }
     
+    // Choose browse job or applicant
     public static void browseMenu(){
         UserUI.headLine();
         UserManager.profileHeadLine();
@@ -40,70 +41,6 @@ public class BrowseManager {
         }while (!cancel);
     }
     
-    private static String getBrowseSelection(){
-        if(UserManager.isEmployer()){
-            while(true){
-                int choice = BrowseUI.employerBrowseMenu();
-                switch (choice) {
-                    case 1 -> { 
-                        return "Job"; 
-                    }
-                    case 2 -> { 
-                        return "Applicant"; 
-                    }
-                    case 3 -> {
-                        return "Any";
-                    }
-                    case 4 -> { 
-                        return "";
-                    }
-                    default -> MessageUI.errorMessage();
-                } 
-            }
-        } else {
-            return "Job";
-        }
-    }
-    
-    // Display the list by using matching engine
-    private static <T extends Comparable<T>> void displayAll(String title) {
-        
-        // Declare a doubly linked list
-        ListInterface<T> list = selectList(title); 
-        
-        // Dynamically identify object types
-        T object = getObject(title);
-        Job goJob;
-        Applicant goApplicant;
-
-        System.out.println("\n       Available " + title );
-
-        if (list.isEmpty()) {
-            MessageUI.emptyDatabase();
-            return;
-        }
-        
-        list = sortList(list, object);
-        
-        if (object instanceof Job) {
-            goJob = (Job) Input.selectEntity(list, title);
-            if (goJob != null) {
-                cancel = false;
-                JobApplicationManager.displayBrowseJobs(goJob);
-            } else {
-                cancel = true;
-            }
-        } else if (object instanceof Applicant) {
-            goApplicant = (Applicant) Input.selectEntity(list, title);
-            if (goApplicant != null) {
-                cancel = false;
-                ApplicantManager.displayEssentialInfo(goApplicant);
-            } else {
-                cancel = true;
-            }
-        }
-    }
-
     // Search for something in the list
     public static <T extends Comparable<T>> void searchEngine() {
         
@@ -126,17 +63,21 @@ public class BrowseManager {
             ListInterface<Company> companyList = (ListInterface<Company>) selectList("Company");
             ListInterface<Applicant> applicantList = (ListInterface<Applicant>) selectList("Applicant");
 
-            
+            // Get input from user
             String input = Input.getStringInput("Search > ").toLowerCase();
-            if(input.equals("S")){
+            
+            // Store the input into search history list for future analysis
+            if(!input.equals("x")){
                 searchHistory.add(input);
                 Database.searchHistory.add(input);
             }
             
+            // Break the loop
             if(input.equals("x")){
                 break;
             }
 
+            // Check if the database is empty
             if (jobList.isEmpty() && companyList.isEmpty() && applicantList.isEmpty()) {
                 MessageUI.emptyDatabase();
                 return;
@@ -152,7 +93,7 @@ public class BrowseManager {
             int falseStep = 5;
             String lowerInput = input.toLowerCase();
  
-            // Search in Job List (Exact & Fuzzy)
+            // Search in Job List (Exact & Fuzzy & Contains Keyword)
             for (int i = 0; i < jobList.size(); i++) {
                 Job job = jobList.get(i);
                 String jobTitle = job.getJobTitle().toLowerCase();
@@ -169,7 +110,7 @@ public class BrowseManager {
                 jobResults = sortList(jobResults, job);
             }
 
-            // Search in Company List (Exact & Fuzzy)
+            // Search in Company List (Exact & Fuzzy & Contains Keyword)
             for (int i = 0; i < companyList.size(); i++) {
                 Company company = companyList.get(i);
                 String companyName = company.getCompanyName().toLowerCase();
@@ -179,6 +120,7 @@ public class BrowseManager {
                 }
             }
             
+            // Search in Applicant List (Exact & Fuzzy & Contains Keyword)
             for (int i = 0; i < applicantList.size(); i++) {
                 Applicant applicant = applicantList.get(i);
                 String applicantName = applicant.getName().toLowerCase();
@@ -188,7 +130,7 @@ public class BrowseManager {
                 }
             }
    
-            // Need to match all the result
+            // If there is multiple results list, merge it into one
             if(UserManager.isEmployer()){
                 if(!jobResults.isEmpty() && !companyResults.isEmpty()){
                     mergeResults = (ListInterface<Job>)mergeList((ListInterface<T>)jobResults, (ListInterface<T>)companyResults);
@@ -215,10 +157,12 @@ public class BrowseManager {
                 }
             }
             
+            // Check if result is empty
             if(jobResults.isEmpty() && companyResults.isEmpty()){
                 MessageUI.noMatchFound();
             }
             
+            // Display the entity user choose
             if(UserManager.isEmployer()){
                 if(goJob != null){
                     JobManager.displayJobDetails(goJob);
@@ -243,44 +187,55 @@ public class BrowseManager {
         } while(isContinue);
     }
     
-    // Call Sorting Method
-    private static <T extends Comparable<T>> ListInterface<T> sortList(ListInterface<T> list, Object object){
-        list = MatchingEngine.heapSort(list, object);
-        return list;
-    }
+    // Display all the job / applicant in database
+    private static <T extends Comparable<T>> void displayAll(String title) {
+        
+        // Declare a list to store the list from database locally
+        ListInterface<T> list = selectList(title); 
+        
+        // Dynamically identify object types
+        T object = getObject(title);
+        Job goJob;
+        Applicant goApplicant;
 
-    // Get the list from the data store
-    private static <T extends Comparable<T>> ListInterface<T> selectList(String title) {
-        return (ListInterface<T>) (switch (title) {
-            case "Job" -> Database.jobList;
-            case "Company" -> Database.companies;
-            case "Employer" -> Database.employers;
-            case "Applicant" -> Database.applicants;
-            default -> new DoublyLinkedList<>();
-        });
-    }
-    
-    private static <T> T getObject(String title) {
-        switch (title) {
-            case "Job" -> {
-                return (T) new Job();  
+        System.out.println("\n       Available " + title );
+
+        // Check if the list is empty
+        if (list.isEmpty()) {
+            MessageUI.emptyDatabase();
+            return;
+        }
+        
+        // Sort the list by using matching engine
+        list = sortList(list, object);
+        
+        // Select the entity and display it
+        if (object instanceof Job) {
+            goJob = (Job) Input.selectEntity(list, title);
+            if (goJob != null) {
+                cancel = false;
+                JobApplicationManager.displayBrowseJobs(goJob);
+            } else {
+                cancel = true;
             }
-            case "Company" -> {
-                return (T) new Company();
-            }
-            case "Employer" -> {
-                return (T) new Employer();
-            }
-            case "Applicant" -> {
-                return (T) new Applicant(); 
-            }
-            default -> {
-                MessageUI.invalidTitle();
-                return null;
+        } else if (object instanceof Applicant) {
+            goApplicant = (Applicant) Input.selectEntity(list, title);
+            if (goApplicant != null) {
+                cancel = false;
+                ApplicantManager.displayEssentialInfo(goApplicant);
+            } else {
+                cancel = true;
             }
         }
     }
     
+    // Call Sorting Method from Matching Engine
+    private static <T extends Comparable<T>> ListInterface<T> sortList(ListInterface<T> list, Object object){
+        list = MatchingEngine.heapSort(list, object);
+        return list;
+    }
+    
+    // Merge two list into one list
     private static <T extends Comparable<T>> ListInterface<T> mergeList(ListInterface<T> list1, ListInterface<T> list2){
         if(list1.isEmpty() && list2.isEmpty()){
             return null;
@@ -347,5 +302,63 @@ public class BrowseManager {
         }
         return matchedJob;
     }
-
+    
+    // Get the title that user choose to display
+    private static String getBrowseSelection(){
+        if(UserManager.isEmployer()){
+            while(true){
+                int choice = BrowseUI.employerBrowseMenu();
+                switch (choice) {
+                    case 1 -> { 
+                        return "Job"; 
+                    }
+                    case 2 -> { 
+                        return "Applicant"; 
+                    }
+                    case 3 -> {
+                        return "Any";
+                    }
+                    case 4 -> { 
+                        return "";
+                    }
+                    default -> MessageUI.errorMessage();
+                } 
+            }
+        } else {
+            return "Job";
+        }
+    }
+    
+    // Create and return a specific object
+    private static <T> T getObject(String title) {
+        switch (title) {
+            case "Job" -> {
+                return (T) new Job();  
+            }
+            case "Company" -> {
+                return (T) new Company();
+            }
+            case "Employer" -> {
+                return (T) new Employer();
+            }
+            case "Applicant" -> {
+                return (T) new Applicant(); 
+            }
+            default -> {
+                MessageUI.invalidTitle();
+                return null;
+            }
+        }
+    }
+    
+    // Get the list from the data store
+    private static <T extends Comparable<T>> ListInterface<T> selectList(String title) {
+        return (ListInterface<T>) (switch (title) {
+            case "Job" -> Database.jobList;
+            case "Company" -> Database.companies;
+            case "Employer" -> Database.employers;
+            case "Applicant" -> Database.applicants;
+            default -> new DoublyLinkedList<>();
+        });
+    }
 }

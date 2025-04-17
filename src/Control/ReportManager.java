@@ -1,30 +1,29 @@
 package Control;
 
-import ADT.*;
+import ADT.ListInterface;
+import ADT.DoublyLinkedList;
 import Boundary.ReportUI;
+import Boundary.UserUI;
 import Dao.Database;
-import Entity.*;
+import Entity.Applicant;
+import Entity.Company;
+import Entity.Employer;
+import Entity.Job;
+import Entity.JobApplication;
+import Entity.Schedule;
 import Utility.Input;
 import Utility.MessageUI;
 import Utility.Tools;
 import static Utility.Tools.GREEN;
 import static Utility.Tools.RED;
 import static Utility.Tools.RESET;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  *
  * @author All
- * Explanations
- * 1. Employer Module
- * 2. Application Module
- * 3. Matching Engine Module
- *      - Applicant Matching Report
- *      - Top Matched Applicants Report
- *      - Matching Engine Efficiency Report
- * 4. Interview with Schedule Module
- * 5. Searching Module
- *      - Applicant Search Trends
- *      - Search Module Performance Report
  * 
  */
 public class ReportManager {
@@ -50,6 +49,216 @@ public class ReportManager {
             
         }while(input != 6);
     }
+    
+    // ==================================Employer Module Report===========================================
+    
+    public static void highestJobAppliedReport() {
+        Tools.clearScreen();
+        UserUI.headLine();
+
+        Employer currentEmployer = Database.getEmployer();
+        Company currentEmployerCompany = currentEmployer.getCompany();
+
+        ListInterface<Job> companyJobs = new DoublyLinkedList<>();
+        for (Job job : Database.jobList) {
+            if (job.getEmployer().getCompany().equals(currentEmployerCompany)) {
+                companyJobs.add(job);
+            }
+        }
+
+        System.out.println("================================================================================");
+        System.out.println("                    JOB APPLICATION MANAGEMENT SYSTEM");
+        System.out.println("                       HIGHEST JOB APPLIED REPORT");
+        System.out.println("--------------------------------------------------------------------------------");
+        System.out.println("Generated at: " + java.time.LocalDateTime.now());
+        System.out.println("********************************************************************************");
+        System.out.println("Company: " + currentEmployer.getCompany().getCompanyName());
+        System.out.println("Employer: " + currentEmployer.getName());
+        System.out.println();
+
+        ListInterface<Job> jobList = new DoublyLinkedList<>();
+        ListInterface<Integer> applicationCounts = new DoublyLinkedList<>();
+
+        int totalJobsOffered = 0;
+        int totalApplications = 0;
+
+        for (Job job : Database.jobList) {
+            if (job.getEmployer().equals(currentEmployer)) {
+                totalJobsOffered++;
+                int apps = job.getJobApplication().size();
+                totalApplications += apps;
+
+                jobList.add(job);
+                applicationCounts.add(apps);
+            }
+        }
+
+        if (totalJobsOffered == 0) {
+            System.out.println(Tools.RED + "No jobs found for the employer." + Tools.RESET);
+            return;
+        }
+
+        Job mostAppliedJob = null;
+        Job leastAppliedJob = null;
+        int maxApplications = 0;
+        int minApplications = Integer.MAX_VALUE;
+
+        for (int i = 0; i < jobList.size(); i++) {
+            Job job = jobList.get(i);
+            int apps = applicationCounts.get(i);
+
+            if (apps > maxApplications) {
+                maxApplications = apps;
+                mostAppliedJob = job;
+            }
+            if (apps < minApplications) {
+                minApplications = apps;
+                leastAppliedJob = job;
+            }
+        }
+
+        System.out.println("Total Jobs Offered by Employer : " + totalJobsOffered);
+        System.out.println("================================================================================");
+        System.out.println("No. | Job ID  | Job Title                                 | Number of Applicant");
+        System.out.println("================================================================================");
+
+        for (int i = 0; i < jobList.size(); i++) {
+            Job job = jobList.get(i);
+            int apps = applicationCounts.get(i);
+            System.out.printf("%-3d | %-7s | %-40s | %-20d%n", i + 1, job.getJobID(), job.getJobTitle(), apps);
+            System.out.println("--------------------------------------------------------------------------------");
+        }
+
+        System.out.println("Total                                                    | " + totalApplications);
+        System.out.println("================================================================================");
+
+        System.out.println();
+        System.out.println("Most Applied Job:");
+        System.out.println("--------------------------------------------------------------------------------");
+        if (mostAppliedJob != null) {
+            System.out.println("Job ID          : " + mostAppliedJob.getJobID());
+            System.out.println("Job Title       : " + mostAppliedJob.getJobTitle());
+            System.out.println("Job Type        : " + mostAppliedJob.getJobType());
+            System.out.println("Employment Type : " + mostAppliedJob.getEmploymentType());
+            System.out.println("Work Mode       : " + mostAppliedJob.getWorkMode());
+            System.out.println("Applications    : " + maxApplications);
+        }
+
+        System.out.println();
+        System.out.println("Total Job Applications Received: " + totalApplications);
+        System.out.println("********************************************************************************");
+
+        System.out.println("Job Application Bar Chart:");
+        System.out.println("(Each colored block = 1 application)");
+        System.out.println("--------------------------------------------------------------------------------");
+
+        ListInterface<String> jobIDs = new DoublyLinkedList<>();
+        for (int i = 0; i < jobList.size(); i++) {
+            jobIDs.add(jobList.get(i).getJobID());
+        }
+        verticalBarChart(jobIDs, applicationCounts, "Job Applications by Job ID");
+
+        System.out.println("********************************************************************************");
+        System.out.println("Programmes with the most applications (" + maxApplications + "):");
+        System.out.println("* " + mostAppliedJob.getJobID() + " - " + mostAppliedJob.getJobTitle());
+
+        System.out.println();
+        System.out.println("Programmes with the least applications (" + minApplications + "):");
+        System.out.println("* " + leastAppliedJob.getJobID() + " - " + leastAppliedJob.getJobTitle());
+
+        System.out.println("********************************************************************************");
+        System.out.println("                                 END OF THE REPORT");
+        System.out.println("********************************************************************************");
+    }
+
+    public static void JobApplied() {
+        Tools.clearScreen();
+        UserUI.headLine();
+
+        Employer currentEmployer = Database.getEmployer();
+        Company currentEmployerCompany = currentEmployer.getCompany();
+
+        ListInterface<Employer> employerList = new DoublyLinkedList<>();
+        ListInterface<Integer> applicationCountList = new DoublyLinkedList<>();
+
+        int totalJobsOffered = 0;
+        int totalApplications = 0;
+
+        for (Job job : Database.jobList) {
+            if (job.getEmployer().getCompany().equals(currentEmployerCompany)) {
+                totalJobsOffered++;
+                int apps = job.getJobApplication().size();
+                totalApplications += apps;
+
+                Employer employer = job.getEmployer();
+                boolean found = false;
+                for (int i = 0; i < employerList.size(); i++) {
+                    if (employerList.get(i).equals(employer)) {
+                        applicationCountList.set(i, applicationCountList.get(i) + apps);
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found) {
+                    employerList.add(employer);
+                    applicationCountList.add(apps);
+                }
+            }
+        }
+
+        if (totalJobsOffered == 0) {
+            System.out.println(Tools.RED + "No jobs found for the company." + Tools.RESET);
+            return;
+        }
+
+        System.out.println("================================================================================");
+        System.out.println("                    JOB APPLICATION MANAGEMENT SYSTEM");
+        System.out.println("                  JOB APPLICATIONS OVERVIEW FOR EMPLOYERS IN " + currentEmployer.getCompany().getCompanyName());
+        System.out.println("--------------------------------------------------------------------------------");
+        System.out.println("Generated at: " + java.time.LocalDateTime.now());
+        System.out.println("********************************************************************************");
+        System.out.println("Company: " + currentEmployer.getCompany().getCompanyName());
+        System.out.println();
+
+        System.out.println("Total Jobs Offered by All Employers in the Company: " + totalJobsOffered);
+        System.out.println("=====================================================================================================");
+        System.out.println("No. | Job ID  | Job Title                                | Employer             | Number of Applicants");
+        System.out.println("=====================================================================================================");
+
+        int index = 1;
+        for (Job job : Database.jobList) {
+            if (job.getEmployer().getCompany().equals(currentEmployerCompany)) {
+                System.out.printf("%-3d | %-7s | %-40s | %-20s | %-20d%n", index++, job.getJobID(), job.getJobTitle(), job.getEmployer().getName(), job.getJobApplication().size());
+                System.out.println("----------------------------------------------------------------------------------------------------");
+            }
+        }
+
+        System.out.println("Total                                                    |                      | " + totalApplications);
+        System.out.println("=====================================================================================================");
+
+        System.out.println();
+        System.out.println("Job Application Bar Chart:");
+        System.out.println("(Each colored block = 1 application)");
+        System.out.println("--------------------------------------------------------------------------------");
+
+        ListInterface<String> employerNames = new DoublyLinkedList<>();
+        for (int i = 0; i < employerList.size(); i++) {
+            employerNames.add(employerList.get(i).getName());
+        }
+
+        verticalBarChart(employerNames, applicationCountList, "Total Applications per Employer");
+
+        System.out.println("********************************************************************************");
+        System.out.println("Total Job Applications Received: " + totalApplications);
+        System.out.println("********************************************************************************");
+        System.out.println("                                 END OF THE REPORT");
+        System.out.println("********************************************************************************");
+    }
+    
+    // ==================================Applicant Module Report===========================================
+    
+    // ==================================Matching Engine Module Report===========================================
     
     // Matching Engine Module Report
     private static void matchingReportManagement(){
@@ -84,6 +293,7 @@ public class ReportManager {
         Tools.systemPause("Press Enter to Continue...");
     }
     
+    // Helper function to generate the applicang matching report
     private static <T> void generateMatchingReport() {
         if (Database.getEmployer() != null) {
             // EMPLOYER VIEW
@@ -183,7 +393,7 @@ public class ReportManager {
                 }
 
                 // Step 2: Sort jobs based on scores
-                ListInterface<Job> sortedList = MatchingEngine.heapSort(jobMatchList, object); // assuming this uses compare() or compareTo()
+                ListInterface<Job> sortedList = MatchingEngine.heapSort(jobMatchList, object); 
 
                 // Step 3: Create sortedScoreList based on sorted job order
                 ListInterface<Integer> sortedScoreList = new DoublyLinkedList<>();
@@ -253,7 +463,6 @@ public class ReportManager {
 
     // 2. Top Matched Applicants Report
     // Highest Match Score per applicant
-    
     private static void topMatchedReport(){
         String description = """
                              This report provides an overview of the top matched job to each of the applicant. It includes the total matched
@@ -265,6 +474,7 @@ public class ReportManager {
         Tools.systemPause("Press Enter to Continue...");
     }
     
+    // Helper function to generate the top matched job report
     private static <T> void generateTopMatchedReport() {
         if (UserManager.isEmployer()) {
             MessageUI.restrictView();
@@ -282,26 +492,63 @@ public class ReportManager {
 
             System.out.println("Matching Result for: " + applicant.getName());
 
-            // Lists to hold job titles and match scores for graphing
             ListInterface<String> x_axis = new DoublyLinkedList<>();
             ListInterface<Integer> y_axis = new DoublyLinkedList<>();
+
+            int highest = Integer.MIN_VALUE;
+            int lowest = Integer.MAX_VALUE;
+
+            ListInterface<Job> highestMatchedJobs = new DoublyLinkedList<>();
+            ListInterface<Job> lowestMatchedJobs = new DoublyLinkedList<>();
 
             if (!sortedList.isEmpty()) {
                 for (int i = 0; i < sortedList.size(); i++) {
                     Job job = sortedList.get(i);
                     int score = MatchingEngine.getScore(job, applicant);
 
-                    // Display match information
                     System.out.println("  - " + job.getJobTitle() + " (Score: " + score + ")");
 
-                    // Add to graph data if score > 0
+                    // Add to chart only if score > 0
                     if (score > 0) {
-                        x_axis.add(job.getJobTitle().length() > 6 ? job.getJobTitle().substring(0, 6) : job.getJobTitle()); // Truncate job title for chart
+                        x_axis.add(job.getJobTitle().length() > 6 ? job.getJobTitle().substring(0, 6) : job.getJobTitle());
                         y_axis.add(score);
+                    }
+
+                    // Track highest match
+                    if (score > highest) {
+                        highest = score;
+                        highestMatchedJobs.clear();
+                        highestMatchedJobs.add(job);
+                    } else if (score == highest) {
+                        highestMatchedJobs.add(job);
+                    }
+
+                    // Track lowest match (excluding zero scores if needed)
+                    if (score < lowest && score > 0) {
+                        lowest = score;
+                        lowestMatchedJobs.clear();
+                        lowestMatchedJobs.add(job);
+                    } else if (score == lowest && score > 0) {
+                        lowestMatchedJobs.add(job);
                     }
                 }
 
-                // Display the bar chart if there are any valid jobs with a score > 0
+                // Show most and least matched jobs
+                if (!highestMatchedJobs.isEmpty()) {
+                    System.out.println("\nMost Matched Job(s):");
+                    for (Job job : highestMatchedJobs) {
+                        System.out.println("  - " + job.getJobTitle() + " (Score: " + highest + ")");
+                    }
+                }
+
+                if (!lowestMatchedJobs.isEmpty() && lowest != highest) {
+                    System.out.println("\nLeast Matched Job(s):");
+                    for (Job job : lowestMatchedJobs) {
+                        System.out.println("  - " + job.getJobTitle() + " (Score: " + lowest + ")");
+                    }
+                }
+
+                // Show chart if there are valid scores
                 if (!x_axis.isEmpty()) {
                     verticalBarChart(x_axis, y_axis, "Top Matched Jobs for " + applicant.getName());
                 }
@@ -326,6 +573,7 @@ public class ReportManager {
         Tools.systemPause();
     }
     
+    // Helper function to calculate the time taken
     private static void generateMatchingEngineEfficiencyReport(){
         long startTime = System.nanoTime(); // Start time
 
@@ -356,16 +604,16 @@ public class ReportManager {
             }
         } else {
             Applicant applicant = Database.getApplicant();
-            ListInterface<JobApplication> applicationMatchList = new DoublyLinkedList<>();
+            ListInterface<Job> applicationMatchList = new DoublyLinkedList<>();
             Object object = getObject("Job");
 
             if (!applicant.getJobApplication().isEmpty()) {
                 for (JobApplication jobApplication : applicant.getJobApplication()) {
-                    applicationMatchList.add(jobApplication);
+                    applicationMatchList.add(jobApplication.getJob());
                 }
 
                 // Sort jobs based on matching score
-                ListInterface<JobApplication> sortedList = MatchingEngine.heapSort(applicationMatchList, object);
+                ListInterface<Job> sortedList = MatchingEngine.heapSort(applicationMatchList, object);
 
                 if (!sortedList.isEmpty()) {
                     successfulMatches += sortedList.size(); // Count matched jobs
@@ -384,8 +632,314 @@ public class ReportManager {
         
         printReport();
     }
+    
+    // ==================================Interview Module Report===========================================
+    
+    public static void interviewReportManagement() {
+        int choice;
+        do {
+            displayLoggedInEmployer();
+
+            System.out.println("\n===== EMPLOYER REPORT MODULE =====");
+            System.out.println("1. View Schedules by Date");
+            System.out.println("2. View Applicants by Status");
+            System.out.println("3. View Applicants by Status");
+            System.out.println("4. View Applicants by Score");
+            System.out.println("5. View Passed Applicants (Score >= 80)");
+            System.out.println("6. Generate Summary Report");
+            System.out.println("7. View Top Scorer");
+            System.out.println("8. View Upcoming Interviews");
+            System.out.println("9. Exit");
+            System.out.print("Enter choice > ");
+            choice = Input.getIntegerInput();
+
+            switch (choice) {
+                case 1:
+                    viewScheduleByDate();
+                    break;
+                case 2:
+                    viewApplicantsByName();
+                    break;
+                case 3:
+                    viewApplicantsByStatus();
+                    break;
+                case 4:
+                    viewApplicantsByScore();
+                    break;
+                case 5:
+                    viewPassedApplicants();
+                    break;
+                case 6:
+                    generateSummaryReport();
+                    break;
+                case 7:
+                    viewTopScorer();
+                    break;
+                case 8:
+                    viewUpcomingInterviews();
+                    break;
+                case 9:
+                    System.out.println("Exiting report module...");
+                    break;
+                default:
+                    System.out.println("Invalid choice.");
+            }
+        } while (choice != 9);
+    }
+
+    public static void displayLoggedInEmployer() {
+        Employer employer = Database.getEmployer();
+        if (employer != null) {
+            System.out.println("\nLogged in Employer: " + employer.getName());
+        } else {
+            System.out.println("No employer is currently logged in.");
+        }
+    }
+
+    public static void viewScheduleByDate() {
+        System.out.print("Enter interview date (yyyy-mm-dd) > ");
+        String interviewDateStr = Input.getStringInput();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date interviewDate;
+
+        try {
+            interviewDate = sdf.parse(interviewDateStr);
+        } catch (ParseException e) {
+            System.out.println("Invalid date format.");
+            return;
+        }
+
+        boolean found = false;
+
+        // Table Header
+        System.out.println("\nSchedules on " + interviewDateStr + " for Employer: " + Database.getEmployer().getName());
+        System.out.printf("%-20s %-15s %-15s %-12s %-10s%n", "Applicant Name", "Interview Date", "Follow-up Date", "Venue", "Status");
+        System.out.println("--------------------------------------------------------------------------------");
+
+        for (int i = 0; i < Database.schedules.size(); i++) {
+            Schedule schedule = Database.schedules.get(i);
+            if (schedule.getEmployer().equals(Database.getEmployer())
+                    && sdf.format(schedule.getInterviewDate()).equals(sdf.format(interviewDate))) {
+
+                String applicantName = schedule.getApplicant().getName();
+                String interviewDateFormatted = sdf.format(schedule.getInterviewDate());
+                String followUpDateFormatted = sdf.format(schedule.getFollowUpDate());
+                String venue = schedule.getVenue();  // Assuming there's a getVenue method in Schedule class
+                String status = schedule.getStatus();
+
+                System.out.printf("%-20s %-15s %-15s %-12s %-10s%n",
+                        applicantName, interviewDateFormatted, followUpDateFormatted, venue, status);
+                found = true;
+            }
+        }
+
+        if (!found) {
+            System.out.println("No schedules found on this date for employer: " + Database.getEmployer().getName());
+        }
+    }
+
+    public static void viewApplicantsByName() {
+        System.out.print("Enter applicant name to filter: ");
+        String applicantName = Input.getStringInput().toLowerCase();
+
+        System.out.println("\n=== INTERVIEW SCHEDULES FOR APPLICANT: " + applicantName + " ===");
+        System.out.printf("%-20s %-12s %-8s %-3s %-9s\n", "Applicant", "Interview Date", "Venue", "Score", "Status");
+
+        boolean found = false;
+        for (Schedule schedule : Database.schedules) {
+            if (schedule.getEmployer().equals(Database.getEmployer())
+                    && schedule.getApplicant().getName().toLowerCase().contains(applicantName)) {
+                System.out.printf("%-20s %-12s %-8s %-3d %-9s\n",
+                        schedule.getApplicant().getName(), schedule.getInterviewDate(),
+                        schedule.getVenue(), schedule.getScore(), schedule.getStatus());
+                found = true;
+            }
+        }
+
+        if (!found) {
+            System.out.println("No schedules found for applicant: " + applicantName);
+        }
+    }
+
+    public static void viewApplicantsByStatus() {
+        System.out.println("Enter status to filter:");
+        System.out.println("1. Scheduled");
+        System.out.println("2. Completed");
+        System.out.println("3. Canceled");
+        System.out.print("Enter choice (1-3) > ");
+
+        int choice = Input.getIntegerInput();
+        String statusToFilter;
+
+        switch (choice) {
+            case 1:
+                statusToFilter = "Scheduled";
+                break;
+            case 2:
+                statusToFilter = "Completed";
+                break;
+            case 3:
+                statusToFilter = "Canceled";
+                break;
+            default:
+                System.out.println("Invalid choice.");
+                return;
+        }
+
+        boolean found = false;
+
+        // Table Header
+        System.out.println("\nApplicants with status: " + statusToFilter + " for Employer: " + Database.getEmployer().getName());
+        System.out.printf("%-20s %-15s %-15s %-12s %-10s%n", "Applicant Name", "Interview Date", "Follow-up Date", "Venue", "Status");
+        System.out.println("--------------------------------------------------------------------------------");
+
+        for (int i = 0; i < Database.schedules.size(); i++) {
+            Schedule schedule = Database.schedules.get(i);
+            if (schedule.getEmployer().equals(Database.getEmployer())
+                    && schedule.getStatus().equalsIgnoreCase(statusToFilter)) {
+
+                String applicantName = schedule.getApplicant().getName();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                String interviewDateFormatted = sdf.format(schedule.getInterviewDate());
+                String followUpDateFormatted = sdf.format(schedule.getFollowUpDate());
+                String venue = schedule.getVenue();  // Assuming there's a getVenue method in Schedule class
+                String status = schedule.getStatus();
+
+                // Print the schedule in tabular format
+                System.out.printf("%-20s %-15s %-15s %-12s %-10s%n",
+                        applicantName, interviewDateFormatted, followUpDateFormatted, venue, status);
+                found = true;
+            }
+        }
+
+        if (!found) {
+            System.out.println("No applicants with status: " + statusToFilter + " for employer: " + Database.getEmployer().getName());
+        }
+    }
+
+    public static void viewApplicantsByScore() {
+        ListInterface<Schedule> schedules = Database.schedules;
+        int n = schedules.size();
+
+        // Sort schedules by score in descending order
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = i + 1; j < n; j++) {
+                Schedule si = schedules.get(i);
+                Schedule sj = schedules.get(j);
+
+                if (si.getEmployer().equals(Database.getEmployer()) && sj.getEmployer().equals(Database.getEmployer())) {
+                    // Compare and swap if needed
+                    if (si.getScore() < sj.getScore()) {
+                        schedules.swap(i, j);
+                    }
+                }
+            }
+        }
+
+        System.out.println("\n=== APPLICANTS BY SCORE ===");
+        boolean found = false;
+        for (int i = 0; i < n; i++) {
+            Schedule s = schedules.get(i);
+            if (s.getEmployer().equals(Database.getEmployer())) {
+                System.out.printf("Applicant: %-20s | Score: %-3d\n", s.getApplicant().getName(), s.getScore());
+                found = true;
+            }
+        }
+
+        if (!found) {
+            System.out.println("No applicants with recorded scores.");
+        }
+    }
+
+    public static void viewPassedApplicants() {
+        System.out.println("\n=== PASSED APPLICANTS ===");
+
+        // Find passed applicants
+        boolean found = false;
+
+        for (Schedule schedule : Database.schedules) {
+            if (schedule.getEmployer().equals(Database.getEmployer()) && schedule.getScore() >= 80) {
+                // Print applicant name and score
+                System.out.printf("%-25s | %-10s%n", schedule.getApplicant().getName(), schedule.getScore());
+                found = true;
+            }
+        }
+
+        if (!found) {
+            System.out.println("No applicants scored 80 or above.");
+        }
+    }
+
+    public static void generateSummaryReport() {
+        int total = 0, completed = 0, scheduled = 0, canceled = 0;
+
+        for (Schedule schedule : Database.schedules) {
+            if (schedule.getEmployer().equals(Database.getEmployer())) {
+                total++;
+                switch (schedule.getStatus().toLowerCase()) {
+                    case "completed" -> completed++;
+                    case "scheduled" -> scheduled++;
+                    case "canceled" -> canceled++;
+                }
+            }
+        }
+
+        // Print summary report
+        System.out.println("\n=== SUMMARY REPORT ===");
+        System.out.printf("Total Interviews: %-5d%n", total);
+        System.out.printf("Completed: %-5d%n", completed);
+        System.out.printf("Scheduled: %-5d%n", scheduled);
+        System.out.printf("Canceled: %-5d%n", canceled);
+    }
+
+    public static void viewTopScorer() {
+        ListInterface<Schedule> schedules = Database.schedules;
+        Schedule top = null;
+
+        for (int i = 0; i < schedules.size(); i++) {
+            Schedule s = schedules.get(i);
+            if (s.getEmployer().equals(Database.getEmployer()) && s.getScore() >= 0) {
+                if (top == null || s.getScore() > top.getScore()) {
+                    top = s;
+                }
+            }
+        }
+
+        System.out.println("\n=== TOP SCORING APPLICANT ===");
+        if (top != null) {
+            System.out.printf("%-20s | Score: %d\n", top.getApplicant().getName(), top.getScore());
+        } else {
+            System.out.println("No applicant with a valid score found.");
+        }
+    }
+
+    public static void viewUpcomingInterviews() {
+        Date today = new Date(); // current date
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        System.out.println("\n=== UPCOMING INTERVIEWS ===");
+        System.out.printf("%-20s %-15s %-15s %-10s\n", "Applicant", "Date", "Venue", "Status");
+
+        boolean found = false;
+        for (int i = 0; i < Database.schedules.size(); i++) {
+            Schedule s = Database.schedules.get(i);
+            if (s.getEmployer().equals(Database.getEmployer()) && s.getInterviewDate().after(today)) {
+                System.out.printf("%-20s %-15s %-15s %-10s\n",
+                        s.getApplicant().getName(),
+                        sdf.format(s.getInterviewDate()),
+                        s.getVenue(),
+                        s.getStatus());
+                found = true;
+            }
+        }
+
+        if (!found) {
+            System.out.println("No upcoming interviews found.");
+        }
+    }
 
     // ==================================Searching Module Report===========================================
+    
     private static void searchingReportManagement(){
         int input;
         do{
@@ -394,7 +948,7 @@ public class ReportManager {
            
             switch (input){
                 case 1 -> searchPerformanceManagement();
-                case 2 -> searchHistoryReport();
+                case 2 -> searchHistoryManagement();
                 case 3 -> Tools.back();
                 default -> MessageUI.errorMessage();
             }
@@ -402,11 +956,11 @@ public class ReportManager {
     }
     
     // 1. Search Module Performance Report
-    // How often the top search results are relevant
+    // How the accuracy for the searching result
     private static void searchPerformanceManagement(){
         UserManager.profileHeadLine();
         String description = """
-                             This report is 
+                             This report is to show the total accuracy from the search input.
                                    """;
         ReportUI.reportHeader("Searching");
         ReportUI.descriptionLine(description);
@@ -414,6 +968,7 @@ public class ReportManager {
         Tools.systemPause("Press Enter to Continue...");
     }
     
+    // Helper function to generate the search performance report
     private static void searchPerformanceReport() {
         ListInterface<Job> jobList = Database.jobList;
         ListInterface<Job> results = new DoublyLinkedList<>();
@@ -469,20 +1024,28 @@ public class ReportManager {
     
     // 2. Search Trend Report
     // Show the frequency of search terms or job titles from the search history
+    private static void searchHistoryManagement(){
+        UserManager.profileHeadLine();
+        String description = """
+                             This report is th show the frequency of search terms or job titles from the search history.
+                                   """;
+        ReportUI.reportHeader("Search Trend");
+        ReportUI.descriptionLine(description);
+        searchHistoryReport();
+        Tools.systemPause("Press Enter to Continue...");
+    }
     
+    // Helper function to generate the search history report
     private static void searchHistoryReport() {
         ListInterface<String> searchHistory = Database.searchHistory; 
-
         if (searchHistory.isEmpty()) {
             System.out.println("No search history available.");
             return;
         }
 
-        // Create a simple map to count occurrences of each search term
         ListInterface<String> searchTerms = new DoublyLinkedList<>();
         ListInterface<Integer> searchCounts = new DoublyLinkedList<>();
 
-        // Iterate over the search history and count occurrences of each search term
         for (String searchTerm : searchHistory) {
             if (searchTerms.contains(searchTerm)) {
                 int index = searchTerms.indexOf(searchTerm);
@@ -498,23 +1061,68 @@ public class ReportManager {
         System.out.printf("| %-15s | %-10s | %-15s |\n", "Search Term", "Count", "Date/Time");
         System.out.println("===========================================================================");
 
-        // Assuming you want to print the date/time in a placeholder form for now
         for (int i = 0; i < searchTerms.size(); i++) {
             String searchTerm = searchTerms.get(i);
             int count = searchCounts.get(i);
-            String timestamp = "2025-04-16 12:00"; // Replace this with actual timestamp if needed
+            String timestamp = "2025-04-16 12:00"; // Placeholder
 
             System.out.printf("| %-15s | %-10d | %-15s |\n", searchTerm, count, timestamp);
         }
-
         System.out.println("===========================================================================");
-        
+
+        // Find highest and lowest trends
+        int highest = 0;
+        int lowest = Integer.MAX_VALUE;
+        ListInterface<String> highestTrends = new DoublyLinkedList<>();
+        ListInterface<String> lowestTrends = new DoublyLinkedList<>();
+
+        for (int i = 0; i < searchCounts.size(); i++) {
+            int count = searchCounts.get(i);
+            String term = searchTerms.get(i);
+
+            if (count > highest) {
+                highest = count;
+                highestTrends.clear();
+                highestTrends.add(term);
+            } else if (count == highest) {
+                highestTrends.add(term);
+            }
+
+            if (count < lowest) {
+                lowest = count;
+                lowestTrends.clear();
+                lowestTrends.add(term);
+            } else if (count == lowest) {
+                lowestTrends.add(term);
+            }
+        }
+
+        // Display highest and lowest trends
+        System.out.println("\nMost Trending Search Term(s):");
+        for (String term : highestTrends) {
+            System.out.printf("- %s (%d times)\n", term, highest);
+        }
+
+        System.out.println("\nLeast Trending Search Term(s):");
+        for (String term : lowestTrends) {
+            System.out.printf("- %s (%d time%s)\n", term, lowest, lowest > 1 ? "s" : "");
+        }
+
+        // Extract and display the most common keyword fragment if applicable
+        String commonKeyword = findCommonKeyword(searchTerms);
+        if (!commonKeyword.isEmpty()) {
+            System.out.println("\nCommon Relevant Keyword: \"" + commonKeyword + "\"");
+        }
+
         System.out.println("\n");
+
+        // Display chart
         searchHistoryDistributionGraph();
     }
 
+    // Helper function to calculate the distribution
     private static void searchHistoryDistributionGraph() {
-        ListInterface<String> searchHistory = Database.searchHistory; // Assuming this is your search history list
+        ListInterface<String> searchHistory = Database.searchHistory; 
 
         if (searchHistory.isEmpty()) {
             System.out.println("No search history available.");
@@ -538,9 +1146,30 @@ public class ReportManager {
         // Prepare the data for the bar chart
         verticalBarChart(searchTerms, searchCounts, "Search History Distribution");
     }
+    
+    // Helper function tot find the common keyword
+    private static String findCommonKeyword(ListInterface<String> searchTerms) {
+        if (searchTerms.isEmpty()) return "";
 
+        String[] words = searchTerms.get(0).split(" ");
+        for (String word : words) {
+            System.out.println(word);
+            boolean isCommon = true;
+            for (int i = 1; i < searchTerms.size(); i++) {
+                if (!searchTerms.get(i).toLowerCase().contains(word.toLowerCase())) {
+                    isCommon = false;
+                    break;
+                }
+            }
+            if (isCommon) {
+                return word;
+            }
+        }
+        return "";
+    }
 
-    // Helper function
+    // ==================================Helper Report===========================================
+    
     private static <T> T getObject(String title) {
         switch (title) {
             case "Job" -> {
@@ -609,12 +1238,14 @@ public class ReportManager {
         }
     }
     
-    public static void verticalBarChart(ListInterface<String> x_axis, ListInterface<Integer> y_axis, String title) {
+    // ==================================Generating Graph===========================================
+    
+    private static void verticalBarChart(ListInterface<String> x_axis, ListInterface<Integer> y_axis, String title) {
         int max = 0;
         for (int i = 0; i < y_axis.size(); i++) {
             max = Math.max(max, y_axis.get(i));
         }
-
+        
         String[] colors = {
             Tools.REDBG,
             Tools.GREENBG,
@@ -628,33 +1259,33 @@ public class ReportManager {
         System.out.println();
 
         for (int i = max; i > 0; i--) {
+            // row
             System.out.print("            ");
             for (int j = 0; j < y_axis.size(); j++) {
+                // column
                 if (y_axis.get(j) >= i) {
                     String color = colors[j % colors.length]; 
-                    System.out.print("  " + color + "   " + RESET);
+                    System.out.print("   " + color + "   " + RESET);
                 } else {
-                    System.out.print("       ");
+                    System.out.print("      ");
                 }
             }
             System.out.println();
         }
 
         // Draw x-axis
-        System.out.print("            ");
+        System.out.print("              ");
         for (int i = 0; i < y_axis.size(); i++) {
             System.out.print("-------");
         }
         System.out.println();
 
         // Print x-axis labels
-        System.out.print("            ");
+        System.out.print("              ");
         for (int i = 0; i < x_axis.size(); i++) {
             String label = x_axis.get(i);
             System.out.printf(" %-5s", label.length() > 5 ? label.substring(0, 5) : label);
         }
         System.out.println("\n");
     }
-
-
 }

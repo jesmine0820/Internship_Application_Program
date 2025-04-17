@@ -10,7 +10,8 @@ import static Utility.Tools.*;
 
 /**
  *
- * @author USER
+ * @author Kit Chin Jie Ying
+ * 
  */
 public class JobManager {
 
@@ -163,7 +164,6 @@ public class JobManager {
                 break;
             case "no":
                 System.out.println("Return to Main Menu");
-                JobUI.employerMenu();
             default:
                 System.out.println("Invalid input!");
                 break;
@@ -368,7 +368,6 @@ public class JobManager {
 
                     // Redirect to Employer UI after exiting the update process
                     System.out.println("\nReturning to Employer UI");
-                    JobUI.employerMenu();
                 }
             }
 
@@ -445,7 +444,6 @@ public class JobManager {
             if (anotherDelete == 2) {
                 continueDeleting = false;
                 System.out.println("\nReturning to main menu");
-                JobUI.employerMenu();
             }
         }
 
@@ -654,10 +652,7 @@ public class JobManager {
                     if (!jobFound) {
                         System.out.println("No job found with the title: " + selectedJob);
                     }
-                } else {
-                    // yaohuande zhege
-                    JobUI.employerMenu();
-                }
+                } 
             }
 
             String continueChoice = Input.getYesNoInput("Do you want to continue filtering? (Y/N): ");

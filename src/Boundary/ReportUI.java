@@ -6,11 +6,12 @@ import Utility.Tools;
 
 /**
  *
- * @author User
+ * @author All
  * 
  */
 public class ReportUI {
     
+    //---------------------------Display Report Menu---------------------------
     public static int reportUI(){
         Tools.clearScreen();
 
@@ -33,19 +34,22 @@ public class ReportUI {
         return input;
     }
 
+    //---------------------------Display Report Header---------------------------
     public static void reportHeader(String title){
         Tools.clearScreen();
         UserUI.headLine();
         
         System.out.println("==================================================================================================");
-        System.out.printf("=\t\t\t%35s=\n", title);
+        System.out.printf("\t\t\t%35s\n", title);
         System.out.println("==================================================================================================");
     }
     
+    //---------------------------Display Description---------------------------
     public static void descriptionLine(String text){
         System.out.println("Description: " + text);
     }
     
+    //---------------------------Display Matching Engine Report Menu---------------------------
     public static int matchingReport(){
         Tools.clearScreen();
 
@@ -66,6 +70,7 @@ public class ReportUI {
         return input;
     }
     
+    //---------------------------Display Searching Module Report Menu---------------------------
     public static int searchingReport(){
         Tools.clearScreen();
         
@@ -85,6 +90,7 @@ public class ReportUI {
         return input;
     }
     
+    ////---------------------------Print Report UI---------------------------
     public static String printingReport(){
         String input;
         
@@ -96,6 +102,7 @@ public class ReportUI {
         return input;
     }
     
+    //---------------------------Display Graph Title---------------------------
     public static void graphTitle(String title){
         System.out.println("\n                  " + title + "\n");
     }

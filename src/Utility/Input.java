@@ -521,8 +521,6 @@ public class Input {
                         }
                     }
                 }
-                
-                System.out.println(obj);
 
                 switch (obj) {
                     case Job job -> {

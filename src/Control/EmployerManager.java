@@ -11,7 +11,8 @@ import static Utility.Tools.*;
 
 /**
  *
- * @author USER
+ * @author Kit Chin Jie Ying
+ * 
  */
 public class EmployerManager {
 
@@ -236,10 +237,7 @@ public class EmployerManager {
                 continueRegistering = false;
                 // need change
                 JobUI.employerMenu();
-            } else {
-                //back to the login
-            }
-
+            } 
         }
     }
 

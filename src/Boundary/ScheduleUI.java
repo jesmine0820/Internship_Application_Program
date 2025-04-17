@@ -1,5 +1,6 @@
 package Boundary;
 
+import Control.UserManager;
 import Utility.Input;
 import Utility.MessageUI;
 import Utility.Tools;
@@ -10,7 +11,8 @@ import static Utility.Tools.RESET;
 
 /**
  *
- * @author User
+ * @author Chan Jing Hui
+ * 
  */
 public class ScheduleUI {
     
@@ -42,6 +44,7 @@ public class ScheduleUI {
     }
 
     public static void displayInterviewHeader(){
+        Tools.clearScreen();
         System.out.println("=====================================================================");
         System.out.println("=                           Interview                               =");
         System.out.println("=====================================================================");
@@ -57,7 +60,15 @@ public class ScheduleUI {
     
     public static void displayCalendarFooter(){
         System.out.println("");
-        System.out.println(RED + "[Date] => Not Available" + RESET + " " + BLUE + "[Date] => Available" + RESET);
+        System.out.println(RED + "[Date] => Not Available" + RESET + " " + BLUE + "[Date] => Weekend" + RESET);
+    }
+    
+    public static void displayScheduleHeader(){
+        Tools.clearScreen();
+        UserManager.profileHeadLine();
+        System.out.println("=====================================================================");
+        System.out.println("=                           Schedule                                =");
+        System.out.println("=====================================================================");
     }
     
     public static void successfulMessage(){

@@ -6,27 +6,28 @@ import Dao.Database;
 import Entity.*;
 
 /**
- * Author - JesmineTeyKhaiJing
  * 
- * Explanations:
- * 1. Sorting Algorithm
+ * Author - JesmineTeyKhaiJing
  * 
  */
 public class MatchingEngine{
     
+    // Allow calculate the score and return the score for display purpose
     public static int getScore(Object obj1, Object obj2){
         int score = computeMatchingScore(obj1, obj2);
         return score;
     }
     
-    // Heat Sort for Top K ranking
+    // Heat Sort for Top K ranking (Arrange in descending order)
     public static <T extends Comparable<T>> ListInterface<T> heapSort(ListInterface<T> list, Object obj){
         int size = list.size();
 
+        // Builds a max-heap from the list
         for(int i = size / 2 - 1; i >= 0; i--){
             heapify(list, size, i, obj);
         }
         
+        // Extract the max element one by oone by places it at the end of the list
         for(int i = size - 1; i > 0; i--){
             list.swap(0, i);
             heapify(list, i, 0, obj);
@@ -37,6 +38,9 @@ public class MatchingEngine{
     }
     
     // Helper function for Heap Sort
+    // 1. Compare node i with its left and right children.
+    // 2. Find the largest among them.
+    // 3. If the largest is not i, swap and recursively heapify the affected subtree.
     private static <T extends Comparable<T>> void heapify(ListInterface<T> list, int size, int i, Object obj){
         int largest = i;
         int left = 2 * i + 1;
@@ -119,7 +123,6 @@ public class MatchingEngine{
         return Integer.compare(score2, score1);
     }
 
-    
     // Compute Company and Job to Applicant and Resume
     // Compute Employer to Applicant
     private static int computeMatchingScore(Object obj1, Object obj2){
@@ -208,6 +211,7 @@ public class MatchingEngine{
         return score;
     }
     
+    //------------------------------------------Compute Score Calculation---------------------------------------------
     // Computer score based on one string
     private static int computeScore(String string){
         int score = 0;
@@ -298,6 +302,7 @@ public class MatchingEngine{
         return score;
     }
     
+    // Compute score among the list
     private static int computeScore(ListInterface<String> list){
         int score = 0;
         
@@ -311,6 +316,7 @@ public class MatchingEngine{
         return score;
     }
     
+    // Compare and compare the score from two list
     private static int computeScore(ListInterface<String> list1, ListInterface<String> list2){
         int score = 0;
         
@@ -328,6 +334,7 @@ public class MatchingEngine{
         return score;
     }
     
+    // Get Instance from specific class
     private static <T> T getInstance(Object obj, Class<T> clazz) {
         return obj != null && obj.getClass() == clazz ? (T) obj : null;
     }

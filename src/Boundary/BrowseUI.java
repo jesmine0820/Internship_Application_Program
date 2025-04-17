@@ -10,6 +10,8 @@ import Utility.Input;
  * 
  */
 public class BrowseUI {
+    
+    //---------------------------Browse Menu for Employer---------------------------
     public static int employerBrowseMenu() {
         int input;
         
@@ -28,12 +30,14 @@ public class BrowseUI {
         return input;
     }
     
+    //---------------------------Display Search Bar---------------------------
     public static void displaySearchBar(){
         System.out.println("        --------------------------------------------------");
         System.out.println("        | S - Search: _______________________________| Q |");
         System.out.println("        --------------------------------------------------");
     }
     
+    //---------------------------Browser Header---------------------------
     public static void displayBrowserHeader(String title) {
         Tools.clearScreen();
         UserManager.profileHeadLine();
@@ -42,6 +46,7 @@ public class BrowseUI {
         System.out.println("        ----------------------------------------------");
     }
     
+    //---------------------------Searching Operation Option---------------------------
     public static void displaySearchHeader() {
         UserManager.profileHeadLine();
         System.out.println("                -----------------------------------------------------");
@@ -49,6 +54,7 @@ public class BrowseUI {
         System.out.println("                -----------------------------------------------------");
     }
     
+    //---------------------------Information Header---------------------------
     public static void displayInformation(String title){
         Tools.clearScreen();
         UserManager.profileHeadLine();

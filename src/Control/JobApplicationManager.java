@@ -9,7 +9,8 @@ import java.util.Date;
 
 /**
  *
- * @author Asus
+ * @author Gan Khai Li
+ * 
  */
 public class JobApplicationManager {
 

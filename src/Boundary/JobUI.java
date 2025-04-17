@@ -6,7 +6,8 @@ import Utility.Tools;
 
 /**
  *
- * @author USER
+ * @author Kit Chin Jie Ying
+ * 
  */
 public class JobUI {
 

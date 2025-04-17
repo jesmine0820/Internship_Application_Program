@@ -18,22 +18,27 @@ import java.util.Date;
 public class Schedule implements Comparable<Schedule>{
 
     private Date interviewDate;
+    private String interviewDuration;
     private Date interviewTime;
     private String interviewMode;
     private String venue;
     private Date followUpDate;
     private Date followUpTime;
     private String status;
+    private String remark;
+    private int score;
     private Employer employer;
     private Applicant applicant;
+    private Job job;
 
     public Schedule() {
     }
 
-    public Schedule(Date interviewDate, Date interviewTime, String interviewMode, 
+    public Schedule(Date interviewDate, String interviewDuration, Date interviewTime, String interviewMode, 
             String venue, Date followUpDate, Date followUpTime, String status, 
-            Employer employer, Applicant applicant) {
+            Employer employer, Applicant applicant, Job job, String remark) {
         this.interviewDate = interviewDate;
+        this.interviewDuration = interviewDuration;
         this.interviewTime = interviewTime;
         this.interviewMode = interviewMode;
         this.venue = venue;
@@ -42,6 +47,17 @@ public class Schedule implements Comparable<Schedule>{
         this.status = status;
         this.employer = employer;
         this.applicant = applicant;
+        this.job = job;
+        this.remark = remark;
+        score = 0;
+    }
+    
+    public Job getJob(){
+        return job;
+    }
+    
+    public void setJob(Job job){
+        this.job = job;
     }
     
     public Employer getEmployer(){
@@ -66,6 +82,14 @@ public class Schedule implements Comparable<Schedule>{
 
     public void setInterviewDate(Date interviewDate) {
         this.interviewDate = interviewDate;
+    }
+    
+    public String getInterviewDuration(){
+        return interviewDuration;
+    }
+    
+    public void setInterviewDuration(String interviewDuration){
+        this.interviewDuration = interviewDuration;
     }
     
     public Date getInterviewTime(){
@@ -114,6 +138,22 @@ public class Schedule implements Comparable<Schedule>{
 
     public void setStatus(String status) {
         this.status = status;
+    }
+    
+    public String getRemark(){
+        return remark;
+    }
+    
+    public void setRemark(String remark){
+        this.remark = remark;
+    }
+    
+    public int getScore(){
+        return score;
+    }
+    
+    public void setScore(int score){
+        this.score = score;
     }
 
     @Override

@@ -324,7 +324,7 @@ public class Initializer {
         JobApplication app8 = new JobApplication("A008", new GregorianCalendar(2025, Calendar.MARCH, 22).getTime(), "Pending",
                 false, false, "Did not submit resume", "Awaiting documents", applicant2, job5);
 
-        JobApplication app9 = new JobApplication("A009", new GregorianCalendar(2025, Calendar.MARCH, 25).getTime(), "Shortlisted",
+        JobApplication app9 = new JobApplication("A009", new GregorianCalendar(2025, Calendar.MARCH, 25).getTime(), "Pending",
                 true, true, "Excellent leadership skills", "Interview passed", applicant1, job9);
 
         JobApplication app10 = new JobApplication("A010", new GregorianCalendar(2025, Calendar.MARCH, 27).getTime(), "Shortlisted",
@@ -332,164 +332,164 @@ public class Initializer {
 
         // Create schedules
         Schedule s1 = new Schedule(
-            new GregorianCalendar(2025, Calendar.APRIL, 11).getTime(),
+            new GregorianCalendar(2025, Calendar.APRIL, 11).getTime(),"30 min", 
             new GregorianCalendar(0, 0, 0, 10, 0).getTime(),
             "Online", "Zoom",
             new GregorianCalendar(2025, Calendar.APRIL, 12).getTime(),
             new GregorianCalendar(0, 0, 0, 12, 0).getTime(),
-            "Completed", alice, applicant1);
+            "Scheduled", irene, applicant1, job9, null);
 
-        Schedule s2 = new Schedule(
-            new GregorianCalendar(2025, Calendar.APRIL, 12).getTime(),
-            new GregorianCalendar(0, 0, 0, 11, 30).getTime(),
-            "Offline", "Office",
-            new GregorianCalendar(2025, Calendar.APRIL, 15).getTime(),
-            new GregorianCalendar(0, 0, 0, 14, 0).getTime(),
-            "Completed", bob, applicant2);
-
-        Schedule s3 = new Schedule(
-            new GregorianCalendar(2025, Calendar.APRIL, 13).getTime(),
-            new GregorianCalendar(0, 0, 0, 9, 15).getTime(),
-            "Online", "Zoom",
-            new GregorianCalendar(2025, Calendar.APRIL, 14).getTime(),
-            new GregorianCalendar(0, 0, 0, 10, 30).getTime(),
-            "Completed", carol, applicant3);
-
-        Schedule s4 = new Schedule(
-            new GregorianCalendar(2025, Calendar.APRIL, 14).getTime(),
-            new GregorianCalendar(0, 0, 0, 13, 45).getTime(),
-            "Offline", "HQ",
-            new GregorianCalendar(2025, Calendar.APRIL, 16).getTime(),
-            new GregorianCalendar(0, 0, 0, 9, 0).getTime(),
-            "Scheduled", david, applicant4);
-
-        Schedule s5 = new Schedule(
-            new GregorianCalendar(2025, Calendar.APRIL, 15).getTime(),
-            new GregorianCalendar(0, 0, 0, 16, 20).getTime(),
-            "Online", "Zoom",
-            new GregorianCalendar(2025, Calendar.APRIL, 17).getTime(),
-            new GregorianCalendar(0, 0, 0, 11, 15).getTime(),
-            "Completed", emily, applicant5);
-
-        Schedule s6 = new Schedule(
-            new GregorianCalendar(2025, Calendar.APRIL, 16).getTime(),
-            new GregorianCalendar(0, 0, 0, 8, 0).getTime(),
-            "Offline", "Lab",
-            new GregorianCalendar(2025, Calendar.APRIL, 18).getTime(),
-            new GregorianCalendar(0, 0, 0, 13, 30).getTime(),
-            "Completed", frank, applicant1);
-
-        Schedule s7 = new Schedule(
-            new GregorianCalendar(2025, Calendar.APRIL, 17).getTime(),
-            new GregorianCalendar(0, 0, 0, 14, 10).getTime(),
-            "Online", "Zoom",
-            new GregorianCalendar(2025, Calendar.APRIL, 19).getTime(),
-            new GregorianCalendar(0, 0, 0, 15, 45).getTime(),
-            "Completed", grace, applicant2);
-
-        Schedule s8 = new Schedule(
-            new GregorianCalendar(2025, Calendar.APRIL, 18).getTime(),
-            new GregorianCalendar(0, 0, 0, 10, 30).getTime(),
-            "Offline", "Room 101",
-            new GregorianCalendar(2025, Calendar.APRIL, 20).getTime(),
-            new GregorianCalendar(0, 0, 0, 10, 0).getTime(),
-            "Scheduled", henry, applicant3);
-
-        Schedule s9 = new Schedule(
-            new GregorianCalendar(2025, Calendar.APRIL, 19).getTime(),
-            new GregorianCalendar(0, 0, 0, 11, 0).getTime(),
-            "Online", "Zoom",
-            new GregorianCalendar(2025, Calendar.APRIL, 21).getTime(),
-            new GregorianCalendar(0, 0, 0, 16, 20).getTime(),
-            "Completed", irene, applicant4);
-
-        Schedule s10 = new Schedule(
-            new GregorianCalendar(2025, Calendar.APRIL, 20).getTime(),
-            new GregorianCalendar(0, 0, 0, 9, 45).getTime(),
-            "Offline", "Floor 3",
-            new GregorianCalendar(2025, Calendar.APRIL, 22).getTime(),
-            new GregorianCalendar(0, 0, 0, 14, 15).getTime(),
-            "Completed", jack, applicant5);
-
-        Schedule s11 = new Schedule(
-            new GregorianCalendar(2025, Calendar.APRIL, 21).getTime(),
-            new GregorianCalendar(0, 0, 0, 13, 0).getTime(),
-            "Online", "Zoom",
-            new GregorianCalendar(2025, Calendar.APRIL, 23).getTime(),
-            new GregorianCalendar(0, 0, 0, 9, 30).getTime(),
-            "Completed", alice, applicant2);
-
-        Schedule s12 = new Schedule(
-            new GregorianCalendar(2025, Calendar.APRIL, 22).getTime(),
-            new GregorianCalendar(0, 0, 0, 15, 30).getTime(),
-            "Offline", "Annex",
-            new GregorianCalendar(2025, Calendar.APRIL, 24).getTime(),
-            new GregorianCalendar(0, 0, 0, 11, 0).getTime(),
-            "Scheduled", bob, applicant3);
-
-        Schedule s13 = new Schedule(
-            new GregorianCalendar(2025, Calendar.APRIL, 23).getTime(),
-            new GregorianCalendar(0, 0, 0, 8, 45).getTime(),
-            "Online", "Zoom",
-            new GregorianCalendar(2025, Calendar.APRIL, 25).getTime(),
-            new GregorianCalendar(0, 0, 0, 14, 45).getTime(),
-            "Completed", carol, applicant4);
-
-        Schedule s14 = new Schedule(
-            new GregorianCalendar(2025, Calendar.APRIL, 24).getTime(),
-            new GregorianCalendar(0, 0, 0, 12, 15).getTime(),
-            "Offline", "Room 202",
-            new GregorianCalendar(2025, Calendar.APRIL, 26).getTime(),
-            new GregorianCalendar(0, 0, 0, 10, 15).getTime(),
-            "Completed", david, applicant5);
-
-        Schedule s15 = new Schedule(
-            new GregorianCalendar(2025, Calendar.APRIL, 25).getTime(),
-            new GregorianCalendar(0, 0, 0, 16, 0).getTime(),
-            "Online", "Zoom",
-            new GregorianCalendar(2025, Calendar.APRIL, 27).getTime(),
-            new GregorianCalendar(0, 0, 0, 13, 0).getTime(),
-            "Completed", emily, applicant1);
-
-        Schedule s16 = new Schedule(
-            new GregorianCalendar(2025, Calendar.APRIL, 26).getTime(),
-            new GregorianCalendar(0, 0, 0, 9, 30).getTime(),
-            "Offline", "Main Office",
-            new GregorianCalendar(2025, Calendar.APRIL, 28).getTime(),
-            new GregorianCalendar(0, 0, 0, 16, 30).getTime(),
-            "Scheduled", frank, applicant2);
-
-        Schedule s17 = new Schedule(
-            new GregorianCalendar(2025, Calendar.APRIL, 27).getTime(),
-            new GregorianCalendar(0, 0, 0, 14, 0).getTime(),
-            "Online", "Zoom",
-            new GregorianCalendar(2025, Calendar.APRIL, 29).getTime(),
-            new GregorianCalendar(0, 0, 0, 8, 45).getTime(),
-            "Completed", grace, applicant3);
-
-        Schedule s18 = new Schedule(
-            new GregorianCalendar(2025, Calendar.APRIL, 28).getTime(),
-            new GregorianCalendar(0, 0, 0, 10, 45).getTime(),
-            "Offline", "Lab 2",
-            new GregorianCalendar(2025, Calendar.APRIL, 30).getTime(),
-            new GregorianCalendar(0, 0, 0, 12, 45).getTime(),
-            "Completed", henry, applicant4);
-
-        Schedule s19 = new Schedule(
-            new GregorianCalendar(2025, Calendar.APRIL, 29).getTime(),
-            new GregorianCalendar(0, 0, 0, 11, 30).getTime(),
-            "Online", "Webex",
-            new GregorianCalendar(2025, Calendar.MAY, 1).getTime(),
-            new GregorianCalendar(0, 0, 0, 15, 0).getTime(),
-            "Completed", irene, applicant5);
-
-        Schedule s20 = new Schedule(
-            new GregorianCalendar(2025, Calendar.APRIL, 30).getTime(),
-            new GregorianCalendar(0, 0, 0, 8, 15).getTime(),
-            "Offline", "Room 303",
-            new GregorianCalendar(2025, Calendar.MAY, 2).getTime(),
-            new GregorianCalendar(0, 0, 0, 9, 30).getTime(),
-            "Scheduled", jack, applicant1);
+//        Schedule s2 = new Schedule(
+//            new GregorianCalendar(2025, Calendar.APRIL, 12).getTime(),
+//            new GregorianCalendar(0, 0, 0, 11, 30).getTime(),
+//            "Offline", "Office",
+//            new GregorianCalendar(2025, Calendar.APRIL, 15).getTime(),
+//            new GregorianCalendar(0, 0, 0, 14, 0).getTime(),
+//            "Completed", bob, applicant2);
+//
+//        Schedule s3 = new Schedule(
+//            new GregorianCalendar(2025, Calendar.APRIL, 13).getTime(),
+//            new GregorianCalendar(0, 0, 0, 9, 15).getTime(),
+//            "Online", "Zoom",
+//            new GregorianCalendar(2025, Calendar.APRIL, 14).getTime(),
+//            new GregorianCalendar(0, 0, 0, 10, 30).getTime(),
+//            "Completed", carol, applicant3);
+//
+//        Schedule s4 = new Schedule(
+//            new GregorianCalendar(2025, Calendar.APRIL, 14).getTime(),
+//            new GregorianCalendar(0, 0, 0, 13, 45).getTime(),
+//            "Offline", "HQ",
+//            new GregorianCalendar(2025, Calendar.APRIL, 16).getTime(),
+//            new GregorianCalendar(0, 0, 0, 9, 0).getTime(),
+//            "Scheduled", david, applicant4);
+//
+//        Schedule s5 = new Schedule(
+//            new GregorianCalendar(2025, Calendar.APRIL, 15).getTime(),
+//            new GregorianCalendar(0, 0, 0, 16, 20).getTime(),
+//            "Online", "Zoom",
+//            new GregorianCalendar(2025, Calendar.APRIL, 17).getTime(),
+//            new GregorianCalendar(0, 0, 0, 11, 15).getTime(),
+//            "Completed", emily, applicant5);
+//
+//        Schedule s6 = new Schedule(
+//            new GregorianCalendar(2025, Calendar.APRIL, 16).getTime(),
+//            new GregorianCalendar(0, 0, 0, 8, 0).getTime(),
+//            "Offline", "Lab",
+//            new GregorianCalendar(2025, Calendar.APRIL, 18).getTime(),
+//            new GregorianCalendar(0, 0, 0, 13, 30).getTime(),
+//            "Completed", frank, applicant1);
+//
+//        Schedule s7 = new Schedule(
+//            new GregorianCalendar(2025, Calendar.APRIL, 17).getTime(),
+//            new GregorianCalendar(0, 0, 0, 14, 10).getTime(),
+//            "Online", "Zoom",
+//            new GregorianCalendar(2025, Calendar.APRIL, 19).getTime(),
+//            new GregorianCalendar(0, 0, 0, 15, 45).getTime(),
+//            "Completed", grace, applicant2);
+//
+//        Schedule s8 = new Schedule(
+//            new GregorianCalendar(2025, Calendar.APRIL, 18).getTime(),
+//            new GregorianCalendar(0, 0, 0, 10, 30).getTime(),
+//            "Offline", "Room 101",
+//            new GregorianCalendar(2025, Calendar.APRIL, 20).getTime(),
+//            new GregorianCalendar(0, 0, 0, 10, 0).getTime(),
+//            "Scheduled", henry, applicant3);
+//
+//        Schedule s9 = new Schedule(
+//            new GregorianCalendar(2025, Calendar.APRIL, 19).getTime(),
+//            new GregorianCalendar(0, 0, 0, 11, 0).getTime(),
+//            "Online", "Zoom",
+//            new GregorianCalendar(2025, Calendar.APRIL, 21).getTime(),
+//            new GregorianCalendar(0, 0, 0, 16, 20).getTime(),
+//            "Completed", irene, applicant4);
+//
+//        Schedule s10 = new Schedule(
+//            new GregorianCalendar(2025, Calendar.APRIL, 20).getTime(),
+//            new GregorianCalendar(0, 0, 0, 9, 45).getTime(),
+//            "Offline", "Floor 3",
+//            new GregorianCalendar(2025, Calendar.APRIL, 22).getTime(),
+//            new GregorianCalendar(0, 0, 0, 14, 15).getTime(),
+//            "Completed", jack, applicant5);
+//
+//        Schedule s11 = new Schedule(
+//            new GregorianCalendar(2025, Calendar.APRIL, 21).getTime(),
+//            new GregorianCalendar(0, 0, 0, 13, 0).getTime(),
+//            "Online", "Zoom",
+//            new GregorianCalendar(2025, Calendar.APRIL, 23).getTime(),
+//            new GregorianCalendar(0, 0, 0, 9, 30).getTime(),
+//            "Completed", alice, applicant2);
+//
+//        Schedule s12 = new Schedule(
+//            new GregorianCalendar(2025, Calendar.APRIL, 22).getTime(),
+//            new GregorianCalendar(0, 0, 0, 15, 30).getTime(),
+//            "Offline", "Annex",
+//            new GregorianCalendar(2025, Calendar.APRIL, 24).getTime(),
+//            new GregorianCalendar(0, 0, 0, 11, 0).getTime(),
+//            "Scheduled", bob, applicant3);
+//
+//        Schedule s13 = new Schedule(
+//            new GregorianCalendar(2025, Calendar.APRIL, 23).getTime(),
+//            new GregorianCalendar(0, 0, 0, 8, 45).getTime(),
+//            "Online", "Zoom",
+//            new GregorianCalendar(2025, Calendar.APRIL, 25).getTime(),
+//            new GregorianCalendar(0, 0, 0, 14, 45).getTime(),
+//            "Completed", carol, applicant4);
+//
+//        Schedule s14 = new Schedule(
+//            new GregorianCalendar(2025, Calendar.APRIL, 24).getTime(),
+//            new GregorianCalendar(0, 0, 0, 12, 15).getTime(),
+//            "Offline", "Room 202",
+//            new GregorianCalendar(2025, Calendar.APRIL, 26).getTime(),
+//            new GregorianCalendar(0, 0, 0, 10, 15).getTime(),
+//            "Completed", david, applicant5);
+//
+//        Schedule s15 = new Schedule(
+//            new GregorianCalendar(2025, Calendar.APRIL, 25).getTime(),
+//            new GregorianCalendar(0, 0, 0, 16, 0).getTime(),
+//            "Online", "Zoom",
+//            new GregorianCalendar(2025, Calendar.APRIL, 27).getTime(),
+//            new GregorianCalendar(0, 0, 0, 13, 0).getTime(),
+//            "Completed", emily, applicant1);
+//
+//        Schedule s16 = new Schedule(
+//            new GregorianCalendar(2025, Calendar.APRIL, 26).getTime(),
+//            new GregorianCalendar(0, 0, 0, 9, 30).getTime(),
+//            "Offline", "Main Office",
+//            new GregorianCalendar(2025, Calendar.APRIL, 28).getTime(),
+//            new GregorianCalendar(0, 0, 0, 16, 30).getTime(),
+//            "Scheduled", frank, applicant2);
+//
+//        Schedule s17 = new Schedule(
+//            new GregorianCalendar(2025, Calendar.APRIL, 27).getTime(),
+//            new GregorianCalendar(0, 0, 0, 14, 0).getTime(),
+//            "Online", "Zoom",
+//            new GregorianCalendar(2025, Calendar.APRIL, 29).getTime(),
+//            new GregorianCalendar(0, 0, 0, 8, 45).getTime(),
+//            "Completed", grace, applicant3);
+//
+//        Schedule s18 = new Schedule(
+//            new GregorianCalendar(2025, Calendar.APRIL, 28).getTime(),
+//            new GregorianCalendar(0, 0, 0, 10, 45).getTime(),
+//            "Offline", "Lab 2",
+//            new GregorianCalendar(2025, Calendar.APRIL, 30).getTime(),
+//            new GregorianCalendar(0, 0, 0, 12, 45).getTime(),
+//            "Completed", henry, applicant4);
+//
+//        Schedule s19 = new Schedule(
+//            new GregorianCalendar(2025, Calendar.APRIL, 29).getTime(),
+//            new GregorianCalendar(0, 0, 0, 11, 30).getTime(),
+//            "Online", "Webex",
+//            new GregorianCalendar(2025, Calendar.MAY, 1).getTime(),
+//            new GregorianCalendar(0, 0, 0, 15, 0).getTime(),
+//            "Completed", irene, applicant5);
+//
+//        Schedule s20 = new Schedule(
+//            new GregorianCalendar(2025, Calendar.APRIL, 30).getTime(),
+//            new GregorianCalendar(0, 0, 0, 8, 15).getTime(),
+//            "Offline", "Room 303",
+//            new GregorianCalendar(2025, Calendar.MAY, 2).getTime(),
+//            new GregorianCalendar(0, 0, 0, 9, 30).getTime(),
+//            "Scheduled", jack, applicant1);
         
         // Add companies to DataStore
         Database.companies.add(techCompany);
@@ -506,25 +506,25 @@ public class Initializer {
         
         // Add schedules to DataStore
         Database.schedules.add(s1);
-        Database.schedules.add(s2);
-        Database.schedules.add(s3);
-        Database.schedules.add(s4);
-        Database.schedules.add(s5);
-        Database.schedules.add(s6);
-        Database.schedules.add(s7);
-        Database.schedules.add(s8);
-        Database.schedules.add(s9);
-        Database.schedules.add(s10);
-        Database.schedules.add(s11);
-        Database.schedules.add(s12);
-        Database.schedules.add(s13);
-        Database.schedules.add(s14);
-        Database.schedules.add(s15);
-        Database.schedules.add(s16);
-        Database.schedules.add(s17);
-        Database.schedules.add(s18);
-        Database.schedules.add(s19);
-        Database.schedules.add(s20);
+//        Database.schedules.add(s2);
+//        Database.schedules.add(s3);
+//        Database.schedules.add(s4);
+//        Database.schedules.add(s5);
+//        Database.schedules.add(s6);
+//        Database.schedules.add(s7);
+//        Database.schedules.add(s8);
+//        Database.schedules.add(s9);
+//        Database.schedules.add(s10);
+//        Database.schedules.add(s11);
+//        Database.schedules.add(s12);
+//        Database.schedules.add(s13);
+//        Database.schedules.add(s14);
+//        Database.schedules.add(s15);
+//        Database.schedules.add(s16);
+//        Database.schedules.add(s17);
+//        Database.schedules.add(s18);
+//        Database.schedules.add(s19);
+//        Database.schedules.add(s20);
 
         // Add employers to DataStore and assign them to their respective companies
         addEmployerToCompany(techCompany, alice);
@@ -571,25 +571,25 @@ public class Initializer {
         addJobApplicationToApplicant(applicant3, job4, app10);
         
         addScheduleToEmployer(s1, alice);
-        addScheduleToEmployer(s2, bob);
-        addScheduleToEmployer(s3, carol);
-        addScheduleToEmployer(s4, david);
-        addScheduleToEmployer(s5, emily);
-        addScheduleToEmployer(s6, frank);
-        addScheduleToEmployer(s7, grace);
-        addScheduleToEmployer(s8, henry);
-        addScheduleToEmployer(s9, irene);
-        addScheduleToEmployer(s10, jack);
-        addScheduleToEmployer(s11, alice);
-        addScheduleToEmployer(s12, bob);
-        addScheduleToEmployer(s13, carol);
-        addScheduleToEmployer(s14, david);
-        addScheduleToEmployer(s15, emily);
-        addScheduleToEmployer(s16, frank);
-        addScheduleToEmployer(s17, grace);
-        addScheduleToEmployer(s18, henry);
-        addScheduleToEmployer(s19, irene);
-        addScheduleToEmployer(s20, jack);
+//        addScheduleToEmployer(s2, bob);
+//        addScheduleToEmployer(s3, carol);
+//        addScheduleToEmployer(s4, david);
+//        addScheduleToEmployer(s5, emily);
+//        addScheduleToEmployer(s6, frank);
+//        addScheduleToEmployer(s7, grace);
+//        addScheduleToEmployer(s8, henry);
+//        addScheduleToEmployer(s9, irene);
+//        addScheduleToEmployer(s10, jack);
+//        addScheduleToEmployer(s11, alice);
+//        addScheduleToEmployer(s12, bob);
+//        addScheduleToEmployer(s13, carol);
+//        addScheduleToEmployer(s14, david);
+//        addScheduleToEmployer(s15, emily);
+//        addScheduleToEmployer(s16, frank);
+//        addScheduleToEmployer(s17, grace);
+//        addScheduleToEmployer(s18, henry);
+//        addScheduleToEmployer(s19, irene);
+//        addScheduleToEmployer(s20, jack);
     }
 
     private static void addEmployerToCompany(Company company, Employer employer) {
@@ -609,6 +609,7 @@ public class Initializer {
     private static void addJobApplicationToApplicant(Applicant applicant, Job job, JobApplication jobApplication){
         job.getJobApplication().add(jobApplication);
         applicant.getJobApplication().add(jobApplication);
+        Database.jobApplicationList.add(jobApplication);
     }
     
     private static void addScheduleToEmployer(Schedule schedule, Employer employer){

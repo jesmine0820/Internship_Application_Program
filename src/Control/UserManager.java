@@ -1,5 +1,7 @@
 package Control;
 
+import ADT.DoublyLinkedList;
+import ADT.ListInterface;
 import Boundary.UserUI;
 import Dao.Database;
 import Entity.*;
@@ -17,7 +19,14 @@ import java.util.Date;
  */
 public class UserManager {
     
+    private static final ListInterface<Schedule> scheduledList = new DoublyLinkedList<>();
+    private static final ListInterface<Schedule> requestedList = new DoublyLinkedList<>();
+
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private static final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+    
     public void login(){
+
         int loginChoice;
         
         do{
@@ -45,19 +54,9 @@ public class UserManager {
         
     }
     
-    public static boolean isEmployer(){
-        return Database.getEmployer() != null;
-    }
-    
-    public static boolean isApplicant(){
-        return Database.getApplicant() != null;
-    }
-    
     public static void profileHeadLine(){
         String name, user;
         String date, time;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE dd MMM yyyy");
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
         
         date = dateFormat.format(Database.getCurrentDate());
         time = timeFormat.format(Database.getCurrentTime());
@@ -70,6 +69,21 @@ public class UserManager {
             user = "Applicant";
         }
         UserUI.profile(name, user, date, time);
+    }
+    
+    public static void setCurrentDateTime(){
+        Date date = UserUI.userCurrentDate();
+        Date time = UserUI.userCurrentTime();
+        Database.setCurrentDate(date);
+        Database.setCurrentTime(time);
+    }  
+    
+    public static boolean isEmployer(){
+        return Database.getEmployer() != null;
+    }
+    
+    public static boolean isApplicant(){
+        return Database.getApplicant() != null;
     }
     
     private Employer authenticateEmployer(){
@@ -96,11 +110,27 @@ public class UserManager {
         return applicant;
     }
     
+    private static void registerHandler(){
+        int choice;
+        do{
+            choice = UserUI.registerMenu();
+            switch(choice){
+                case 1 -> EmployerManager.registerCompany();
+                case 2 -> EmployerManager.registerEmployer();
+                case 3 -> ApplicantManager.registerApplicant();
+                case 4 -> Tools.back();
+                default -> MessageUI.errorMessage();
+            }
+        }while(choice != 4);
+    }  
+    
     private static void userMenu(String user){
         String moduleChoose;
         
         if(user.equals("Employer")){
             do{
+                requestedList.clear();
+                checkNotification();
                 moduleChoose = UserUI.employerMenu();
                 switch(moduleChoose.toLowerCase()){
                     case "1" -> EmployerManager.jobPosting();
@@ -114,6 +144,13 @@ public class UserManager {
                         MessageUI.logOutMessage();
                         Tools.exit();
                     }
+                    case "n" -> {
+                        if(!scheduledList.isEmpty()){
+                            goNotification();
+                        } else {
+                            moduleChoose = "7";
+                        }
+                    }
                     case "s" -> {
                         Tools.clearScreen();
                         BrowseManager.searchEngine();
@@ -123,7 +160,9 @@ public class UserManager {
             } while (!moduleChoose.equals("8"));
         } else {
             do{
-                moduleChoose = UserUI.applicantMenu();
+                scheduledList.clear();
+                checkNotification();
+                moduleChoose = UserUI.applicantMenu(scheduledList.size());
                 switch(moduleChoose.toLowerCase()){
                     case "1" -> BrowseManager.browseMenu();
                     case "2" -> JobApplicationManager.CancelApplication();
@@ -132,6 +171,13 @@ public class UserManager {
                     case "5" -> ApplicantManager.editProfile();
                     case "6" -> ReportManager.reportMenu();
                     case "7" -> Tools.back();
+                    case "n" -> {
+                        if(!scheduledList.isEmpty()){
+                            goNotification();
+                        } else {
+                            moduleChoose = "7";
+                        }
+                    }
                     case "s" -> {
                         Tools.clearScreen();
                         BrowseManager.searchEngine();
@@ -142,25 +188,159 @@ public class UserManager {
         }
     }
     
-    private static void registerHandler(){
-        int choice;
-        do{
-            choice = UserUI.registerMenu();
-            switch(choice){
-                case 1 -> EmployerManager.registerCompany();
-                case 2 -> EmployerManager.registerEmployer();
-                case 3 -> ApplicantManager.registerApplicant();
-                case 4 -> Tools.back();
-                default -> MessageUI.errorMessage();
+    private static void checkNotification() {
+        if(isEmployer()){
+            Employer employer = Database.getEmployer();
+            
+            for(Schedule schedule : Database.schedules){
+                for(JobApplication app : Database.jobApplicationList){
+                    for(Job job : employer.getJob()){
+                        if(job.equals(app.getJob())
+                            && schedule.getEmployer().equals(employer)
+                            && app.getStatus().equalsIgnoreCase("Requested")){
+                            if(!requestedList.contains(schedule)){
+                                requestedList.add(schedule);
+                            }
+                        }
+                    }
+                }
             }
-        }while(choice != 4);
+        } else {
+            Applicant applicant = Database.getApplicant();
+
+            for (Schedule schedule : Database.schedules) {
+                for (JobApplication app : Database.jobApplicationList) {
+                    if (app.getApplicant().equals(applicant)
+                            && app.getJob().equals(schedule.getJob())
+                            && app.getStatus().equalsIgnoreCase("Pending")
+                            && schedule.getStatus().equalsIgnoreCase("Scheduled")) {
+                        if (!scheduledList.contains(schedule)) {
+                            scheduledList.add(schedule);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private static void goNotification() {
+        if (isEmployer()) {
+            if (requestedList.isEmpty()) {
+                System.out.println("No scheduled interview yet.");
+                Tools.systemPause();
+            } else {
+                System.out.println("---------------------------------------------------------------------------------------------------------");
+                System.out.println(" No | Applicant Name | JobID | Interview Date | Time | Venue | Remark");
+                System.out.println("---------------------------------------------------------------------------------------------------------");
+
+                int index = 1;
+                for (Schedule schedule : requestedList) {
+                    String applicantName = schedule.getApplicant().getName();
+                    String jobID = schedule.getJob().getJobID();
+                    Date date = schedule.getInterviewDate();
+                    Date time = schedule.getInterviewTime();
+                    String venue = schedule.getVenue();
+                    String remark = schedule.getRemark();
+
+                    System.out.printf(" %2d | %-15s | %-5s | %-15s | %-5s | %-10s | %-40s\n",
+                            index, applicantName, jobID, date, time, venue, remark);
+                    index++;
+                }
+
+                int choice = Input.getIntegerInput("Enter the number of the schedule to edit (or 0 to cancel):");
+
+                if (choice > 0 && choice <= requestedList.size()) {
+                    Schedule selected = requestedList.get(choice - 1);
+                    ScheduleManager.editScheduleItem();
+
+                    requestedList.remove(selected); // Remove from requested
+                    scheduledList.add(selected);    // Add to scheduled
+
+                    System.out.println("Interview schedule updated.");
+                } else if (choice == 0) {
+                    System.out.println("Action cancelled.");
+                } else {
+                    System.out.println("Invalid selection.");
+                }
+            }
+        } else {
+            if (scheduledList.isEmpty()) {
+            System.out.println("No scheduled interview yet.");
+            Tools.systemPause();
+            } else {
+                System.out.println("---------------------------------------------------------------");
+                System.out.println(" No | JobID | Job Title | Interview Date | Time | Venue ");
+                System.out.println("---------------------------------------------------------------");
+
+                int index = 1;
+                for (Schedule schedule : scheduledList) {
+                    Job job = schedule.getJob();
+
+                    String jobId = job.getJobID();
+                    String jobTitle = job.getJobTitle();
+                    Date date = schedule.getInterviewDate();
+                    Date time = schedule.getInterviewTime();
+                    String venue = schedule.getVenue();
+
+                    System.out.println(" " + index + "  |  " + jobId + "  | " + jobTitle + " | " + date + " | " + time + " | " + venue);
+                    index++;
+                }
+
+                int choice = Input.getIntegerInput("Enter the number of the interview to respond (or 0 to cancel):");
+
+                if (choice > 0 && choice <= scheduledList.size()) {
+                    Schedule selected = scheduledList.get(choice - 1);
+                    System.out.println("You selected interview for job: " + selected.getJob().getJobTitle());
+                    System.out.println("1. Confirm Interview");
+                    System.out.println("2. Request Change (Date/Time)");
+                    int action = Input.getIntegerInput("Enter you choice > ");
+
+                    switch (action) {
+                        case 1 -> {
+                            System.out.println("Interview confirmed.");
+                            setConfirm(selected.getApplicant(), selected.getJob(), selected);
+                        }
+                        case 2 -> {
+                            System.out.println("-------------------------------------------------------");
+                            System.out.println("Remark will be sent to employer in charge to process...");
+                            System.out.println("-------------------------------------------------------");
+                            String remark = Input.getStringInput("Enter remark > ");
+                            setRemark(selected, remark);
+                        }
+                        default -> System.out.println("Invalid option.");
+                    }
+                } else if (choice == 0) {
+                    System.out.println("Action cancelled.");
+                } else {
+                    System.out.println("Invalid selection.");
+                }
+            }
+        }
+    }
+
+    private static <T> void setRemark(T object, String remark){
+        for(Schedule schedule : Database.schedules){
+            if(schedule.equals(object)){
+                schedule.setRemark(remark);
+                schedule.setStatus("Requested");
+                scheduledList.remove((Schedule) object);
+                break;
+            }
+        }
     }
     
-    public static void setCurrentDateTime(){
-        Date date = UserUI.userCurrentDate();
-        Date time = UserUI.userCurrentTime();
-        Database.setCurrentDate(date);
-        Database.setCurrentTime(time);
-    }    
-    
+    private static <T> void setConfirm(T obj1, T obj2, T obj3){
+        for (JobApplication jobApplication : Database.jobApplicationList) {
+            if (jobApplication.getApplicant().equals(obj1) && jobApplication.getJob().equals(obj2)) {
+                jobApplication.setStatus("Confirmed");
+            }
+        }
+
+        for (Schedule schedule : Database.schedules) {
+            if (schedule.equals(obj3)) {
+                schedule.setStatus("Confirmed");
+                scheduledList.remove((Schedule) obj3);
+            }
+        }
+    }
 }

@@ -59,4 +59,17 @@ public class ChooseSetting {
     public static final String[] INTERVIEW_STATUS_OPTIONS ={
       "Scheduled", "Completed", "Canceled"
     };
+    
+    public static final String[] VENUE_OPTIONS = {
+        "Conference Room A",
+        "Conference Room B",
+        "Meeting Room A",
+        "Meeting Hall B",
+        "Online (Zoom)",
+        "Online (Google Meet)"
+    };
+    
+    public static final String[] DURATIONS = {
+        "15 mins", "30 mins", "45 mins", "60 mins"
+    };
 }

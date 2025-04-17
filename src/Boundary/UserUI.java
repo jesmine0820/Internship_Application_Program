@@ -1,22 +1,21 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Boundary;
 
 import Dao.Database;
 import Utility.Input;
 import Utility.Tools;
-import static Utility.Tools.*;
 import Utility.Validation;
 import java.util.Date;
+import static Utility.Tools.*;
 
 /**
  *
- * @author User
+ * @author Jesmine Tey Khai Jing
+ * 
  */
+
 public class UserUI {
     
+    //---------------------------Display Header at Log In---------------------------
     public static void headLine() {
         System.out.printf(RED + "\t\t%s\n\t\t", "                         _" + RESET);
         System.out.printf(BLUE + "%s\n\t\t", "         _   _ _ __ ___ | |_" + RESET);
@@ -28,6 +27,7 @@ public class UserUI {
         System.out.println("             ---------------------------------------- ");
     }
     
+    //---------------------------Display Login Menu---------------------------
     public static int loginUI(){
         
         int input;
@@ -49,6 +49,7 @@ public class UserUI {
         
     }
     
+    //---------------------------Display Employer Menu---------------------------
     public static String employerMenu(){
         String input;
         
@@ -75,13 +76,15 @@ public class UserUI {
         return input;
     }
     
-    public static String applicantMenu(){
+    //---------------------------Display Applicant Menu---------------------------
+    public static String applicantMenu(int count){
         String input;
         
         Tools.clearScreen();     
         System.out.println("        ==================================================");
         System.out.println("                Welcome " + Database.getApplicant().getName());
         System.out.println("        ==================================================");
+        Tools.notificationIcon(count);
         System.out.println("                                                  ");
         BrowseUI.displaySearchBar();
         System.out.println("                                                  ");
@@ -100,6 +103,7 @@ public class UserUI {
         return input;
     }
     
+    //---------------------------Display Register Menu---------------------------
     public static int registerMenu(){
         int input;
         
@@ -118,6 +122,7 @@ public class UserUI {
         return input;
     }
     
+    //---------------------------Display Choose Entity Footer---------------------------
     public static String chooseEntity(){
         String input;
         
@@ -128,6 +133,7 @@ public class UserUI {
         return input;
     }
     
+    //---------------------------Display Choose Entity Footer---------------------------
     public static String chooseFirstPageEntity(){
         String input;
         
@@ -138,6 +144,7 @@ public class UserUI {
         return input;
     }
     
+    //---------------------------Display Choose Entity Footer---------------------------
     public static String chooseLastPageEntity(){
         String input;
         
@@ -148,6 +155,7 @@ public class UserUI {
         return input;
     }
     
+    //---------------------------Display Profile Header---------------------------
     public static void profile(String name, String user, String date, String time){
         System.out.printf(RED + "\t\t\t%s\n\t\t\t", "                       _" + RESET);
         System.out.printf(BLUE + "%s\n\t\t\t", "       _   _ _ __ ___ | |_" + RESET);

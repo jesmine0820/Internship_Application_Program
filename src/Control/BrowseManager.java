@@ -27,25 +27,26 @@ public class BrowseManager {
     
     // Choose browse job or applicant
     public static void browseMenu(){
+        int input;
         UserUI.headLine();
         UserManager.profileHeadLine();
         
         do{
-            title = getBrowseSelection();
-
-            if(!title.isEmpty()){
-                switch (title) {
-                    case "Job", "Applicant" -> displayAll(title);
-                    case "3" -> ApplicantManager.filterApplicant();
-                    case "4" -> {
+            input = BrowseUI.employerBrowseMenu();
+            switch(input){
+                case 1 -> displayAll("Job");
+                case 2 -> displayAll("Applicant");
+                case 3 -> ApplicantManager.filterApplicant();
+                case 4 -> {
                         String searchTerm = Input.getStringInput("Enter keyword to search resume details: ");
                         ApplicantManager.searchResume(searchTerm);
-                    }
-                    default -> {
-                    }
+                }
+                case 5 -> Tools.back();
+                default -> {
+                    MessageUI.errorMessage();
                 }
             }
-        }while (!cancel);
+        }while (input != 5);
     }
     
     // Search for something in the list
@@ -321,32 +322,7 @@ public class BrowseManager {
         }
         return matchedJob;
     }
-    
-    // Get the title that user choose to display
-    private static String getBrowseSelection(){
-        if(UserManager.isEmployer()){
-            while(true){
-                int choice = BrowseUI.employerBrowseMenu();
-                switch (choice) {
-                    case 1 -> { 
-                        return "Job"; 
-                    }
-                    case 2 -> { 
-                        return "Applicant"; 
-                    }
-                    case 3 -> {}
-                    case 4 -> {}
-                    case 5 -> { 
-                        return "";
-                    }
-                    default -> MessageUI.errorMessage();
-                } 
-            }
-        } else {
-            return "Job";
-        }
-    }
-    
+
     // Create and return a specific object
     private static <T> T getObject(String title) {
         switch (title) {

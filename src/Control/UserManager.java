@@ -186,7 +186,8 @@ public class UserManager {
                     case "4" -> JobApplicationManager.displaySaveList();
                     case "5" -> ApplicantManager.editProfile();
                     case "6" -> ReportManager.reportMenu();
-                    case "7" -> Tools.back();
+                    case "7" -> ApplicantManager.deleteAccount();
+                    case "8" -> Tools.back();
                     case "n" -> {
                         if(!scheduledList.isEmpty()){
                             goNotification();
@@ -200,7 +201,7 @@ public class UserManager {
                     }
                     default -> MessageUI.errorMessage();
                     }  
-            } while (!moduleChoose.equals("7"));
+            } while (!moduleChoose.equals("8"));
         }
     }
     

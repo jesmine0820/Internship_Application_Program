@@ -96,6 +96,7 @@ public class UserUI {
         System.out.println("        =             4. View Saved Job List             =");
         System.out.println("        =             5. Edit Profile                    =");
         System.out.println("        =             6. Report Management               =");
+        System.out.println("        =             7. Delete Account                  =");
         System.out.println("        =             7. Logout                          =");
         System.out.println("        ==================================================");
         

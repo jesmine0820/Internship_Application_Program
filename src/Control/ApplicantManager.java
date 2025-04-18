@@ -56,7 +56,7 @@ public class ApplicantManager {
         // IC
         ic = Validation.checkIcInput("Enter your IC(xxxxxx-xx-xxxx): ");
         // Phone Number
-        phoneNo = Validation.checkPhoneNumber("Enter your phone number(01X-XXXXXXX or 01X-XXXXXXXX): ");
+        phoneNo = Validation.checkPhoneNumber("Enter your phone number(01X-XXXXXXX or 01X-XXXXXXXX): ");
         // Email
         email = Validation.checkEmailFormat("Enter your email(e.g., john@gmail.com): ");
         // Social Media
@@ -85,7 +85,7 @@ public class ApplicantManager {
         }
         systemPause();
     }
-
+    
     // ========== UPDATE ==========
     public static void editProfile() {
 

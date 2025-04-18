@@ -10,7 +10,7 @@ import java.util.Date;
 /**
  *
  * @author Gan Khai Li
- * 
+ *
  */
 public class JobApplicationManager {
 
@@ -35,7 +35,7 @@ public class JobApplicationManager {
 
         printMultiLine("Skills", selectedJob.getRequiredSkills());
         printMultiLine("Benefits", selectedJob.getBenefits());
-        
+
         handleJobAfterBrowsing(selectedJob);
     }
 
@@ -96,6 +96,7 @@ public class JobApplicationManager {
 
         loggedInApplicant.getSavedList().add(selectedJob);
         System.out.println(GREEN + "\nJob saved successfully!" + RESET);
+        systemPause();
     }
 
     // ========== DISPLAY SAVE LIST =========
@@ -153,6 +154,8 @@ public class JobApplicationManager {
         } else {
             System.out.println("Job not removed.");
         }
+
+        systemPause();
     }
 
     // ========== APPLY JOBS ==========
@@ -172,6 +175,10 @@ public class JobApplicationManager {
         if (loggedInApplicant == null) {
             System.out.println("No logged-in applicant found. Please log in first.");
             return;
+        }
+
+        if (loggedInApplicant.getJobApplication() == null) {
+            loggedInApplicant.setJobApplication(new DoublyLinkedList<>());
         }
 
         boolean alreadyApplied = false;
@@ -232,7 +239,7 @@ public class JobApplicationManager {
         System.out.println("Job Title: " + selectedJob.getJobTitle());
         System.out.println("Date Applied: " + newApplication.getApplicationDate().toString());
         System.out.println("Current Status: " + newApplication.getStatus());
-
+        systemPause();
     }
 
     // ========== Search ==========
@@ -344,6 +351,7 @@ public class JobApplicationManager {
         } else {
             System.out.println("Application deletion canceled.");
         }
+        systemPause();
     }
 
     public static void arrangeApplication() {

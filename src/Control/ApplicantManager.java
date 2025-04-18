@@ -13,7 +13,7 @@ import java.util.Date;
 /**
  *
  * @author Gan Khai Li
- * 
+ *
  */
 public class ApplicantManager {
 
@@ -35,35 +35,35 @@ public class ApplicantManager {
         String socialMedia;
         String maritalStatus;
         String confirmation;
-        
+
         // Collecting applicant-specific information
         Applicant newApplicantDetails = getApplicantDetails();
 
         // Collecting resume information
         Resume resume = getResumeDetails();
-        
+
         // Applicant ID
         applicantID = String.format("A%03d", Database.applicants.size() + 1);
-        
+
         // Applicant name
         applicantName = Validation.checkString("Enter your name: ");
         // Date of Birth
-        dateOfBirth = Validation.checkDate("\"Enter your date of Birth(YYYY-MM-DD): \"");
+        dateOfBirth = Validation.checkDate("Enter your date of Birth(YYYY-MM-DD): ");
         // Gender
-        gender = Validation.checkGender("Enter your gender(Male/Female): ");
+        gender = Validation.checkGender("Enter your gender(male/female): ");
         // Address
         address = Input.getStringInput("Enter your Address: ");
         // IC
         ic = Validation.checkIcInput("Enter your IC(xxxxxx-xx-xxxx): ");
         // Phone Number
-        phoneNo = Validation.checkPhoneNumber("Enter your IC(xxxxxx-xx-xxxx): ");
+        phoneNo = Validation.checkPhoneNumber("Enter your phone number(01X-XXXXXXX or 01X-XXXXXXXX): ");
         // Email
         email = Validation.checkEmailFormat("Enter your email(e.g., john@gmail.com): ");
         // Social Media
-        socialMedia = Validation.checkSocialMedia("Enter your Social Media(e.g.,@user_abc): ");
+        socialMedia = Validation.checkSocialMedia("Enter your Social Media(e.g.,@user.abc): ");
         // Marital Status
-        maritalStatus = Input.getChoiceInput("Choose your marital status", ChooseSetting.MARITAL_STATUSES);
-        
+        maritalStatus = Input.getChoiceInput("Choose your marital status: ", ChooseSetting.MARITAL_STATUSES);
+
         // Save the applicant information into one object
         Applicant newApplicant = new Applicant(
                 newApplicantDetails.getLocation(), newApplicantDetails.getPortfolioLink(),
@@ -75,7 +75,7 @@ public class ApplicantManager {
 
         // Get Confirmation
         confirmation = Input.getYesNoInput("\nDo you want to create this applicant? (Yes/No): ");
-        
+
         if (confirmation.equalsIgnoreCase("yes") || confirmation.equalsIgnoreCase("y")) {
             applicantList.add(newApplicant); // local
             Database.applicants.add(newApplicant); // global
@@ -83,14 +83,15 @@ public class ApplicantManager {
         } else {
             MessageUI.cancelSelection();
         }
+        systemPause();
     }
 
     // ========== UPDATE ==========
     public static void editProfile() {
-        
+
         // Declare variables
         boolean continueEditing = true;
-        
+
         // Get the applicant from the Database
         Applicant applicantToUpdate = Database.getApplicant();
 
@@ -99,9 +100,9 @@ public class ApplicantManager {
             emptyApplicantMessage();
             return;
         }
-        
+
         UserManager.profileHeadLine();
-        
+
         // Main menu for selecting what to update
         while (continueEditing) {
             String[] editOptions = {
@@ -111,7 +112,7 @@ public class ApplicantManager {
                 "Cancel"
             };
 
-            String editChoice = Input.getChoiceInput("\nWhat would you like to update?", editOptions);
+            String editChoice = Input.getChoiceInput("\nWhat would you like to update? ", editOptions);
 
             switch (editChoice) {
                 case "Update Personal Information" -> {
@@ -143,13 +144,14 @@ public class ApplicantManager {
                 }
             }
         }
+        systemPause();
     }
 
     private static void updatePersonalInfo(Applicant applicantToUpdate) {
-        
+
         boolean continueUpdatingPersonalInfo = true;
         boolean isCancelled = false;
-        
+
         // Create a temporary copy of the applicant to make updates without affecting the original
         Applicant tempApplicant = new Applicant(applicantToUpdate.getId(),
                 applicantToUpdate.getName(),
@@ -179,7 +181,7 @@ public class ApplicantManager {
                 case "Email" ->
                     tempApplicant.setEmail(Validation.checkEmailFormat("\nEnter updated email (e.g., john@gmail.com): "));
                 case "Social Media" ->
-                    tempApplicant.setSocialMedia(Validation.checkSocialMedia("\nEnter updated Social Media (e.g., @user_abc): "));
+                    tempApplicant.setSocialMedia(Validation.checkSocialMedia("\nEnter updated Social Media (e.g., @user.abc): "));
                 case "Marital Status" ->
                     tempApplicant.setMaritalStatus(Input.getChoiceInput("\nSelect updated marital status: ", ChooseSetting.MARITAL_STATUSES));
                 case "Update All" -> {
@@ -187,7 +189,7 @@ public class ApplicantManager {
                     tempApplicant.setAddress(Input.getStringInput("\nEnter updated address: "));
                     tempApplicant.setPhoneNumber(Validation.checkPhoneNumber("\nEnter updated phone number (01X-XXXXXXX or 01X-XXXXXXXX): "));
                     tempApplicant.setEmail(Validation.checkEmailFormat("\nEnter updated email (e.g., john@gmail.com): "));
-                    tempApplicant.setSocialMedia(Validation.checkSocialMedia("\nEnter updated Social Media (e.g., @user_abc): "));
+                    tempApplicant.setSocialMedia(Validation.checkSocialMedia("\nEnter updated Social Media (e.g., @user.abc): "));
                     tempApplicant.setMaritalStatus(Input.getChoiceInput("\nSelect updated marital status: ", ChooseSetting.MARITAL_STATUSES));
                 }
                 case "Cancel Update" -> {
@@ -230,10 +232,10 @@ public class ApplicantManager {
     }
 
     private static void updateApplicantInfo(Applicant applicantToUpdate) {
-        
+
         boolean continueUpdatingApplicantInfo = true;
         boolean isCancelled = false;
-        
+
         // Create a temporary copy of the applicant to make updates without affecting the original
         Applicant tempApplicant = new Applicant(
                 applicantToUpdate.getLocation(),
@@ -328,7 +330,7 @@ public class ApplicantManager {
 
     private static void updateResume(Applicant applicantToUpdate) {
         boolean continueUpdatingResume = true;
-        boolean isCancelled = false;        
+        boolean isCancelled = false;
 
         // Create a temporary copy of the resume to make updates without affecting the original
         Resume currentResume = applicantToUpdate.getResume();
@@ -440,6 +442,7 @@ public class ApplicantManager {
         } else {
             MessageUI.cancelSelection();
         }
+        systemPause();
     }
 
     // ========== READ ==========
@@ -451,17 +454,19 @@ public class ApplicantManager {
             emptyApplicantMessage();
             return;
         }
-        
+
         ApplicantUI.viewApplicantDetailsHeader();
 
         Resume currentResume = applicantToView.getResume();
         displayPersonalInfo(applicantToView);
-        
+
         System.out.println();
         displayApplicantDetails(applicantToView);
         System.out.println();
         displayResumeDetails(currentResume);
         System.out.println();
+
+        systemPause();
     }
 
     // ========== FILTER ==========
@@ -585,7 +590,7 @@ public class ApplicantManager {
         System.out.println("      Experience: " + applicant.getYearOfExperience() + " years");
         System.out.println("      Availability: " + applicant.getAvailability());
 
-        System.out.print(PURPLE+"      Filter by: "+RESET);
+        System.out.print(PURPLE + "      Filter by: " + RESET);
         if (choice.equals("All of the Above") || choice.equals("Any of the Above")) {
             if (minYears > 0) {
                 System.out.print("[Experience: " + minYears + " years] ");
@@ -642,7 +647,7 @@ public class ApplicantManager {
             return;
         }
 
-        System.out.println(PURPLE+"\nTotal matches found: " + matchedApplicants.size()+RESET);
+        System.out.println(PURPLE + "\nTotal matches found: " + matchedApplicants.size() + RESET);
         System.out.println("---------------------------------------------------");
 
         int index = 1;
@@ -862,24 +867,6 @@ public class ApplicantManager {
         }
     }
 
-    // ========== VALIDATION HELPERS ==========
-    /*name exists*/
-    private static boolean isNameExists(String applicantName) {
-        for (int i = 0; i < applicantList.size(); i++) { //local
-            if (applicantList.get(i).getName().equalsIgnoreCase(applicantName)) {
-                return true;
-            }
-        }
-
-        for (int i = 0; i < Database.applicants.size(); i++) {//global
-            if (Database.applicants.get(i).getName().equalsIgnoreCase(applicantName)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     /*portfolioLink*/
     private static String getPortfolioLinkInput(String question) {
         String portfolioLink = Input.getStringInput(question);
@@ -891,7 +878,7 @@ public class ApplicantManager {
 
         return portfolioLink;
     }
-    
+
     public static void displayAllApplicants() {
         Tools.clearScreen();
         UserUI.headLine();
@@ -911,13 +898,13 @@ public class ApplicantManager {
             System.out.println("=========================================");
         }
     }
-    
-    public static void displayBrowseApplicant(Applicant applicant, int i){
+
+    public static void displayBrowseApplicant(Applicant applicant, int i) {
         String name = applicant.getName();
         String preferredWorkMode = applicant.getPreferredWorkMode();
         String desiredJobType = applicant.getDesiredJobType();
         String portfolioLink = applicant.getPortfolioLink();
-                        
+
         System.out.println("-----------------------------------------------------------------------------------------");
         System.out.println("     " + String.format("%-75s", (i + 1) + ". " + name) + " |");
         System.out.println("           " + String.format("%-75s", "Preferred Work Mode: " + preferredWorkMode) + " |");

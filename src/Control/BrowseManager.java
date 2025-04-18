@@ -34,8 +34,15 @@ public class BrowseManager {
             title = getBrowseSelection();
 
             if(!title.isEmpty()){
-                if("Job".equals(title) || "Applicant".equals(title)){
-                    displayAll(title);
+                switch (title) {
+                    case "Job", "Applicant" -> displayAll(title);
+                    case "3" -> ApplicantManager.filterApplicant();
+                    case "4" -> {
+                        String searchTerm = Input.getStringInput("Enter keyword to search resume details: ");
+                        ApplicantManager.searchResume(searchTerm);
+                    }
+                    default -> {
+                    }
                 }
             }
         }while (!cancel);
@@ -210,22 +217,34 @@ public class BrowseManager {
         list = sortList(list, object);
         
         // Select the entity and display it
-        if (object instanceof Job) {
-            goJob = (Job) Input.selectEntity(list, title);
-            if (goJob != null) {
-                cancel = false;
-                JobApplicationManager.displayBrowseJobs(goJob);
-            } else {
-                cancel = true;
+        if(UserManager.isEmployer()){
+            if (object instanceof Job) {
+                goJob = (Job) Input.selectEntity(list, title);
+                if (goJob != null) {
+                    cancel = false;
+                    JobManager.displayJobDetails(goJob);
+                } else {
+                    cancel = true;
+                }
+            } else if (object instanceof Applicant) {
+                goApplicant = (Applicant) Input.selectEntity(list, title);
+                if (goApplicant != null) {
+                    cancel = false;
+                    ApplicantManager.displayEssentialInfo(goApplicant);
+                } else {
+                    cancel = true;
+                }
             }
-        } else if (object instanceof Applicant) {
-            goApplicant = (Applicant) Input.selectEntity(list, title);
-            if (goApplicant != null) {
-                cancel = false;
-                ApplicantManager.displayEssentialInfo(goApplicant);
-            } else {
-                cancel = true;
-            }
+        } else {
+            if (object instanceof Job) {
+                goJob = (Job) Input.selectEntity(list, title);
+                if (goJob != null) {
+                    cancel = false;
+                    JobApplicationManager.displayBrowseJobs(goJob);
+                } else {
+                    cancel = true;
+                }
+            } 
         }
     }
     
@@ -315,10 +334,9 @@ public class BrowseManager {
                     case 2 -> { 
                         return "Applicant"; 
                     }
-                    case 3 -> {
-                        return "Any";
-                    }
-                    case 4 -> { 
+                    case 3 -> {}
+                    case 4 -> {}
+                    case 5 -> { 
                         return "";
                     }
                     default -> MessageUI.errorMessage();

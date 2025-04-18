@@ -18,6 +18,7 @@ import static Utility.Tools.BLUE;
 import static Utility.Tools.GREEN;
 import static Utility.Tools.RED;
 import static Utility.Tools.RESET;
+import Utility.Validation;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -948,6 +949,9 @@ public class ReportManager {
     
     // ==================================Interview Module Report===========================================
     
+    
+    
+    // 4. Interview Schedule Report
     public static void interviewReportManagement() {
         int choice;
         do {
@@ -955,7 +959,7 @@ public class ReportManager {
 
             System.out.println("\n===== EMPLOYER REPORT MODULE =====");
             System.out.println("1. View Schedules by Date");
-            System.out.println("2. View Applicants by Status");
+            System.out.println("2. View Applicants by Name");
             System.out.println("3. View Applicants by Status");
             System.out.println("4. View Applicants by Score");
             System.out.println("5. View Passed Applicants (Score >= 80)");
@@ -993,7 +997,7 @@ public class ReportManager {
                     break;
                 case 9:
                     System.out.println("Exiting report module...");
-                    break;
+                    return;
                 default:
                     System.out.println("Invalid choice.");
             }
@@ -1017,60 +1021,85 @@ public class ReportManager {
 
         try {
             interviewDate = sdf.parse(interviewDateStr);
-        } catch (ParseException e) {
+        } catch (Exception e) {
             System.out.println("Invalid date format.");
             return;
         }
 
         boolean found = false;
 
-        // Table Header
-        System.out.println("\nSchedules on " + interviewDateStr + " for Employer: " + Database.getEmployer().getName());
-        System.out.printf("%-20s %-15s %-15s %-12s %-10s%n", "Applicant Name", "Interview Date", "Follow-up Date", "Venue", "Status");
-        System.out.println("--------------------------------------------------------------------------------");
-
-        for (int i = 0; i < Database.schedules.size(); i++) {
-            Schedule schedule = Database.schedules.get(i);
+        // First, check if any matching schedule exists
+        for (Schedule schedule : Database.schedules) {
             if (schedule.getEmployer().equals(Database.getEmployer())
                     && sdf.format(schedule.getInterviewDate()).equals(sdf.format(interviewDate))) {
-
-                String applicantName = schedule.getApplicant().getName();
-                String interviewDateFormatted = sdf.format(schedule.getInterviewDate());
-                String followUpDateFormatted = sdf.format(schedule.getFollowUpDate());
-                String venue = schedule.getVenue();  // Assuming there's a getVenue method in Schedule class
-                String status = schedule.getStatus();
-
-                System.out.printf("%-20s %-15s %-15s %-12s %-10s%n",
-                        applicantName, interviewDateFormatted, followUpDateFormatted, venue, status);
                 found = true;
+                break;
             }
         }
 
-        if (!found) {
-            System.out.println("No schedules found on this date for employer: " + Database.getEmployer().getName());
+        // Only print header if found
+        if (found) {
+            System.out.println("\nSchedules on " + interviewDateStr + " for Employer: " + Database.getEmployer().getName());
+            System.out.printf("%-20s %-15s %-15s %-12s %-10s%n", "Applicant Name", "Interview Date", "Follow-up Date", "Venue", "Status");
+            System.out.println("--------------------------------------------------------------------------------");
+
+            for (Schedule schedule : Database.schedules) {
+                if (schedule.getEmployer().equals(Database.getEmployer())
+                        && sdf.format(schedule.getInterviewDate()).equals(sdf.format(interviewDate))) {
+
+                    String applicantName = schedule.getApplicant().getName();
+                    String interviewDateFormatted = sdf.format(schedule.getInterviewDate());
+                    String followUpDateFormatted = sdf.format(schedule.getFollowUpDate());
+                    String venue = schedule.getVenue();
+                    String status = schedule.getStatus();
+
+                    System.out.printf("%-20s %-15s %-15s %-12s %-10s%n",
+                            applicantName, interviewDateFormatted, followUpDateFormatted, venue, status);
+                }
+            }
+        } else {
+            System.out.println("No schedules found on this date!");
         }
     }
 
     public static void viewApplicantsByName() {
         System.out.print("Enter applicant name to filter: ");
-        String applicantName = Input.getStringInput().toLowerCase();
-
-        System.out.println("\n=== INTERVIEW SCHEDULES FOR APPLICANT: " + applicantName + " ===");
-        System.out.printf("%-20s %-12s %-8s %-3s %-9s\n", "Applicant", "Interview Date", "Venue", "Score", "Status");
+        String applicantNameInput = Input.getStringInput();
+        String applicantNameLower = applicantNameInput.toLowerCase();
+        SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
 
         boolean found = false;
+
+        // First, check if any match exists
         for (Schedule schedule : Database.schedules) {
             if (schedule.getEmployer().equals(Database.getEmployer())
-                    && schedule.getApplicant().getName().toLowerCase().contains(applicantName)) {
-                System.out.printf("%-20s %-12s %-8s %-3d %-9s\n",
-                        schedule.getApplicant().getName(), schedule.getInterviewDate(),
-                        schedule.getVenue(), schedule.getScore(), schedule.getStatus());
+                    && schedule.getApplicant().getName().toLowerCase().contains(applicantNameLower)) {
                 found = true;
+                break;
             }
         }
 
-        if (!found) {
-            System.out.println("No schedules found for applicant: " + applicantName);
+        if (found) {
+            System.out.println("\nInterview Schedules for Applicants Matching: \"" + applicantNameInput + "\"");
+            System.out.printf("%-20s %-15s %-15s %-10s %-6s%n", "Applicant Name", "Interview Date", "Follow-up Date", "Venue", "Status");
+            System.out.println("-------------------------------------------------------------------------------");
+
+            for (Schedule schedule : Database.schedules) {
+                if (schedule.getEmployer().equals(Database.getEmployer())
+                        && schedule.getApplicant().getName().toLowerCase().contains(applicantNameLower)) {
+
+                    String applicantName = schedule.getApplicant().getName();
+                    String interviewDate = formatDate.format(schedule.getInterviewDate());
+                    String followUpDate = formatDate.format(schedule.getFollowUpDate());
+                    String venue = schedule.getVenue();
+                    String status = schedule.getStatus();
+
+                    System.out.printf("%-20s %-15s %-15s %-10s %-6s%n",
+                            applicantName, interviewDate, followUpDate, venue, status);
+                }
+            }
+        } else {
+            System.out.println("No schedules found for applicant: " + applicantNameInput);
         }
     }
 
@@ -1100,35 +1129,41 @@ public class ReportManager {
         }
 
         boolean found = false;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-        // Table Header
-        System.out.println("\nApplicants with status: " + statusToFilter + " for Employer: " + Database.getEmployer().getName());
-        System.out.printf("%-20s %-15s %-15s %-12s %-10s%n", "Applicant Name", "Interview Date", "Follow-up Date", "Venue", "Status");
-        System.out.println("--------------------------------------------------------------------------------");
-
-        for (int i = 0; i < Database.schedules.size(); i++) {
-            Schedule schedule = Database.schedules.get(i);
+        // First check if any matching schedule exists
+        for (Schedule schedule : Database.schedules) {
             if (schedule.getEmployer().equals(Database.getEmployer())
                     && schedule.getStatus().equalsIgnoreCase(statusToFilter)) {
-
-                String applicantName = schedule.getApplicant().getName();
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                String interviewDateFormatted = sdf.format(schedule.getInterviewDate());
-                String followUpDateFormatted = sdf.format(schedule.getFollowUpDate());
-                String venue = schedule.getVenue();  // Assuming there's a getVenue method in Schedule class
-                String status = schedule.getStatus();
-
-                // Print the schedule in tabular format
-                System.out.printf("%-20s %-15s %-15s %-12s %-10s%n",
-                        applicantName, interviewDateFormatted, followUpDateFormatted, venue, status);
                 found = true;
+                break;
             }
         }
 
-        if (!found) {
-            System.out.println("No applicants with status: " + statusToFilter + " for employer: " + Database.getEmployer().getName());
+        if (found) {
+            System.out.println("\nApplicants with status: " + statusToFilter + " for Employer: " + Database.getEmployer().getName());
+            System.out.printf("%-20s %-15s %-15s %-12s %-10s%n", "Applicant Name", "Interview Date", "Follow-up Date", "Venue", "Status");
+            System.out.println("--------------------------------------------------------------------------------");
+
+            for (Schedule schedule : Database.schedules) {
+                if (schedule.getEmployer().equals(Database.getEmployer())
+                        && schedule.getStatus().equalsIgnoreCase(statusToFilter)) {
+
+                    String applicantName = schedule.getApplicant().getName();
+                    String interviewDateFormatted = sdf.format(schedule.getInterviewDate());
+                    String followUpDateFormatted = sdf.format(schedule.getFollowUpDate());
+                    String venue = schedule.getVenue();
+                    String status = schedule.getStatus();
+
+                    System.out.printf("%-20s %-15s %-15s %-12s %-10s%n",
+                            applicantName, interviewDateFormatted, followUpDateFormatted, venue, status);
+                }
+            }
+        } else {
+            System.out.println("No applicants with status: " + statusToFilter);
         }
     }
+
 
     public static void viewApplicantsByScore() {
         ListInterface<Schedule> schedules = Database.schedules;
@@ -1184,25 +1219,52 @@ public class ReportManager {
     }
 
     public static void generateSummaryReport() {
-        int total = 0, completed = 0, scheduled = 0, canceled = 0;
+        int total = 0, completed = 0, scheduled = 0, canceled = 0, upcoming = 0;
+        Date earliestDate = null;
+        Date latestDate = null;
+        Date today = new Date();
 
         for (Schedule schedule : Database.schedules) {
             if (schedule.getEmployer().equals(Database.getEmployer())) {
                 total++;
-                switch (schedule.getStatus().toLowerCase()) {
-                    case "completed" -> completed++;
-                    case "scheduled" -> scheduled++;
-                    case "canceled" -> canceled++;
+                String status = schedule.getStatus().toLowerCase();
+
+                if (status.equals("completed")) {
+                    completed++;
+                } else if (status.equals("scheduled")) {
+                    scheduled++;
+                } else if (status.equals("canceled")) {
+                    canceled++;
+                }
+
+                if (schedule.getInterviewDate().after(today)) {
+                    upcoming++;
+                }
+
+                Date interviewDate = schedule.getInterviewDate();
+                if (earliestDate == null || interviewDate.before(earliestDate)) {
+                    earliestDate = interviewDate;
+                }
+                if (latestDate == null || interviewDate.after(latestDate)) {
+                    latestDate = interviewDate;
                 }
             }
         }
 
-        // Print summary report
-        System.out.println("\n=== SUMMARY REPORT ===");
-        System.out.printf("Total Interviews: %-5d%n", total);
-        System.out.printf("Completed: %-5d%n", completed);
-        System.out.printf("Scheduled: %-5d%n", scheduled);
-        System.out.printf("Canceled: %-5d%n", canceled);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        System.out.println("\n=== SUMMARY REPORT FOR EMPLOYER: " + Database.getEmployer().getName() + " ===");
+        System.out.printf("Total Interviews       : %-5d%n", total);
+        System.out.printf("Completed              : %-5d (%.1f%%)%n", completed, total == 0 ? 0 : (completed * 100.0 / total));
+        System.out.printf("Scheduled              : %-5d (%.1f%%)%n", scheduled, total == 0 ? 0 : (scheduled * 100.0 / total));
+        System.out.printf("Canceled               : %-5d (%.1f%%)%n", canceled, total == 0 ? 0 : (canceled * 100.0 / total));
+        System.out.printf("Upcoming Interviews    : %-5d%n", upcoming);
+
+        if (earliestDate != null && latestDate != null) {
+            System.out.println("Interview Date Range   : " + sdf.format(earliestDate) + " to " + sdf.format(latestDate));
+        } else {
+            System.out.println("Interview Date Range   : N/A");
+        }
     }
 
     public static void viewTopScorer() {
@@ -1250,7 +1312,7 @@ public class ReportManager {
             System.out.println("No upcoming interviews found.");
         }
     }
-
+    
     // ==================================Searching Module Report===========================================
     
     private static void searchingReportManagement(){

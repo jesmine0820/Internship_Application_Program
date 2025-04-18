@@ -8,6 +8,8 @@ import Entity.*;
 import Utility.Input;
 import Utility.MessageUI;
 import Utility.Tools;
+import static Utility.Tools.RED;
+import static Utility.Tools.RESET;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -22,6 +24,7 @@ public class UserManager {
     private static final ListInterface<Schedule> scheduledList = new DoublyLinkedList<>();
     private static final ListInterface<Schedule> requestedList = new DoublyLinkedList<>();
 
+    private static final SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private static final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
     
@@ -72,8 +75,21 @@ public class UserManager {
     }
     
     public static void setCurrentDateTime(){
-        Date date = UserUI.userCurrentDate();
-        Date time = UserUI.userCurrentTime();
+        boolean error;
+        Date date;
+        Date time;
+        do{
+            error = false;
+            date = UserUI.userCurrentDate();
+            if(Integer.parseInt(yearFormat.format(date)) < 2024){
+                error = true;
+                System.out.println(RED + "Our system is lauched since 2024. Please enter a year after 2024." +  RESET);
+            } else if (Integer.parseInt(yearFormat.format(date)) >= 3000){
+                error = true;
+                System.out.println(RED + "Invalid year. Please enter again!" + RESET);
+            }
+        }while(error);
+        time = UserUI.userCurrentTime();
         Database.setCurrentDate(date);
         Database.setCurrentTime(time);
     }  
@@ -138,7 +154,7 @@ public class UserManager {
                     case "3" -> ScheduleManager.employerScheduleMenu();
                     case "4" -> ScheduleManager.displaySchedule();
                     case "5" -> BrowseManager.browseMenu();
-                    case "6" -> System.out.println("Edit Profile");
+                    case "6" -> EmployerManager.editEmployerProfile();
                     case "7" -> ReportManager.reportMenu();
                     case "8" -> {
                         MessageUI.logOutMessage();
@@ -253,8 +269,8 @@ public class UserManager {
                     Schedule selected = requestedList.get(choice - 1);
                     ScheduleManager.editScheduleItem();
 
-                    requestedList.remove(selected); // Remove from requested
-                    scheduledList.add(selected);    // Add to scheduled
+                    requestedList.remove(selected); 
+                    scheduledList.add(selected);    
 
                     System.out.println("Interview schedule updated.");
                 } else if (choice == 0) {
@@ -293,6 +309,7 @@ public class UserManager {
                     System.out.println("You selected interview for job: " + selected.getJob().getJobTitle());
                     System.out.println("1. Confirm Interview");
                     System.out.println("2. Request Change (Date/Time)");
+                    System.out.println("3. Reject Interview");
                     int action = Input.getIntegerInput("Enter you choice > ");
 
                     switch (action) {
@@ -306,6 +323,10 @@ public class UserManager {
                             System.out.println("-------------------------------------------------------");
                             String remark = Input.getStringInput("Enter remark > ");
                             setRemark(selected, remark);
+                        }
+                        case 3 -> {
+                            System.out.println("Interview rejected.");
+                            setDeactive(selected.getApplicant(), selected.getJob(), selected);
                         }
                         default -> System.out.println("Invalid option.");
                     }
@@ -339,6 +360,21 @@ public class UserManager {
         for (Schedule schedule : Database.schedules) {
             if (schedule.equals(obj3)) {
                 schedule.setStatus("Confirmed");
+                scheduledList.remove((Schedule) obj3);
+            }
+        }
+    }
+    
+    private static <T> void setDeactive(T obj1, T obj2, T obj3){
+        for (JobApplication jobApplication : Database.jobApplicationList) {
+            if (jobApplication.getApplicant().equals(obj1) && jobApplication.getJob().equals(obj2)) {
+                jobApplication.setStatus("Deactive");
+            }
+        }
+
+        for (Schedule schedule : Database.schedules) {
+            if (schedule.equals(obj3)) {
+                schedule.setStatus("Canceled");
                 scheduledList.remove((Schedule) obj3);
             }
         }

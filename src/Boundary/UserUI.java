@@ -17,6 +17,7 @@ public class UserUI {
     
     //---------------------------Display Header at Log In---------------------------
     public static void headLine() {
+        Tools.clearScreen();
         System.out.printf(RED + "\t\t%s\n\t\t", "                         _" + RESET);
         System.out.printf(BLUE + "%s\n\t\t", "         _   _ _ __ ___ | |_" + RESET);
         System.out.printf(RED + "%s\n\t\t", "        | | | | '_ ` _ \\| __|" + RESET);

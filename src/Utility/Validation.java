@@ -175,13 +175,13 @@ public class Validation {
     public static String checkSocialMedia(String question){
         boolean error;
         String socialMedia;
-        String regex = "@[A-Za-z0-9]";
+        String regex = "^@[A-Za-z0-9._]{3,30}$";
         
         do{
             error = false;
             socialMedia = Input.getStringInput(question);
             if(socialMedia == null || !socialMedia.matches(regex)){
-                MessageUI.invalidEmail();
+                MessageUI.invalidSocialMedia();
                 error = true;
             }
         } while(error);

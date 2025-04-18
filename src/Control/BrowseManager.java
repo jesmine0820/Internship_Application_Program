@@ -31,22 +31,26 @@ public class BrowseManager {
         UserUI.headLine();
         UserManager.profileHeadLine();
         
-        do{
-            input = BrowseUI.employerBrowseMenu();
-            switch(input){
-                case 1 -> displayAll("Job");
-                case 2 -> displayAll("Applicant");
-                case 3 -> ApplicantManager.filterApplicant();
-                case 4 -> {
-                        String searchTerm = Input.getStringInput("Enter keyword to search resume details: ");
-                        ApplicantManager.searchResume(searchTerm);
+        if(UserManager.isEmployer()){
+            do{
+                input = BrowseUI.employerBrowseMenu();
+                switch(input){
+                    case 1 -> displayAll("Job");
+                    case 2 -> displayAll("Applicant");
+                    case 3 -> ApplicantManager.filterApplicant();
+                    case 4 -> {
+                            String searchTerm = Input.getStringInput("Enter keyword to search resume details: ");
+                            ApplicantManager.searchResume(searchTerm);
+                    }
+                    case 5 -> Tools.back();
+                    default -> {
+                        MessageUI.errorMessage();
+                    }
                 }
-                case 5 -> Tools.back();
-                default -> {
-                    MessageUI.errorMessage();
-                }
-            }
-        }while (input != 5);
+            }while (input != 5);
+        } else {
+            displayAll("Job");
+        }
     }
     
     // Search for something in the list

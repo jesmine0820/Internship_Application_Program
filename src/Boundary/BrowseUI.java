@@ -24,7 +24,7 @@ public class BrowseUI {
         System.out.println("        =         2. Browse Applicant         =");
         System.out.println("        =         3. Filter Applicant         =");
         System.out.println("        =         4. Search Applicant         =");
-        System.out.println("        =         3. Exit                     =");
+        System.out.println("        =         5. Exit                     =");
         System.out.println("        =======================================");
 
         input = Input.getIntegerInput("Enter your choice > ");

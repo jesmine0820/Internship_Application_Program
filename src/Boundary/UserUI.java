@@ -110,14 +110,15 @@ public class UserUI {
         int input;
         
         Tools.clearScreen();
-        System.out.println("    =======================================");
-        System.out.println("    =             Register as...          =");
-        System.out.println("    =======================================");
-        System.out.println("    =             1. Company              =");
-        System.out.println("    =             2. Employer             =");
-        System.out.println("    =             3. Applicant            =");
-        System.out.println("    =             4. Exit                 =");
-        System.out.println("    =======================================");
+        headLine();
+        System.out.println("            =======================================");
+        System.out.println("            =             Register as...          =");
+        System.out.println("            =======================================");
+        System.out.println("            =             1. Company              =");
+        System.out.println("            =             2. Employer             =");
+        System.out.println("            =             3. Applicant            =");
+        System.out.println("            =             4. Exit                 =");
+        System.out.println("            =======================================");
         
         input = Input.getIntegerInput("Enter your choice > ");
         

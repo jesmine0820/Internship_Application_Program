@@ -43,7 +43,7 @@ public class EmployerManager {
                 default ->
                     MessageUI.errorMessage();
             }
-        } while (choice != 7);
+        } while (choice != 8);
     }
 
     public static Employer compareEmployerEmail(String email) {
@@ -110,12 +110,6 @@ public class EmployerManager {
             String position = Input.getStringInput("Enter Position: ");
             Date joinedDate = Validation.checkDate("Enter Joined Date (YYYY-MM-dd): ");
             int yearOfExperience = Input.getIntegerInput("Enter Years of Experience: ");
-
-            // Display list of existing companies
-            System.out.println("Available Companies:");
-            for (int i = 0; i < Database.companies.size(); i++) {
-                System.out.println((i + 1) + ". " + Database.companies.get(i).getCompanyName());
-            }
 
             if (id == null || name == null || dateOfBirth == null || gender == null
                     || address == null || ic == null || phoneNumber == null || email == null
@@ -228,7 +222,7 @@ public class EmployerManager {
                 continue;
             }
 
-            Employer newEmployer = new Employer(id, name, dateOfBirth, gender, address, ic, phoneNumber, email, socialMedia, maritalStatus, department, position, joinedDate, yearOfExperience, null, null, selectedCompany);
+            Employer newEmployer = new Employer(id, name, dateOfBirth, gender, address, ic, phoneNumber, email, socialMedia, maritalStatus, department, position, joinedDate, yearOfExperience, new DoublyLinkedList<>(), new DoublyLinkedList<>(), selectedCompany);
             employerList.add(newEmployer);
             Database.employers.add(newEmployer);
             MessageUI.createSuccessful();
@@ -238,7 +232,6 @@ public class EmployerManager {
             String another = Input.getYesNoInput("\n\nDo you want to register another employer? (yes/no): ");
             if (!(another.equalsIgnoreCase("yes") || another.equalsIgnoreCase("y"))) {
                 continueRegistering = false;
-                UserUI.loginUI();
             }
         }
     }
@@ -549,7 +542,6 @@ public class EmployerManager {
                     
                 } else {
                     System.out.println(RED + "Company registration cancelled." + RESET);
-                    UserUI.loginUI();
                 }
 
             } catch (Exception e) {
@@ -675,7 +667,6 @@ public class EmployerManager {
                     return newCompany;
                 } else {
                     System.out.println(RED + "Company registration cancelled." + RESET);
-                    UserUI.loginUI(); // Back to register menu only if cancel
                 }
 
             } catch (Exception e) {

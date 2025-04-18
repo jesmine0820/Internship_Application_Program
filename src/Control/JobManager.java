@@ -173,7 +173,6 @@ public class JobManager {
             System.out.println(GREEN + "\nJob successfully created!" + RESET);
         } else {
             System.out.println(RED + "\nJob creation canceled!" + RESET);
-            JobUI.employerMenu();
             return;
         }
 
@@ -707,7 +706,6 @@ public class JobManager {
             if (continueChoice.equalsIgnoreCase("yes")) {
                 continueFilter = true;
             } else {
-                //ApplicantUI.applicantMenu(); // You will need to implement this method
                 continueFilter = false;
             }
 
@@ -952,7 +950,6 @@ public class JobManager {
             // Ask the user if they want to search again or quit
             String choice = Input.getStringInput("Press [Enter] to search again, or type 'q' to quit: ").trim().toLowerCase();
             if (choice.equals("q")) {
-                JobUI.employerMenu();  // Redirect to the employer menu
                 break;
             }
         }

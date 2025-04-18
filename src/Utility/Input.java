@@ -34,15 +34,22 @@ public class Input {
     // Get Integer Input from User Keyboard
     public static int getIntegerInput(){
         int value;
+        boolean error;
         
-        try{
-            value = input.nextInt();
-            input.nextLine();
-        } catch (Exception e) {
-            input.nextLine();
-            MessageUI.inputIntegerMessage();
-            return -1;
-        }
+        do{
+            error = false;
+            try{
+                value = input.nextInt();
+                input.nextLine();
+            } catch (Exception e) {
+                input.nextLine();
+                MessageUI.inputIntegerMessage();
+                value = -1;
+            }
+            if(value == -1){
+                error = true;
+            }
+        } while(error);
         
         return value;
     }
@@ -50,16 +57,23 @@ public class Input {
     // Get Integer Input from User Keyboard with Defined Question
     public static int getIntegerInput(String question){
         int value;
+        boolean error;
         
-        try{
-            System.out.print(question);
-            value = input.nextInt();
-            input.nextLine();
-        }catch (Exception e) {
-            input.nextLine();
-            MessageUI.inputIntegerMessage();
-            return -1;
-        }
+        do{
+            error = false;
+            try{
+                System.out.println(question);
+                value = input.nextInt();
+                input.nextLine();
+            } catch (Exception e) {
+                input.nextLine();
+                MessageUI.inputIntegerMessage();
+                value = -1;
+            }
+            if(value == -1){
+                error = true;
+            }
+        } while(error);
         
         return value;
     }
@@ -67,15 +81,22 @@ public class Input {
     // Get Double
     public static double getDoubleInput(String question){
         double value;
+        boolean error;
         
-        try{
-            System.out.println(question);
-            value = input.nextDouble();
-        }catch (Exception e) {
-            input.nextLine();
-            MessageUI.inputIntegerMessage();
-            return -1;
-        }
+        do{
+            error = false;
+            try{
+                System.out.println(question);
+                value = input.nextDouble();
+            }catch (Exception e) {
+                input.nextLine();
+                MessageUI.inputIntegerMessage();
+                value = -1;
+            }
+            if(value == -1){
+                error = true;
+            }
+        }while(error);
         
         return value;
     }
